@@ -1,6 +1,9 @@
 #include "Chessboard_handler.h"
+#include <string.h>
 
 void initialize_start_position_on_board(char(*chessboard)[MAX_NUMBER_OF_COLORS][MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER]) {
+    memset(chessboard, NULL_VALUE, sizeof(char) * MAX_NUMBER_OF_FIGURES_OF_EACH_KIND * MAX_NUMBER_OF_COLORS * MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER);
+
     /*--------------------------- PAWNS ---------------------------------*/
     // White side
     chessboard[PAWN][WHITE][0] = 'a';   chessboard[PAWN][WHITE][1] = '2';
@@ -64,6 +67,27 @@ void initialize_start_position_on_board(char(*chessboard)[MAX_NUMBER_OF_COLORS][
     /*--------------------------------------------------------------------*/
 }
 
+/* Shift all figures to the left after removing figure from board ("e1 XX d4 g4 XX ... XX" --> "e1 d4 g4 XX ... XX)" */
+void shift_coordinates_after_removing_figure(char* string_with_coors) {
+    for (int i = 0; i < MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER - 2; i++) {
+        if (string_with_coors[i] == NULL_VALUE) {
+            for (; i < MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER - 2; i += 2) {
+                string_with_coors[i] = string_with_coors[i + 2];
+                string_with_coors[i + 1] = string_with_coors[i + 3];
+
+                if (string_with_coors[i] == NULL_VALUE) {
+                    break;
+                }
+            }
+
+            string_with_coors[i] = NULL_VALUE;
+            string_with_coors[i + 1] = NULL_VALUE;
+
+            break;
+        }
+    }
+}
+
 /* Arg (in) : pointer to chessboard mass*/
 void update_position_on_board(char(*chessboard)[MAX_NUMBER_OF_COLORS][MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER], char* move) {
     enum _figure figure_that_moved;
@@ -74,7 +98,7 @@ void update_position_on_board(char(*chessboard)[MAX_NUMBER_OF_COLORS][MAX_NUMBER
         move_to_found = false;
 
     if (move[PROMOTION] != NULL_VALUE) {
-        /* Promote a pawn to figure. First delete pawn, then place figure on board. */
+        /* Promote a pawn to figure. First delete pawn (and captured figure), then place figure on board. */
         for (int number_of_figure = 0; number_of_figure < MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER; number_of_figure += 2) {
             // Finds pawn that is promoted and remove it from board
             if (chessboard[PAWN][WHITE][number_of_figure + VERT_LINE] == move[FROM_LINE] &&
@@ -92,6 +116,26 @@ void update_position_on_board(char(*chessboard)[MAX_NUMBER_OF_COLORS][MAX_NUMBER
                 color_of_figure_that_moved = BLACK;
                 shift_coordinates_after_removing_figure(chessboard[PAWN][BLACK]);
                 break;
+            }
+        }
+
+        // Delete captured figure
+        for (int figure = PAWN; !stop_flag && figure < MAX_NUMBER_OF_FIGURES_OF_EACH_KIND; figure++) {
+            for (int color = WHITE; !stop_flag && color < MAX_NUMBER_OF_COLORS; color++) {
+                for (int number_of_figure = 0; !stop_flag && number_of_figure < MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER; number_of_figure += 2) {
+                    if (chessboard[figure][color][number_of_figure + VERT_LINE] == NULL_VALUE) {
+                        break;
+                    }
+
+                    // Update state of figure, that is captured or nothing captured.
+                    if (chessboard[figure][color][number_of_figure + VERT_LINE] == move[TO_LINE] &&
+                        chessboard[figure][color][number_of_figure + HORIZ_NUMBER] == move[TO_NUMBER]) {
+                        chessboard[figure][color][number_of_figure + VERT_LINE] = NULL_VALUE;
+                        chessboard[figure][color][number_of_figure + HORIZ_NUMBER] = NULL_VALUE;
+                        shift_coordinates_after_removing_figure(chessboard[figure][color]);
+                        stop_flag = true;
+                    }
+                }
             }
         }
 
@@ -154,7 +198,6 @@ void update_position_on_board(char(*chessboard)[MAX_NUMBER_OF_COLORS][MAX_NUMBER
             /* Check if it is a castling */
             if (figure_that_moved == KING &&
                 move[FROM_LINE] == 'e' && move[TO_LINE] == 'g' || move[TO_LINE] == 'c') {
-                // Replace rook that is castled
                 if (move[TO_LINE] == 'g') { // Short castling (O-O)
                     if (color_of_figure_that_moved == WHITE) {
                         for (int number_of_figure = 0; number_of_figure < MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER; number_of_figure += 2) {
@@ -209,22 +252,22 @@ void update_position_on_board(char(*chessboard)[MAX_NUMBER_OF_COLORS][MAX_NUMBER
             if (figure_that_moved == PAWN && move[TO_LINE] != move[FROM_LINE]) {
                 if (color_of_figure_that_moved == WHITE) {
                     for (int number_of_figure = 0; number_of_figure < MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER; number_of_figure += 2) {
-                        if (chessboard[PAWN][WHITE][number_of_figure + VERT_LINE] == move[TO_LINE] &&
-                            chessboard[PAWN][WHITE][number_of_figure + HORIZ_NUMBER] == move[TO_NUMBER] - 1) {
-                            chessboard[PAWN][WHITE][number_of_figure + VERT_LINE] = NULL_VALUE;
-                            chessboard[PAWN][WHITE][number_of_figure + HORIZ_NUMBER] = NULL_VALUE;
-                            shift_coordinates_after_removing_figure(chessboard[PAWN][WHITE]);
+                        if (chessboard[PAWN][BLACK][number_of_figure + VERT_LINE] == move[TO_LINE] &&
+                            chessboard[PAWN][BLACK][number_of_figure + HORIZ_NUMBER] == move[TO_NUMBER] - 1) {
+                            chessboard[PAWN][BLACK][number_of_figure + VERT_LINE] = NULL_VALUE;
+                            chessboard[PAWN][BLACK][number_of_figure + HORIZ_NUMBER] = NULL_VALUE;
+                            shift_coordinates_after_removing_figure(chessboard[PAWN][BLACK]);
                             break;
                         }
                     }
                 }
                 else {
                     for (int number_of_figure = 0; number_of_figure < MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER; number_of_figure += 2) {
-                        if (chessboard[PAWN][BLACK][number_of_figure + VERT_LINE] == move[TO_LINE] &&
-                            chessboard[PAWN][BLACK][number_of_figure + HORIZ_NUMBER] == move[TO_NUMBER] + 1) {
-                            chessboard[PAWN][BLACK][number_of_figure + VERT_LINE] = NULL_VALUE;
-                            chessboard[PAWN][BLACK][number_of_figure + HORIZ_NUMBER] = NULL_VALUE;
-                            shift_coordinates_after_removing_figure(chessboard[PAWN][BLACK]);
+                        if (chessboard[PAWN][WHITE][number_of_figure + VERT_LINE] == move[TO_LINE] &&
+                            chessboard[PAWN][WHITE][number_of_figure + HORIZ_NUMBER] == move[TO_NUMBER] + 1) {
+                            chessboard[PAWN][WHITE][number_of_figure + VERT_LINE] = NULL_VALUE;
+                            chessboard[PAWN][WHITE][number_of_figure + HORIZ_NUMBER] = NULL_VALUE;
+                            shift_coordinates_after_removing_figure(chessboard[PAWN][WHITE]);
                             break;
                         }
                     }
@@ -254,25 +297,4 @@ enum _figure get_figure_from_char(char c) {
     }
 
     return KNIGHT;
-}
-
-/* Shift all figures to the left after removing figure from board ("e1 XX d4 g4 XX ... XX" --> "e1 d4 g4 XX ... XX)" */
-void shift_coordinates_after_removing_figure(char* string_with_coors) {
-    for (int i = 0; i < MAX_NUMBER_OF_FIGURES_OF_EACH_KIND * MULTIPLIER_VERT_NAME_HORIZ_NUMBER - 2; i++) {
-        if (string_with_coors[i] == NULL_VALUE) {
-            for (; i < MAX_NUMBER_OF_FIGURES_OF_EACH_KIND * MULTIPLIER_VERT_NAME_HORIZ_NUMBER - 2 && string_with_coors[i] != NULL_VALUE; i += 2) {
-                string_with_coors[i] = string_with_coors[i + 2];
-                string_with_coors[i + 1] = string_with_coors[i + 3];
-
-                if (string_with_coors[i] == NULL_VALUE) {
-                    break;
-                }
-            }
-
-            string_with_coors[i] = NULL_VALUE;
-            string_with_coors[i + 1] = NULL_VALUE;
-
-            break;
-        }
-    }
 }
