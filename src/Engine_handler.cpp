@@ -20,7 +20,7 @@ engine_error engine_load(engine* engn) {
 }
 
 void engine_close(engine* engn) {
-	//òóò äîáàâèòü îòïðàâêó êîìàíäû äâèæêó çàâåðøèòü ðàáîòó (quit)
+	//Ã²Ã³Ã² Ã¤Ã®Ã¡Ã Ã¢Ã¨Ã²Ã¼ Ã®Ã²Ã¯Ã°Ã Ã¢ÃªÃ³ ÃªÃ®Ã¬Ã Ã­Ã¤Ã» Ã¤Ã¢Ã¨Ã¦ÃªÃ³ Ã§Ã Ã¢Ã¥Ã°Ã¸Ã¨Ã²Ã¼ Ã°Ã Ã¡Ã®Ã²Ã³ (quit)
 	close_stream_handle(&engn->pipe_in_w);
 	close_stream_handle(&engn->pipe_out_r);
 	engn->state = NOT_LOADED;
