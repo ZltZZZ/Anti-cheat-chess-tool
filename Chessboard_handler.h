@@ -37,10 +37,10 @@ enum _promotion_components {
 };
 
 /* Places figures on start positions */
-void initialize_start_position_on_board(char(*)[MAX_NUMBER_OF_COLORS][MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER]);
+void initialize_start_position_on_board(char(*chessboard_ptr)[MAX_NUMBER_OF_COLORS][MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER]);
 
 /* Update positions of figures after each move */
-void update_position_on_board(char(*)[MAX_NUMBER_OF_COLORS][MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER], char*);
+void update_position_on_board(char(*chessboard_ptr)[MAX_NUMBER_OF_COLORS][MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER], char* move_ptr);
 
 /* Returns a figure that was written in notation (doesn't matter lower or upper case) */
-enum _figure get_figure_from_char(char);
+enum _figure get_figure_from_char(char char_in_notation);

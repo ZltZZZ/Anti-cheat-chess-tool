@@ -1,0 +1,23 @@
+#include <Windows.h>
+
+#define MAX_MSG_SIZE 1500
+
+typedef enum _error_process {
+	PROCESS_CREATE_OK,
+	PROCESS_CREATE_FAIL
+} error_process;
+
+/* Creates standart process for engine */
+error_process create_process(LPCWSTR path, HANDLE* pipe_in_w, HANDLE* pipe_out_r);
+
+/* Closes stream description*/
+void close_stream_handle(HANDLE* stream);
+
+/* Block curr process untill child process answers*/
+void wait_for_answ(HANDLE* pipe_out_r);
+
+/* Send message to pipe */
+void send_message(HANDLE* pipe_in_w, const char msg[MAX_MSG_SIZE]);
+
+/* Recieve message from pipe */
+void recieve_message();

@@ -1,7 +1,9 @@
 ﻿//#define DEBUG_CHESSBOARD_HANDLER
+//#define DEBUG_ENGINE_HANDLER
 
 #include <iostream>
 #include "Chessboard_handler.h"
+#include "Engine_handler.h"
 
 using namespace std;
 
@@ -57,5 +59,17 @@ int main()
 
 #endif
 
-    initialize_start_position_on_board(chessboard);
+#ifdef DEBUG_ENGINE_HANDLER
+    engine test_engine;
+    init_engine_struct(&test_engine, L"D:\\VUZAKA\\case\\Programm\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe");
+    if (engine_load(&test_engine) == ENGINE_LOAD_OK) {
+        cout << "engine OK\n";
+    }
+    else {
+        cout << "engine FAIL\n";
+    }
+    engine_close(&test_engine);
+#endif // DEBUG_ENGINE_HANDLER
+
+    return 0;
 }
