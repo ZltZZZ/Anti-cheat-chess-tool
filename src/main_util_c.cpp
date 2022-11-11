@@ -1,7 +1,7 @@
 ﻿//#define DEBUG_CHESSBOARD_HANDLER
 //#define DEBUG_ENGINE_HANDLER
 
-#include <iostream>
+#include <stdio.h>
 #include "Chessboard_handler.h"
 #include "Engine_handler.h"
 
@@ -61,13 +61,22 @@ int main()
 
 #ifdef DEBUG_ENGINE_HANDLER
     engine test_engine;
+    char buff_out[MAX_MSG_SIZE] = { '\0' };
+
     init_engine_struct(&test_engine, L"D:\\VUZAKA\\case\\Programm\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe");
     if (engine_load(&test_engine) == ENGINE_LOAD_OK) {
-        cout << "engine OK\n";
+        printf("Engine OK\n");
+
+        send_message(&test_engine.pipe_in_w, "Hello!\n");
+        wait_for_answ(&test_engine.pipe_out_r);
+        recieve_message(&test_engine.pipe_out_r, buff_out);
+        printf("Engine aswers: %s", buff_out);
+        
     }
     else {
-        cout << "engine FAIL\n";
+        printf("Engine FAIL\n");
     }
+
     engine_close(&test_engine);
 #endif // DEBUG_ENGINE_HANDLER
 
