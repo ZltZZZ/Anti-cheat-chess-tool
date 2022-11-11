@@ -1,10 +1,13 @@
 #include <Windows.h>
 
 #define MAX_MSG_SIZE 1500
+#define WAITING_TIME 10
 
 typedef enum _error_process {
 	PROCESS_CREATE_OK,
-	PROCESS_CREATE_FAIL
+	PROCESS_CREATE_FAIL,
+	PROCESS_PIPE_MSG_AVAILABLE,
+	PROCESS_PIPE_NO_MSG
 } error_process;
 
 /* Creates standart process for engine */
@@ -19,5 +22,10 @@ void wait_for_answ(HANDLE* pipe_out_r);
 /* Send message to pipe */
 void send_message(HANDLE* pipe_in_w, const char msg[MAX_MSG_SIZE]);
 
-/* Recieve message from pipe */
-void recieve_message();
+/* Recieve message from pipe. Msg places in buff */
+void recieve_message(HANDLE* pipe_out_r, char* buff);
+
+error_process check_pipe(HANDLE* pipe_out_r);
+
+/* Recieve all massages from pipe (clean pipe). */
+void clean_pipe_out(HANDLE* pipe_out_r);

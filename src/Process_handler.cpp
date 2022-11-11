@@ -1,6 +1,7 @@
 //#define DEBUG_IN_PROCESS_HANDLER
 
 #include "Process_handler.h"
+#include <ctime>
 #ifdef DEBUG_IN_PROCESS_HANDLER
 #include <stdio.h>
 #endif // DEBUG_IN_PROCESS_HANDLER
@@ -60,10 +61,6 @@ error_process create_process(LPCWSTR path, HANDLE* pipe_in_w, HANDLE* pipe_out_r
     close_stream_handle(&pipe_in_r);
     close_stream_handle(&pipe_out_w);
 
-    // Wait for initializing of engine (synchronize engine and app) (send a msg and wait answ)
-    send_message(pipe_in_w, "h\n");
-    wait_for_answ(pipe_out_r);
-
     return PROCESS_CREATE_OK;
 }
 
@@ -72,12 +69,17 @@ void close_stream_handle(HANDLE* stream) {
 }
 
 void wait_for_answ(HANDLE* pipe_out_r) {
-    DWORD bites_aval = 0; // Bites availible in pipe's buffer
+    DWORD bites_aval = 0;     // Bites availible in pipe's buffer
+    time_t time_start, time_curr;   // Avoid infinite loop by setting a waiting timer
+
+    time(&time_start);
+    time(&time_curr);
 
     // Busy waits msg (block curr thread)
-    while (bites_aval <= 0)
+    while (bites_aval <= 0 && time_curr - time_start < WAITING_TIME)
     {
         PeekNamedPipe(*pipe_out_r, NULL, NULL, NULL, &bites_aval, NULL);
+        time(&time_curr);
     }
 }
 
@@ -85,4 +87,32 @@ void send_message(HANDLE* pipe_in_w, const char msg[MAX_MSG_SIZE]) {
     DWORD dwWritten;
 
     WriteFile(*pipe_in_w, msg, strlen(msg), &dwWritten, NULL);
+}
+
+void recieve_message(HANDLE* pipe_out_r, char* buff) {
+    DWORD dwRead;
+
+    ReadFile(*pipe_out_r, buff, MAX_MSG_SIZE, &dwRead, NULL);
+}
+
+error_process check_pipe(HANDLE* pipe_out_r) {
+    DWORD bites_aval = 0; // Bites availible in pipe's buffer
+
+    PeekNamedPipe(*pipe_out_r, NULL, NULL, NULL, &bites_aval, NULL);
+
+    if (bites_aval > 0) {
+        return PROCESS_PIPE_MSG_AVAILABLE;
+    }
+    else {
+        return PROCESS_PIPE_NO_MSG;
+    }
+}
+
+void clean_pipe_out(HANDLE* pipe_out_r) {
+    char useless_buff[MAX_MSG_SIZE] = { '\0' };
+
+    while (check_pipe(pipe_out_r) != PROCESS_PIPE_NO_MSG)
+    {
+        recieve_message(pipe_out_r, useless_buff);
+    }
 }
