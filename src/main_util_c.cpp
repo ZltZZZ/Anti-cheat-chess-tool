@@ -1,11 +1,11 @@
 ﻿//#define DEBUG_CHESSBOARD_HANDLER
 //#define DEBUG_ENGINE_HANDLER
+//#define DEBUG_DATABASE_PARSER
 
 #include <stdio.h>
 #include "Chessboard_handler.h"
 #include "Engine_handler.h"
-
-using namespace std;
+#include "DataBase_parser.h"
 
 int main()
 {
@@ -67,9 +67,7 @@ int main()
     if (engine_load(&test_engine) == ENGINE_LOAD_OK) {
         printf("Engine OK\n");
 
-        send_message(&test_engine.pipe_in_w, "Hello!\n");
-        wait_for_answ(&test_engine.pipe_out_r);
-        recieve_message(&test_engine.pipe_out_r, buff_out);
+        engine_send_command(&test_engine, COMMAND_TYPE_GET_ANSW, IS_READY, buff_out);
         printf("Engine aswers: %s", buff_out);
         
     }
@@ -79,6 +77,11 @@ int main()
 
     engine_close(&test_engine);
 #endif // DEBUG_ENGINE_HANDLER
+
+#ifdef DEBUG_DATABASE_PARSER
+    open_database();
+#endif // DEBUG_DATABASE_PARSER
+
 
     return 0;
 }
