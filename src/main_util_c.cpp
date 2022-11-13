@@ -79,7 +79,34 @@ int main()
 #endif // DEBUG_ENGINE_HANDLER
 
 #ifdef DEBUG_DATABASE_PARSER
-    open_database();
+    parser prsr;
+    game gm;
+    char db_path[] = "lichess_db_standard_rated_2013-05(4).pgn";
+    int count_games = 0;
+
+    set_parser_params(&prsr, NO_RATING, NO_RATING, EVENT_BLITZ, NULL, db_path);
+    open_database(&prsr);
+
+    while (get_next_game(&prsr, &gm) != DB_EOF)
+    {
+        if (gm.evnt == EVENT_BLITZ) {
+            printf("Event : Blitz\n");
+        }
+        printf(
+            "White: %s\n"
+            "Black: %s\n"
+            "ELO Black: %d\n"
+            "Elo White: %d\n"
+            "Moves: %s\n",
+            gm.name_white, gm.name_black, gm.elo_black, gm.elo_white, gm.moves);
+        printf("\n");
+
+        count_games++;
+    }
+
+    printf("Total count of games: %d\n", count_games);
+
+    close_database(&prsr);
 #endif // DEBUG_DATABASE_PARSER
 
 
