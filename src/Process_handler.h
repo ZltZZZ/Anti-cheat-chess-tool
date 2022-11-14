@@ -25,6 +25,10 @@ void send_message(HANDLE* pipe_in_w, const char msg[MAX_MSG_SIZE]);
 /* Recieve message from pipe. Msg places in buff */
 void recieve_message(HANDLE* pipe_out_r, char* buff);
 
+/* Recieve a char from pipe. Char places in a c_buff. */
+void recieve_char(HANDLE* pipe_out_r, char* c_buff);
+
+/* Returns PROCESS_PIPE_MSG_AVAILABLE if pipe is note empty, overwise PROCESS_PIPE_NO_MSG. */
 error_process check_pipe(HANDLE* pipe_out_r);
 
 /* Recieve all massages from pipe (clean pipe). */

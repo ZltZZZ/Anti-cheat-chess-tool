@@ -76,7 +76,7 @@ void wait_for_answ(HANDLE* pipe_out_r) {
     time(&time_curr);
 
     // Busy waits msg (block curr thread)
-    while (bites_aval <= 0 && time_curr - time_start < WAITING_TIME)
+    while (bites_aval <= 0 && difftime(time_curr, time_start) < WAITING_TIME)
     {
         PeekNamedPipe(*pipe_out_r, NULL, NULL, NULL, &bites_aval, NULL);
         time(&time_curr);
@@ -93,6 +93,12 @@ void recieve_message(HANDLE* pipe_out_r, char* buff) {
     DWORD dwRead;
 
     ReadFile(*pipe_out_r, buff, MAX_MSG_SIZE, &dwRead, NULL);
+}
+
+void recieve_char(HANDLE* pipe_out_r, char* c_buff) {
+    DWORD dwRead;
+
+    ReadFile(*pipe_out_r, c_buff, 1, &dwRead, NULL);
 }
 
 error_process check_pipe(HANDLE* pipe_out_r) {
