@@ -1,11 +1,13 @@
-#define MAX_NUMBER_OF_FIGURES_OF_EACH_KIND 6
-#define MAX_NUMBER_OF_FIGURES_ON_BOARD 8
-#define MAX_NUMBER_OF_COLORS 2
-#define MULTIPLIER_VERT_NAME_HORIZ_NUMBER 2
-#define NULL_VALUE 'X'
-#define MAX_MOVE_LENTH_LAN 5
-#define VERT_LINE 0
-#define HORIZ_NUMBER 1 
+#define MAX_P 9   /* Max count of figures on board + extra empty stot for empty attr. */
+#define MAX_N 7
+#define MAX_B 7
+#define MAX_R 7
+#define MAX_Q 7
+
+#define POSITION_ATTR_YES -15
+#define POSITION_ATTR_NO  -16
+
+#include "lib/thc.h"
 
 enum _figure {
     PAWN = 0,
@@ -36,11 +38,36 @@ enum _promotion_components {
     PROMOTION_QUEEN = 'q'
 };
 
-/* Places figures on start positions */
-void initialize_start_position_on_board(char(*chessboard_ptr)[MAX_NUMBER_OF_COLORS][MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER]);
+/* Set of attributes for position. */
+typedef struct _attr_set {
+    int count_P;
+    int count_B;
+    int count_N;
+    int count_R;
+    int count_Q;
+} attr_set;
 
-/* Update positions of figures after each move */
-void update_position_on_board(char(*chessboard_ptr)[MAX_NUMBER_OF_COLORS][MAX_NUMBER_OF_FIGURES_ON_BOARD * MULTIPLIER_VERT_NAME_HORIZ_NUMBER], char* move_ptr);
+/* Contains all possible combinations of attributes of position. Used to assign some number to a specific set of attributes. */
+typedef struct _attr_container {
+    // You can use int or float container as you want
+    union _cont
+    {
+        float fl_cont[MAX_P][MAX_N][MAX_B][MAX_R][MAX_Q];
+        int int_cont[MAX_P][MAX_N][MAX_B][MAX_R][MAX_Q];
+    } cont;
+} attr_container;
 
-/* Returns a figure that was written in notation (doesn't matter lower or upper case) */
-enum _figure get_figure_from_char(char char_in_notation);
+/* Set all fields in attr_cont as POSITION_ATTR_NO. */
+void init_attr_cont(attr_container*);
+
+/* Set all field in attr_cont as 0. */
+void zero_attr_cont(attr_container*);
+
+/* Parse FEN string and gest set of attributes of this position. */
+void get_attr_set(const char* fen_string, attr_set*);
+
+/* Make move on board. */
+void make_move(thc::ChessRules*, char* move);
+
+/* Sets start position on board. */
+void set_start_position_on_board(thc::ChessRules*);
