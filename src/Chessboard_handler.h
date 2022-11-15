@@ -3,6 +3,12 @@
 #define MAX_B 7
 #define MAX_R 7
 #define MAX_Q 7
+#define EMPTY_P 9
+#define EMPTY_N 7
+#define EMPTY_B 7
+#define EMPTY_R 7
+#define EMPTY_Q 7
+
 
 #define POSITION_ATTR_YES -15
 #define POSITION_ATTR_NO  -16
@@ -52,8 +58,8 @@ typedef struct _attr_container {
     // You can use int or float container as you want
     union _cont
     {
-        float fl_cont[MAX_P][MAX_N][MAX_B][MAX_R][MAX_Q];
-        int int_cont[MAX_P][MAX_N][MAX_B][MAX_R][MAX_Q];
+        float fl_cont[MAX_P][MAX_N][MAX_B][MAX_R][MAX_Q];  // Used for displaying accyracies in float
+        int int_cont[MAX_P][MAX_N][MAX_B][MAX_R][MAX_Q];   // Used for summing accyrasies int int
     } cont;
 } attr_container;
 
@@ -65,6 +71,12 @@ void zero_attr_cont(attr_container*);
 
 /* Parse FEN string and gest set of attributes of this position. */
 void get_attr_set(const char* fen_string, attr_set*);
+
+/* Compare two attr_set. Returns 0 if equal, overwise != 0 */
+int compare_attr_sets(attr_set* set_1, attr_set* set_2);
+
+/* Copy contains from set_src to set_dst. */
+void copy_attr_set(attr_set* set_dst, attr_set* set_src);
 
 /* Make move on board. */
 void make_move(thc::ChessRules*, char* move);

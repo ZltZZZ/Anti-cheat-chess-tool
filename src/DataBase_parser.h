@@ -72,9 +72,6 @@ void game_clear(game*);
 /* Returns _game structure about next game in database. */
 int get_next_game(parser*, game*);
 
-/* Returns TRUE if end of database is reached, owerwise FALSE. */
-bool is_end_of_db(parser*);
-
 /* Opens file stream. */
 void open_database(parser*);
 

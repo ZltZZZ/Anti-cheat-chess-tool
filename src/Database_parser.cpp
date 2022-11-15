@@ -77,10 +77,6 @@ int get_next_game(parser* prsr, game* gm) {
 	return DB_EOF;
 }
 
-//bool is_end_of_db(parser* prsr) {
-//
-//}
-
 void open_database(parser* prsr) {
 	fopen_s(&prsr->db.pgn_db, prsr->db.path_to_db, "r");
 }

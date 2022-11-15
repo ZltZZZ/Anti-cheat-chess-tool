@@ -149,6 +149,9 @@ void engine_parse_analisys_output(engine* engn, engine_line* line) {
 		 is_line = false,  // If word == multipv, than flag true
 		 is_move = false;  // If word == pv, than flag true
 
+	// Clean old info from engine, before reciving new info 
+	clean_pipe_out(&engn->pipe_out_r);
+
 	// Continue get data until receive "bestmove" word from engine
 	while (memcmp(word, "bestmove", 9) != 0)
 	{

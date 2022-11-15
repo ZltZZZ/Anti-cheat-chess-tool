@@ -35,6 +35,14 @@ void get_attr_set(const char* fen_string, attr_set* attr_st) {
     }
 }
 
+int compare_attr_sets(attr_set* set_1, attr_set* set_2) {
+    return memcmp(set_1, set_2, sizeof(attr_set));
+}
+
+void copy_attr_set(attr_set* set_dst, attr_set* set_src) {
+    memcpy(set_dst, set_src, sizeof(attr_set));
+}
+
 void make_move(thc::ChessRules* cr, char* move) {
     thc::Move mv;
     mv.NaturalIn(cr, move);
