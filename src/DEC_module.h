@@ -1,6 +1,5 @@
 #pragma once
 
-#define MOVE_TIME_DEFUALT 1
 #define ACC_MULTI 10000
 
 #include "DataBase_parser.h"
@@ -65,7 +64,9 @@ void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrai
 void calc_acc_suspect(suspect_portrait*);
 
 // Some functions for debugging
-void print_susp(suspect_portrait* susp);
+void print_susp_std(suspect_portrait* susp);
+
+void print_susp_file(suspect_portrait* susp, FILE* file);
 
 int get_count_of_moves_total(game* gm);
 

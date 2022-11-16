@@ -179,6 +179,8 @@ void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp) 
 	game gm;
 	int count_of_games = 0;
 	time_t time_start, time_curr;
+	FILE* file = NULL;
+	fopen_s(&file, "1.txt", "w");
 
 	open_database(prsr);
 	init_attr_cont(&susp->attr_acc);
@@ -186,18 +188,21 @@ void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp) 
 
 	while (get_next_game(prsr, &gm) != DB_EOF)
 	{
-		count_of_games++;
 		time(&time_start);
 		time(&time_curr);
-		printf("Analyse game %d ", count_of_games);
+		printf("Analyse game %d ", count_of_games + 1);
 		analize_game_player(&gm, engn, susp, prsr->fiter.name);
+		count_of_games++;
+		if (count_of_games >= prsr->fiter.max_count_of_games) {
+			break;
+		}
 		time(&time_curr);
 		printf("time: %fs\n", difftime(time_curr, time_start));
 	}
 
 	calc_acc_suspect(susp);
-
-	print_susp(susp);
+	print_susp_file(susp, file);
+	print_susp_std(susp);
 	printf("\n");
 
 	close_database(prsr);
@@ -209,6 +214,8 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 	int count_of_games = 0;
 	time_t time_start, time_curr;
 	int count_moves = 0;
+	FILE* file = NULL;
+	fopen_s(&file, "2.txt", "w");
 
 	// Empty name filter of parser.
 	memcpy(name_cpy, prsr->fiter.name, sizeof(char) * MAX_NAME_SIZE);
@@ -229,11 +236,12 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_sets);
 		time(&time_curr);
 		printf("time: %fs\n", difftime(time_curr, time_start));
-		print_susp(susp);
+		print_susp_std(susp);
 	}
 
 	calc_acc_suspect(susp);
-	print_susp(susp);
+	print_susp_file(susp, file);
+	print_susp_std(susp);
 
 	memcpy(prsr->fiter.name, name_cpy, sizeof(char) * MAX_NAME_SIZE);
 
@@ -418,7 +426,7 @@ void calc_acc_suspect(suspect_portrait* susp) {
 
 
 // Some functions for debugging
-void print_susp(suspect_portrait* susp) {
+void print_susp_std(suspect_portrait* susp) {
 	for (int p = 0; p < MAX_P - 1; p++) {
 		for (int n = 0; n < MAX_N - 1; n++) {
 			for (int b = 0; b < MAX_B - 1; b++) {
@@ -435,6 +443,55 @@ void print_susp(suspect_portrait* susp) {
 		}
 	}
 }
+
+void print_susp_file(suspect_portrait* susp, FILE* file) {
+	for (int p = 0; p < MAX_P; p++) {
+		for (int n = 0; n < MAX_N; n++) {
+			for (int b = 0; b < MAX_B; b++) {
+				for (int r = 0; r < MAX_R; r++) {
+					for (int q = 0; q < MAX_Q; q++) {
+						if (susp->attr_acc.cont.int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
+							if (p == EMPTY_P) {
+								fprintf(file, "{X_p, ");
+							}
+							else {
+								fprintf(file, "{%d_p, ", p);
+							}
+							if (n == EMPTY_N) {
+								fprintf(file, "X_n, ");
+							}
+							else {
+								fprintf(file, "%d_n, ", n);
+							}
+							if (b == EMPTY_B) {
+								fprintf(file, "X_b, ");
+							}
+							else {
+								fprintf(file, "%d_b, ", b);
+							}
+							if (r == EMPTY_R) {
+								fprintf(file, "X_r, ");
+							}
+							else {
+								fprintf(file, "%d_r, ", r);
+							}
+							if (q == EMPTY_Q) {
+								fprintf(file, "X_q}: ");
+							}
+							else {
+								fprintf(file, "%d_q}: ", q);
+							}
+							fprintf(file, "accuracy = %f, count = %d\n",
+								susp->attr_acc.cont.fl_cont[p][n][b][r][q],
+								susp->attr_count.cont.int_cont[p][n][b][r][q]);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 
 int get_count_of_moves_total(game* gm) {
 	int len = strlen(gm->moves);

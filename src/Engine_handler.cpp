@@ -122,7 +122,16 @@ void engine_set_def_options(engine* engn) {
 	buff = "setoption name MultiPV value ";
 	buff += std::to_string(OPTION_MULTI_PV_DEF);
 	buff += "\n";
+	engine_send_command_custom(engn, COMMAND_TYPE_PASSTHROUGH, (char*)buff.c_str(), NULL);
 
+	buff = "setoption name Hash value ";
+	buff += std::to_string(OPTION_HASH_DEF);
+	buff += "\n";
+	engine_send_command_custom(engn, COMMAND_TYPE_PASSTHROUGH, (char*)buff.c_str(), NULL);
+
+	buff = "setoption name Threads value ";
+	buff += std::to_string(OPTION_THREAD_DEF);
+	buff += "\n";
 	engine_send_command_custom(engn, COMMAND_TYPE_PASSTHROUGH, (char*)buff.c_str(), NULL);
 }
 

@@ -82,15 +82,20 @@ int main()
     parser prsr;
     suspect_portrait player;
     suspect_portrait same_rating;
-    char db_path[] = "lichess_db_standard_rated_2013-05(4).pgn";
-    char name[] = "klenov";
+    char db_path[] = "lichess_db_standard_rated_2013-05(1).pgn";
+    char name[] = "URIAHURIAH";
+    time_t time_start, time_curr;
 
-    set_parser_params(&prsr, 1600, 1700, EVENT_CLASSIC, name, db_path, 10, 0);
+    set_parser_params(&prsr, 1600, 1800, EVENT_BLITZ, name, db_path, 10, 10);
     init_engine_struct(&engn, L"D:\\VUZAKA\\case\\Programm\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe");
     init_suspect_portrait(&player, &prsr);
     init_suspect_portrait(&same_rating, &prsr);
 
+    time(&time_start);
+    time(&time_curr);
     do_analize(&prsr, &engn, &player, &same_rating);
+    time(&time_curr);
+    printf("\nTotal time analysing: %f\n", difftime(time_curr, time_start));
     
 #endif // DEBUG_DEC_MODULE
 
