@@ -1,11 +1,13 @@
 ﻿//#define DEBUG_CHESSBOARD_HANDLER
 //#define DEBUG_ENGINE_HANDLER
 //#define DEBUG_DATABASE_PARSER
+#define DEBUG_DEC_MODULE
 
 #include <stdio.h>
 #include "Chessboard_handler.h"
 #include "Engine_handler.h"
 #include "DataBase_parser.h"
+#include "DEC_module.h"
 
 int main()
 {
@@ -74,6 +76,24 @@ int main()
 
     close_database(&prsr);
 #endif // DEBUG_DATABASE_PARSER
+
+#ifdef DEBUG_DEC_MODULE
+    engine engn;
+    parser prsr;
+    suspect_portrait player;
+    suspect_portrait same_rating;
+    char db_path[] = "lichess_db_standard_rated_2013-05(4).pgn";
+    char name[] = "klenov";
+
+    set_parser_params(&prsr, 1600, 1700, EVENT_CLASSIC, name, db_path, 10, 0);
+    init_engine_struct(&engn, L"D:\\VUZAKA\\case\\Programm\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe");
+    init_suspect_portrait(&player, &prsr);
+    init_suspect_portrait(&same_rating, &prsr);
+
+    do_analize(&prsr, &engn, &player, &same_rating);
+    
+#endif // DEBUG_DEC_MODULE
+
 
 
     return 0;

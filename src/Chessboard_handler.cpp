@@ -2,7 +2,36 @@
 #include <string.h>
 
 void init_attr_cont(attr_container* attr_cont) {
-    memset(attr_cont->cont.int_cont, POSITION_ATTR_NO, sizeof(int) * MAX_P * MAX_N * MAX_B * MAX_Q * MAX_R);
+    for (int p = 0; p < MAX_P; p++) {
+        for (int n = 0; n < MAX_N; n++) {
+            for (int b = 0; b < MAX_B; b++) {
+                for (int r = 0; r < MAX_R; r++) {
+                    for (int q = 0; q < MAX_Q; q++) {
+                        attr_cont->cont.int_cont[p][n][b][r][q] = POSITION_ATTR_NO;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void init_attr_cont_with_other_cont(attr_container* dst, attr_container* src) {
+    for (int p = 0; p < MAX_P; p++) {
+        for (int n = 0; n < MAX_N; n++) {
+            for (int b = 0; b < MAX_B; b++) {
+                for (int r = 0; r < MAX_R; r++) {
+                    for (int q = 0; q < MAX_Q; q++) {
+                        if (src->cont.int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
+                            dst->cont.int_cont[p][n][b][r][q] = POSITION_ATTR_YES;
+                        }
+                        else {
+                            dst->cont.int_cont[p][n][b][r][q] = POSITION_ATTR_NO;;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void zero_attr_cont(attr_container* attr_cont) {
@@ -41,6 +70,24 @@ int compare_attr_sets(attr_set* set_1, attr_set* set_2) {
 
 void copy_attr_set(attr_set* set_dst, attr_set* set_src) {
     memcpy(set_dst, set_src, sizeof(attr_set));
+}
+
+bool is_attr_set_in_attr_cont(attr_set* attr_st, attr_container* attr_cont) {
+    if (attr_cont->cont.int_cont[attr_st->count_P][attr_st->count_N][attr_st->count_B][attr_st->count_R][attr_st->count_Q] != POSITION_ATTR_NO) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool is_attr_set_count_pass_filter(attr_set* attr_st, attr_container* attr_cont, int max_count_of_sets) {
+    if (attr_cont->cont.int_cont[attr_st->count_P][attr_st->count_N][attr_st->count_B][attr_st->count_R][attr_st->count_Q] < max_count_of_sets) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 void make_move(thc::ChessRules* cr, char* move) {

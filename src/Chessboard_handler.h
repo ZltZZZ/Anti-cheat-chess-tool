@@ -1,48 +1,23 @@
-#define MAX_P 9   /* Max count of figures on board + extra empty stot for empty attr. */
+#pragma once
+
+#define MAX_P 18  /* Max count of figures on board + extra empty stot for empty attr. */
 #define MAX_N 7
 #define MAX_B 7
 #define MAX_R 7
 #define MAX_Q 7
-#define EMPTY_P 9
-#define EMPTY_N 7
-#define EMPTY_B 7
-#define EMPTY_R 7
-#define EMPTY_Q 7
-
+#define EMPTY_P 17
+#define EMPTY_N 6
+#define EMPTY_B 6
+#define EMPTY_R 6
+#define EMPTY_Q 6
 
 #define POSITION_ATTR_YES -15
 #define POSITION_ATTR_NO  -16
 
+#define WHITE_SIDE 1
+#define BLACK_SIDE 0
+
 #include "lib/thc.h"
-
-enum _figure {
-    PAWN = 0,
-    BISHOP,
-    KNIGHT,
-    ROOK,
-    QUEEN,
-    KING
-};
-
-enum _color {
-    WHITE = 0,
-    BLACK
-};
-
-enum _move_components {
-    FROM_LINE = 0,
-    FROM_NUMBER,
-    TO_LINE,
-    TO_NUMBER,
-    PROMOTION
-};
-
-enum _promotion_components {
-    PROMOTION_BISHOP = 'b',
-    PROMOTION_KNIGHT = 'n',
-    PROMOTION_ROOK = 'r',
-    PROMOTION_QUEEN = 'q'
-};
 
 /* Set of attributes for position. */
 typedef struct _attr_set {
@@ -66,6 +41,9 @@ typedef struct _attr_container {
 /* Set all fields in attr_cont as POSITION_ATTR_NO. */
 void init_attr_cont(attr_container*);
 
+/* Run through scr container and if in field no POSITION_ATT_NO, then in dst field places POSITION_ATTR_YES. */
+void init_attr_cont_with_other_cont(attr_container* dst, attr_container* src);
+
 /* Set all field in attr_cont as 0. */
 void zero_attr_cont(attr_container*);
 
@@ -77,6 +55,12 @@ int compare_attr_sets(attr_set* set_1, attr_set* set_2);
 
 /* Copy contains from set_src to set_dst. */
 void copy_attr_set(attr_set* set_dst, attr_set* set_src);
+
+/* Returns TRUE, if attr_set is in attr_cont. Overwise returns FALSE. */
+bool is_attr_set_in_attr_cont(attr_set*, attr_container*);
+
+/* Returns TRUE is count of attr_set in attr_cont less or equal, than max_count_of_sets. Overwise FALSE.*/
+bool is_attr_set_count_pass_filter(attr_set*, attr_container*, int max_count_of_sets);
 
 /* Make move on board. */
 void make_move(thc::ChessRules*, char* move);

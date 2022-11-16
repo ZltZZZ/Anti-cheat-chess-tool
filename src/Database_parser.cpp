@@ -1,9 +1,11 @@
 #include "DataBase_parser.h"
 
-void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char* name, char* path_to_db) {
+void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char* name, char* path_to_db, int max_count_of_sets, int max_count_of_games) {
 	prsr->fiter.elo_min = min_elo;
 	prsr->fiter.elo_max = max_elo;
 	prsr->fiter.evnt = evnt;
+	prsr->fiter.max_count_of_games = max_count_of_games;
+	prsr->fiter.max_count_of_sets = max_count_of_sets;
 	if (name != NULL) {
 		memcpy(prsr->fiter.name, name, sizeof(char) * MAX_NAME_SIZE);
 	}
@@ -177,8 +179,8 @@ bool check_filter(parser* prsr, game* gm) {
 void move_parser(game* gm, char* buff) {
 	bool isComment = false,
 		 isMove = false;
-	char possibleChars_start[] = "abcdefghNBRQK";
-	char possibleChars_move[] = "12345678abcdefghNBRQKx= ";
+	char possibleChars_start[] = "abcdefghNBRQKO";
+	char possibleChars_move[] = "12345678abcdefghNBRQKx=O- ";
 	int gm_index = 0;
 
 	for (int i = 0; i < MAX_BUFF_SIZE; i++) {
