@@ -1,7 +1,7 @@
 #pragma once
 
 #define OPTION_MULTI_PV_DEF 4 // Default count of lines to analysis
-#define MOVE_TIME_DEFUALT 1 // Default time of analysing
+#define MOVE_TIME_DEFUALT 2 // Default time of analysing
 #define OPTION_HASH_DEF 3072
 #define OPTION_THREAD_DEF 4
 #define MAX_MOVE_SIZE 10

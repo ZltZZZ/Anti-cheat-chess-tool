@@ -63,7 +63,7 @@ void analize_game_player(game* gm, engine* engn, suspect_portrait* susp, char* n
 		// 4.1 Merge positions, if it is time.
 		if (count_of_mv >= count_of_mvs_to_next_merge) {
 			if (count_acc != 0) {
-				fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, ((float)acc / 100) / count_acc);
+				fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, acc, count_acc);
 			}
 			count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation); // Get next count of...
 			fen_string = cr.ForsythPublish();  // Get FEN string of new position
@@ -84,7 +84,7 @@ void analize_game_player(game* gm, engine* engn, suspect_portrait* susp, char* n
 			// 5.1 Merge positions, if it is time.
 			if (count_of_mv >= count_of_mvs_to_next_merge) {
 				if (count_acc != 0) {
-					fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, ((float)acc / 100) / count_acc);
+					fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, acc, count_acc);
 				}
 				count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation); // Get next count of...
 				fen_string = cr.ForsythPublish();  // Get FEN string of new position
@@ -98,7 +98,7 @@ void analize_game_player(game* gm, engine* engn, suspect_portrait* susp, char* n
 	}
 }
 
-void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp, int max_count_of_sets) {
+void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp, int max_count_of_moves) {
 	thc::ChessRules cr;
 	thc::Move mv;
 	char move_from_game[MAX_MOVE_SIZE] = { '\0' };
@@ -116,7 +116,7 @@ void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp,
 	// 0. Calculate initial merge.
 	fen_string = cr.ForsythPublish();  // Get FEN string
 	get_attr_set(fen_string.c_str(), &attr_st); // Get attributes of position
-	attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_sets); // Get flag of attr_set
+	attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
 	count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation);
 
 	// 1. Analyse each move, while don't reach the end of notation.
@@ -151,10 +151,10 @@ void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp,
 		if (count_of_mv >= count_of_mvs_to_next_merge) {
 			if (attr_st_flag == true) {
 				if (count_acc_white != 0) {
-					fill_acc_in_attr_containers_in_yes_socks(&attr_st, susp, ((float)acc_white / 100) / count_acc_white);
+					fill_acc_in_attr_containers_in_yes_socks(&attr_st, susp, acc_white, count_acc_white);
 				}
 				if (count_acc_black != 0) {
-					fill_acc_in_attr_containers_in_yes_socks(&attr_st, susp, ((float)acc_black / 100) / count_acc_black);
+					fill_acc_in_attr_containers_in_yes_socks(&attr_st, susp, acc_black, count_acc_black);
 				}
 
 				acc = 0;
@@ -166,7 +166,7 @@ void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp,
 			count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation); // Get next count of...
 			fen_string = cr.ForsythPublish();  // Get FEN string of new position
 			get_attr_set(fen_string.c_str(), &attr_st); // Get attributes of new position
-			attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_sets); // Get flag of attr_set
+			attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
 			
 			count_of_mv = 0;
 		}
@@ -233,7 +233,7 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 		printf("Analyse game %d, ", count_of_games);
 		count_moves = get_count_of_moves_total(&gm);
 		printf("total moves = %d, ", count_moves);
-		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_sets);
+		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves);
 		time(&time_curr);
 		printf("time: %fs\n", difftime(time_curr, time_start));
 		print_susp_std(susp);
@@ -342,14 +342,14 @@ int get_accuracy_of_move(thc::Move* mv, engine_line* line, int count_of_lines) {
 	std::string str = mv->TerseOut();
 	for (int i = 0; i < count_of_lines; i++) {
 		if (strcmp(line[i].move, str.c_str()) == 0) {
-			return 100 / (1 << i);
+			return ACC_MULTI / (1 << i);
 		}
 	}
 
 	return 0;
 }
 
-void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait* susp, float accuracy) {
+void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait* susp, int accuracy, int count_of_moves) {
 	int vectr[5][2];
 
 	vectr[0][0] = attr_st->count_P; vectr[0][1] = EMPTY_P;
@@ -367,10 +367,10 @@ void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait
 						if (susp->attr_acc.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] == POSITION_ATTR_NO) {
 							susp->attr_acc.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] = 0;
 						}
-						susp->attr_acc.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] += (int)(accuracy * ACC_MULTI);
+						susp->attr_acc.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] += accuracy;
 
 				        // Increment count of eqivalent accuracies
-						susp->attr_count.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]]++;
+						susp->attr_count.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] += count_of_moves;
 					}
 				}
 			}
@@ -378,7 +378,7 @@ void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait
 	}
 }
 
-void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait* susp, float accuracy) {
+void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait* susp, int accuracy, int count_of_moves) {
 	int vectr[5][2];
 
 	vectr[0][0] = attr_st->count_P; vectr[0][1] = EMPTY_P;
@@ -396,10 +396,10 @@ void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrai
 						if (susp->attr_acc.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] == POSITION_ATTR_YES) {
 							susp->attr_acc.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] = 0;
 						}
-						susp->attr_acc.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] += (int)(accuracy * ACC_MULTI);
+						susp->attr_acc.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] += accuracy;
 
 						// Increment count of eqivalent accuracies
-						susp->attr_count.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]]++;
+						susp->attr_count.cont.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] += count_of_moves;
 					}
 				}
 			}

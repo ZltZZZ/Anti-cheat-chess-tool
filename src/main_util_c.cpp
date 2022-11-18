@@ -83,10 +83,10 @@ int main()
     suspect_portrait player;
     suspect_portrait same_rating;
     char db_path[] = "lichess_db_standard_rated_2013-05(1).pgn";
-    char name[] = "URIAHURIAH";
+    char name[] = "all_for_science";
     time_t time_start, time_curr;
 
-    set_parser_params(&prsr, 1600, 1800, EVENT_BLITZ, name, db_path, 10, 10);
+    set_parser_params(&prsr, 1700, 1900, EVENT_BLITZ, name, db_path, 150, 80);
     init_engine_struct(&engn, L"D:\\VUZAKA\\case\\Programm\\stockfish_15_win_x64_popcnt\\stockfish_15_x64_popcnt.exe");
     init_suspect_portrait(&player, &prsr);
     init_suspect_portrait(&same_rating, &prsr);

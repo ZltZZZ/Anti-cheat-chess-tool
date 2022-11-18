@@ -40,7 +40,7 @@ char* get_next_move_from_notation(char* notation, char* move_buff);
 void do_analize_glob_player(parser*, engine*, suspect_portrait*);
 
 /* Ananlizes all games that without name filter (analyze ONLY positions, that player played. */
-void do_analize_glob_no_name(parser*, engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_sets);
+void do_analize_glob_no_name(parser*, engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_moves);
 
 /* Ananlizes all games that without name filter (with full analize of game). */
 void do_analize_glob(parser*, engine*, suspect_portrait*);
@@ -55,10 +55,10 @@ int get_accuracy_of_move(thc::Move*, engine_line*, int count_of_lines);
 int get_count_of_moves_to_next_merge(char* notation);
 
 /* Fill accuracy of move in all sets of attr of suspect.*/
-void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait*, float accuracy);
+void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait*, int accuracy, int count_of_moves);
 
 /* Fill accuracy of move in all sets of attr of suspect, that marked as POSITION_ATTR_YES.*/
-void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait*, float accuracy);
+void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait*, int accuracy, int count_of_moves);
 
 /* Calculate all accuracies that was as int in susp. */
 void calc_acc_suspect(suspect_portrait*);
