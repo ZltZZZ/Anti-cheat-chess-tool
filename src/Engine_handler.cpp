@@ -7,6 +7,10 @@ void init_engine_struct(engine* engn, LPCWSTR path_to_engine) {
 	engn->pipe_in_w = NULL;
 	engn->pipe_out_r = NULL;
 	engn->state = NOT_LOADED;
+	engn->cpu = OPTION_THREAD_DEF;
+	engn->hash = OPTION_HASH_DEF;
+	engn->multi_pv = OPTION_MULTI_PV_DEF;
+	engn->move_time = MOVE_TIME_DEFUALT;
 }
 
 engine_error engine_load(engine* engn) {

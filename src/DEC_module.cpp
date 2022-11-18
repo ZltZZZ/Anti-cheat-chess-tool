@@ -180,7 +180,7 @@ void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp) 
 	int count_of_games = 0;
 	time_t time_start, time_curr;
 	FILE* file = NULL;
-	fopen_s(&file, "1.txt", "w");
+	fopen_s(&file, "suspect_analyse.txt", "w");
 
 	open_database(prsr);
 	init_attr_cont(&susp->attr_acc);
@@ -215,7 +215,7 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 	time_t time_start, time_curr;
 	int count_moves = 0;
 	FILE* file = NULL;
-	fopen_s(&file, "2.txt", "w");
+	fopen_s(&file, "DB_analyse.txt", "w");
 
 	// Empty name filter of parser.
 	memcpy(name_cpy, prsr->fiter.name, sizeof(char) * MAX_NAME_SIZE);
@@ -236,7 +236,7 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves);
 		time(&time_curr);
 		printf("time: %fs\n", difftime(time_curr, time_start));
-		print_susp_std(susp);
+		print_susp_std_count(susp);
 	}
 
 	calc_acc_suspect(susp);
@@ -444,6 +444,24 @@ void print_susp_std(suspect_portrait* susp) {
 	}
 }
 
+void print_susp_std_count(suspect_portrait* susp) {
+	for (int p = 0; p < MAX_P - 1; p++) {
+		for (int n = 0; n < MAX_N - 1; n++) {
+			for (int b = 0; b < MAX_B - 1; b++) {
+				for (int r = 0; r < MAX_R - 1; r++) {
+					for (int q = 0; q < MAX_Q - 1; q++) {
+						if (susp->attr_acc.cont.int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
+							printf("{%d_p, %d_n, %d_b, %d_r, %d_q}: count = %d\n",
+								p, n, b, r, q,
+								susp->attr_count.cont.int_cont[p][n][b][r][q]);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 void print_susp_file(suspect_portrait* susp, FILE* file) {
 	for (int p = 0; p < MAX_P; p++) {
 		for (int n = 0; n < MAX_N; n++) {
@@ -491,7 +509,6 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 		}
 	}
 }
-
 
 int get_count_of_moves_total(game* gm) {
 	int len = strlen(gm->moves);
