@@ -1,11 +1,11 @@
 #include "DataBase_parser.h"
 
-void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char* name, char* path_to_db, int max_count_of_sets, int max_count_of_games) {
+void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char* name, char* path_to_db, int max_count_of_moves, int max_count_of_games) {
 	prsr->fiter.elo_min = min_elo;
 	prsr->fiter.elo_max = max_elo;
 	prsr->fiter.evnt = evnt;
 	prsr->fiter.max_count_of_games = max_count_of_games;
-	prsr->fiter.max_count_of_sets = max_count_of_sets;
+	prsr->fiter.max_count_of_moves = max_count_of_moves;
 	if (name != NULL) {
 		memcpy(prsr->fiter.name, name, sizeof(char) * MAX_NAME_SIZE);
 	}
@@ -163,7 +163,7 @@ bool check_filter(parser* prsr, game* gm) {
 		avrg_elo = (float)(gm->elo_black + gm->elo_white) / 2;
 	}
 
-	if (prsr->fiter.elo_max != NO_RATING && (avrg_elo == NO_RATING || avrg_elo < prsr->fiter.elo_min || avrg_elo > prsr->fiter.elo_max)){
+	if (prsr->fiter.name[0] == '\0' && prsr->fiter.elo_max != NO_RATING && (avrg_elo == NO_RATING || avrg_elo < prsr->fiter.elo_min || avrg_elo > prsr->fiter.elo_max)) {
 		return false;
 	}
 	if (prsr->fiter.evnt != EVENT_UNDEFINED && prsr->fiter.evnt != gm->evnt) {

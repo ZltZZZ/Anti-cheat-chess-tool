@@ -59,8 +59,8 @@ void copy_attr_set(attr_set* set_dst, attr_set* set_src);
 /* Returns TRUE, if attr_set is in attr_cont. Overwise returns FALSE. */
 bool is_attr_set_in_attr_cont(attr_set*, attr_container*);
 
-/* Returns TRUE is count of attr_set in attr_cont less or equal, than max_count_of_sets. Overwise FALSE.*/
-bool is_attr_set_count_pass_filter(attr_set*, attr_container*, int max_count_of_sets);
+/* Returns TRUE is count of attr_set in attr_cont less or equal, than max_count_of_moves. Overwise FALSE.*/
+bool is_attr_set_count_pass_filter(attr_set*, attr_container*, int max_count_of_moves);
 
 /* Make move on board. */
 void make_move(thc::ChessRules*, char* move);

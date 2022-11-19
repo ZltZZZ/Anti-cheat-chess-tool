@@ -81,8 +81,8 @@ bool is_attr_set_in_attr_cont(attr_set* attr_st, attr_container* attr_cont) {
     }
 }
 
-bool is_attr_set_count_pass_filter(attr_set* attr_st, attr_container* attr_cont, int max_count_of_sets) {
-    if (attr_cont->cont.int_cont[attr_st->count_P][attr_st->count_N][attr_st->count_B][attr_st->count_R][attr_st->count_Q] < max_count_of_sets) {
+bool is_attr_set_count_pass_filter(attr_set* attr_st, attr_container* attr_cont, int max_count_of_moves) {
+    if (attr_cont->cont.int_cont[attr_st->count_P][attr_st->count_N][attr_st->count_B][attr_st->count_R][attr_st->count_Q] < max_count_of_moves) {
         return true;
     }
     else {

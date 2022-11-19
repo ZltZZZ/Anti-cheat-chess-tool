@@ -2,8 +2,8 @@
 
 #define OPTION_MULTI_PV_DEF 4 // Default count of lines to analysis
 #define MOVE_TIME_DEFUALT 1 // Default time of analysing
-#define OPTION_HASH_DEF 3072
-#define OPTION_THREAD_DEF 4
+#define OPTION_HASH_DEF 1012
+#define OPTION_THREAD_DEF 2
 #define MAX_MOVE_SIZE 10
 #define MAX_WORD_SIZE 100
 
@@ -48,6 +48,10 @@ typedef struct _engine
 	HANDLE pipe_in_w;               // Used by app to send msg to engine
 	HANDLE pipe_out_r;              // Used by app to recieve msg from engine
 	enum _engine_state state;       // Current state of engine (working or not and so on)
+	int cpu;
+	int multi_pv;
+	int hash;
+	int move_time;
 } engine;
 
 typedef struct _engine_line {
