@@ -1,0 +1,13 @@
+Path to db: D:\VUZAKA\case\Programm\main_util_c\main_util_c\lichess_db_standard_rated_2013-05(1).pgn
+Name/nick-name of player (suspect): all_for_science
+Path to engine: D:\VUZAKA\case\Programm\stockfish_15_win_x64_popcnt\stockfish_15_x64_popcnt.exe
+Engine: Count of CPU threads: 2
+Engine: Count of lines: 0
+Engine: Hash size: 0 MB
+Engine: Move time: 0 sec
+Search (filter): Type of games: Blitz
+Search (filter): Min rating: 3
+Search(filter): Max rating:  3
+Search(filter): Max count of moves: 0
+Search(filter): Max count of games: 0
+
