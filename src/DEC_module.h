@@ -70,5 +70,7 @@ void print_susp_file(suspect_portrait* susp, FILE* file);
 
 void print_susp_std_count(suspect_portrait* susp);
 
+void print_info_file(FILE* file, parser* prsr, engine* engn);
+
 int get_count_of_moves_total(game* gm);
 

@@ -122,25 +122,25 @@ int main()
 
     printf("\nEngine: Enter count of CPU threads (2 or 4 or 6 or 8...). Type \"def\" to use default value(2) :\n");
     get_input(command, MAX_NAME_SIZE);
-    if (strstr(command, "def") != 0) {
+    if (strstr(command, "def") == NULL) {
         engn.cpu = atoi(command);
     }
 
     printf("\nEngine: Enter max count of lines to analyse (1 or 2 or 3 or 4). Type \"def\" to use default value(4) :\n");
     get_input(command, MAX_NAME_SIZE);
-    if (strstr(command, "def") != 0) {
+    if (strstr(command, "def") == NULL) {
         engn.multi_pv = atoi(command);
     }
 
     printf("\nEngine: Enter hash size (MB). Type \"def\" to use default value(1012) :\n");
     get_input(command, MAX_NAME_SIZE);
-    if (strstr(command, "def") != 0) {
+    if (strstr(command, "def") == NULL) {
         engn.hash = atoi(command);
     }
 
     printf("\nEngine: move time in sec. (how many sec engine will think for 1 move). Type \"def\" to use default value(1) :\n");
     get_input(command, MAX_NAME_SIZE);
-    if (strstr(command, "def") != 0) {
+    if (strstr(command, "def") == NULL) {
         engn.move_time = atoi(command);
     }
 

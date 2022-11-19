@@ -180,22 +180,20 @@ void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp) 
 	int count_of_games = 0;
 	time_t time_start, time_curr;
 	FILE* file = NULL;
-	fopen_s(&file, "suspect_analyse.txt", "w");
+	fopen_s(&file, "Suspect_analyse.txt", "w");
+	print_info_file(file, prsr, engn);
 
 	open_database(prsr);
 	init_attr_cont(&susp->attr_acc);
 	zero_attr_cont(&susp->attr_count);
 
-	while (get_next_game(prsr, &gm) != DB_EOF)
+	while (count_of_games < prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF)
 	{
 		time(&time_start);
 		time(&time_curr);
 		printf("Analyse game %d ", count_of_games + 1);
 		analize_game_player(&gm, engn, susp, prsr->fiter.name);
 		count_of_games++;
-		if (count_of_games >= prsr->fiter.max_count_of_games) {
-			break;
-		}
 		time(&time_curr);
 		printf("time: %fs\n", difftime(time_curr, time_start));
 	}
@@ -216,6 +214,7 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 	int count_moves = 0;
 	FILE* file = NULL;
 	fopen_s(&file, "DB_analyse.txt", "w");
+	print_info_file(file, prsr, engn);
 
 	// Empty name filter of parser.
 	memcpy(name_cpy, prsr->fiter.name, sizeof(char) * MAX_NAME_SIZE);
@@ -508,6 +507,34 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 			}
 		}
 	}
+}
+
+void print_info_file(FILE* file, parser* prsr, engine* engn) {
+	fprintf(file, "Path to db: %s\n"
+		"Name/nick-name of player (suspect): %s\n"
+		"Path to engine: %ls\n"
+		"Engine: Count of CPU threads: %d\n"
+		"Engine: Count of lines: %d\n"
+		"Engine: Hash size: %d MB\n"
+		"Engine: Move time: %d sec\n",
+		prsr->db.path_to_db,
+		prsr->fiter.name,
+		engn->path_to_engine,
+		engn->cpu,
+		engn->multi_pv,
+		engn->hash,
+		engn->move_time);
+	if (prsr->fiter.evnt == EVENT_BLITZ) fprintf(file, "Search (filter): Type of games: Blitz\n");
+	else if (prsr->fiter.evnt == EVENT_BULLET) fprintf(file, "Search (filter): Type of games: Bullet\n");
+	else if (prsr->fiter.evnt == EVENT_CLASSIC) fprintf(file, "Search (filter): Type of games: Classical\n");
+	fprintf(file, "Search (filter): Min rating: %d\n"
+		"Search(filter): Max rating: % d\n"
+		"Search(filter): Max count of moves: %d\n"
+		"Search(filter): Max count of games: %d\n\n",
+		prsr->fiter.elo_min,
+		prsr->fiter.elo_min,
+		prsr->fiter.max_count_of_moves,
+		prsr->fiter.max_count_of_games);
 }
 
 int get_count_of_moves_total(game* gm) {
