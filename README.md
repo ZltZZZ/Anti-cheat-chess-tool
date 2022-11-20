@@ -11,6 +11,7 @@ Name of suspect, paths to database an engine and other options (see /example fol
 Sets of attributes with average accuracy and count of moves for that set (see /example folder).
 
 ## Limitations and remarks
+0) OS: Windows; Language: English; Programming language: C/C++.
 1) First of all, the tool in its current form (console application) does not have additional tools for analyzing the information received, which means **it cannot automatically determine whether a cheater is or not**. Later, a graphical interface will be added, which will provide filters, ranks of information for effective analysis.
 2) The variant tree (debut tree) is not implemented in the analyzer, which means that the accuracy is calculated even for the debut stage. This will be fixed later.
 3) It is highly recommended _**not to use databases larger than 1 Gigabyte**_, since for independent analysis with a computer capacity of up to 4 - 5 cores, a database of up to 1 Gigabyte will suffice.
