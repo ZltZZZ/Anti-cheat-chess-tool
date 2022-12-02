@@ -11,7 +11,7 @@
 
 #include <iostream> 
 #include <fstream> 
-#include <string>
+#include <string.h>
 #include <time.h>
 
 /* Event. It is blitz, classic, bullet and other. */
