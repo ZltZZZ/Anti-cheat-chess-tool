@@ -20,19 +20,16 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>32</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menufile">
-    <property name="tearOffEnabled">
-     <bool>false</bool>
-    </property>
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen_analisis"/>
-    <addaction name="actionNew_analisis"/>
-    <addaction name="actionSave_analisis"/>
+    <addaction name="actionNew_analysis"/>
+    <addaction name="actionOpen_analysis"/>
+    <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -46,24 +43,24 @@
      <string>Filter</string>
     </property>
    </widget>
-   <addaction name="menufile"/>
+   <addaction name="menuFile"/>
    <addaction name="menuOptions"/>
    <addaction name="menuFilter"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionOpen_analisis">
+  <action name="actionNew_analysis">
    <property name="text">
-    <string>Open analisis</string>
+    <string>New analysis</string>
    </property>
   </action>
-  <action name="actionNew_analisis">
+  <action name="actionOpen_analysis">
    <property name="text">
-    <string>New analisis</string>
+    <string>Open analysis</string>
    </property>
   </action>
-  <action name="actionSave_analisis">
+  <action name="actionSave">
    <property name="text">
-    <string>Save analisis</string>
+    <string>Save</string>
    </property>
   </action>
   <action name="actionQuit">
