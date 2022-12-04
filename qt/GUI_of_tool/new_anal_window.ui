@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>New_anal_window</class>
+ <widget class="QDialog" name="New_anal_window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>801</width>
+    <height>601</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QGroupBox" name="Analysis_params_box">
+     <property name="title">
+      <string>Analysis parameters</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QGroupBox" name="Database_params_box">
+        <property name="title">
+         <string>Database parameters</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Path to database (.pgn)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="pathDB"/>
+           </item>
+           <item>
+            <widget class="QToolButton" name="toolButton">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Name of suspect</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="nameSusp"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Type of games</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="bullet">
+             <property name="text">
+              <string>Bullet</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">TypeOfGamesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="blitz">
+             <property name="text">
+              <string>Blitz</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">TypeOfGamesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="classic">
+             <property name="text">
+              <string>Classic</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">TypeOfGamesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Min rating</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="minRDontUse">
+             <property name="text">
+              <string>don't use</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">MinRButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="minRUse">
+             <property name="text">
+              <string>use</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">MinRButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="minR">
+             <property name="focusPolicy">
+              <enum>Qt::StrongFocus</enum>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(240, 240, 240);</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="clearButtonEnabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Max rating</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="maxRDontUse">
+             <property name="text">
+              <string>don't use</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">MaxRButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="maxRUse">
+             <property name="text">
+              <string>use</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">MaxRButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="maxR">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(240, 240, 240);</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>Max count of moves (for each set of attributes)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="countMovesDontUse">
+             <property name="text">
+              <string>don't use</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">CountMovesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="countMovesUse">
+             <property name="text">
+              <string>use</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">CountMovesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="countMoves">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(240, 240, 240);</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>Max count of suspect's games</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="countGamesDontUse">
+             <property name="text">
+              <string>don't use</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">CountGamesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="countGamesUse">
+             <property name="text">
+              <string>use</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">CountGamesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="countGames">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(240, 240, 240);</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Engine parameters</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Path to engine</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="pathEngine"/>
+           </item>
+           <item>
+            <widget class="QToolButton" name="toolButton_2">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>Count of CPU threads</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="countCPUDef">
+             <property name="text">
+              <string>default (1)</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">CountCpuButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="countCPUCustom">
+             <property name="text">
+              <string>custom</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">CountCpuButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="countCpu">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(240, 240, 240);</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Count of lines to analyse</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="countLinesDef">
+             <property name="text">
+              <string>default (4)</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">CountLinesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="countLinesCustom">
+             <property name="text">
+              <string>custom</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">CountLinesButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="countLines">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(240, 240, 240);</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Hash size (MB)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="hashSizeDef">
+             <property name="text">
+              <string>default (32 MB)</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">HashSizeButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="hashSizeCustom">
+             <property name="text">
+              <string>custom</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">HashSizeButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="hashSize">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(240, 240, 240);</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <item>
+            <widget class="QLabel" name="label_12">
+             <property name="text">
+              <string>Move time (sec)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="moveTimeDef">
+             <property name="text">
+              <string>default (1 sec)</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">MoveTimeButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="moveTimeCustom">
+             <property name="text">
+              <string>custom</string>
+             </property>
+             <attribute name="buttonGroup">
+              <string notr="true">MoveTimeButtBox</string>
+             </attribute>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="moveTime">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(240, 240, 240);</string>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_13">
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Start analysis</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="OrdinaryButtBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>OrdinaryButtBox</sender>
+   <signal>accepted()</signal>
+   <receiver>New_anal_window</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>229</x>
+     <y>529</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>OrdinaryButtBox</sender>
+   <signal>rejected()</signal>
+   <receiver>New_anal_window</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>297</x>
+     <y>535</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>minRDontUse</sender>
+   <signal>clicked()</signal>
+   <receiver>minR</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>171</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>279</x>
+     <y>176</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>maxRDontUse</sender>
+   <signal>clicked()</signal>
+   <receiver>maxR</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>202</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>273</x>
+     <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>countMovesDontUse</sender>
+   <signal>clicked()</signal>
+   <receiver>countMoves</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>418</x>
+     <y>232</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>511</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>countGamesDontUse</sender>
+   <signal>clicked()</signal>
+   <receiver>countGames</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>296</x>
+     <y>259</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>258</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>countCPUDef</sender>
+   <signal>clicked()</signal>
+   <receiver>countCpu</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>254</x>
+     <y>373</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>388</x>
+     <y>372</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>countLinesDef</sender>
+   <signal>clicked()</signal>
+   <receiver>countLines</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>267</x>
+     <y>399</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>395</x>
+     <y>400</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>hashSizeDef</sender>
+   <signal>clicked()</signal>
+   <receiver>hashSize</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>255</x>
+     <y>433</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>434</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>moveTimeDef</sender>
+   <signal>clicked()</signal>
+   <receiver>moveTime</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>234</x>
+     <y>469</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>369</x>
+     <y>469</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <buttongroups>
+  <buttongroup name="TypeOfGamesButtBox">
+   <property name="exclusive">
+    <bool>true</bool>
+   </property>
+  </buttongroup>
+  <buttongroup name="MinRButtBox"/>
+  <buttongroup name="MaxRButtBox"/>
+  <buttongroup name="CountMovesButtBox"/>
+  <buttongroup name="CountGamesButtBox"/>
+  <buttongroup name="CountCpuButtBox"/>
+  <buttongroup name="CountLinesButtBox"/>
+  <buttongroup name="HashSizeButtBox"/>
+  <buttongroup name="MoveTimeButtBox"/>
+ </buttongroups>
+</ui>

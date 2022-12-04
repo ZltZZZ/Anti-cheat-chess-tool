@@ -1,0 +1,11 @@
+debug/thc.o
+debug/Chessboard_handler.o
+debug/DEC_module.o
+debug/Database_parser.o
+debug/Engine_handler.o
+debug/Process_handler.o
+debug/main.o
+debug/mainwindow.o
+debug/new_anal_window.o
+debug/moc_mainwindow.o
+debug/moc_new_anal_window.o
