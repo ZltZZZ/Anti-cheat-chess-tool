@@ -25,6 +25,12 @@ void MainWindow::on_actionNew_analysisi_triggered()
 {
     New_anal_window wind;
     wind.setModal(true);
+    wind.setWindowTitle("New analysis parameters");
+    wind.main_w_ptr = this;
     wind.exec();
+}
+
+void MainWindow::start_analyze(){
+
 }
 

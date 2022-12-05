@@ -93,8 +93,8 @@ public:
     QRadioButton *moveTimeCustom;
     QLineEdit *moveTime;
     QHBoxLayout *horizontalLayout_13;
-    QPushButton *pushButton_2;
-    QPushButton *pushButton;
+    QPushButton *StartAnalButt;
+    QPushButton *CanselButt;
     QDialogButtonBox *OrdinaryButtBox;
     QButtonGroup *TypeOfGamesButtBox;
     QButtonGroup *MinRButtBox;
@@ -130,6 +130,7 @@ public:
 
         pathDB = new QLineEdit(Database_params_box);
         pathDB->setObjectName("pathDB");
+        pathDB->setMaxLength(256);
 
         horizontalLayout->addWidget(pathDB);
 
@@ -150,6 +151,8 @@ public:
 
         nameSusp = new QLineEdit(Database_params_box);
         nameSusp->setObjectName("nameSusp");
+        nameSusp->setMaxLength(61);
+        nameSusp->setCursorMoveStyle(Qt::LogicalMoveStyle);
 
         horizontalLayout_2->addWidget(nameSusp);
 
@@ -248,6 +251,7 @@ public:
         maxR->setObjectName("maxR");
         maxR->setStyleSheet(QString::fromUtf8("background-color: rgb(240, 240, 240);"));
         maxR->setReadOnly(true);
+        maxR->setCursorMoveStyle(Qt::LogicalMoveStyle);
 
         horizontalLayout_5->addWidget(maxR);
 
@@ -334,6 +338,7 @@ public:
 
         pathEngine = new QLineEdit(groupBox);
         pathEngine->setObjectName("pathEngine");
+        pathEngine->setMaxLength(256);
 
         horizontalLayout_8->addWidget(pathEngine);
 
@@ -486,15 +491,15 @@ public:
 
         horizontalLayout_13 = new QHBoxLayout();
         horizontalLayout_13->setObjectName("horizontalLayout_13");
-        pushButton_2 = new QPushButton(New_anal_window);
-        pushButton_2->setObjectName("pushButton_2");
+        StartAnalButt = new QPushButton(New_anal_window);
+        StartAnalButt->setObjectName("StartAnalButt");
 
-        horizontalLayout_13->addWidget(pushButton_2);
+        horizontalLayout_13->addWidget(StartAnalButt);
 
-        pushButton = new QPushButton(New_anal_window);
-        pushButton->setObjectName("pushButton");
+        CanselButt = new QPushButton(New_anal_window);
+        CanselButt->setObjectName("CanselButt");
 
-        horizontalLayout_13->addWidget(pushButton);
+        horizontalLayout_13->addWidget(CanselButt);
 
 
         verticalLayout_2->addLayout(horizontalLayout_13);
@@ -517,6 +522,7 @@ public:
         QObject::connect(countLinesDef, &QRadioButton::clicked, countLines, qOverload<>(&QLineEdit::clear));
         QObject::connect(hashSizeDef, &QRadioButton::clicked, hashSize, qOverload<>(&QLineEdit::clear));
         QObject::connect(moveTimeDef, &QRadioButton::clicked, moveTime, qOverload<>(&QLineEdit::clear));
+        QObject::connect(CanselButt, &QPushButton::clicked, New_anal_window, qOverload<>(&QDialog::close));
 
         QMetaObject::connectSlotsByName(New_anal_window);
     } // setupUi
@@ -536,32 +542,40 @@ public:
         label_5->setText(QCoreApplication::translate("New_anal_window", "Min rating", nullptr));
         minRDontUse->setText(QCoreApplication::translate("New_anal_window", "don't use", nullptr));
         minRUse->setText(QCoreApplication::translate("New_anal_window", "use", nullptr));
+        minR->setInputMask(QString());
         label_6->setText(QCoreApplication::translate("New_anal_window", "Max rating", nullptr));
         maxRDontUse->setText(QCoreApplication::translate("New_anal_window", "don't use", nullptr));
         maxRUse->setText(QCoreApplication::translate("New_anal_window", "use", nullptr));
+        maxR->setInputMask(QString());
         label_7->setText(QCoreApplication::translate("New_anal_window", "Max count of moves (for each set of attributes)", nullptr));
-        countMovesDontUse->setText(QCoreApplication::translate("New_anal_window", "don't use", nullptr));
+        countMovesDontUse->setText(QCoreApplication::translate("New_anal_window", "don't use (not recommended)", nullptr));
         countMovesUse->setText(QCoreApplication::translate("New_anal_window", "use", nullptr));
+        countMoves->setInputMask(QString());
         label_8->setText(QCoreApplication::translate("New_anal_window", "Max count of suspect's games", nullptr));
-        countGamesDontUse->setText(QCoreApplication::translate("New_anal_window", "don't use", nullptr));
+        countGamesDontUse->setText(QCoreApplication::translate("New_anal_window", "don't use (not recommended)", nullptr));
         countGamesUse->setText(QCoreApplication::translate("New_anal_window", "use", nullptr));
+        countGames->setInputMask(QString());
         groupBox->setTitle(QCoreApplication::translate("New_anal_window", "Engine parameters", nullptr));
         label_2->setText(QCoreApplication::translate("New_anal_window", "Path to engine", nullptr));
         toolButton_2->setText(QCoreApplication::translate("New_anal_window", "...", nullptr));
         label_9->setText(QCoreApplication::translate("New_anal_window", "Count of CPU threads", nullptr));
         countCPUDef->setText(QCoreApplication::translate("New_anal_window", "default (1)", nullptr));
         countCPUCustom->setText(QCoreApplication::translate("New_anal_window", "custom", nullptr));
+        countCpu->setInputMask(QString());
         label_10->setText(QCoreApplication::translate("New_anal_window", "Count of lines to analyse", nullptr));
         countLinesDef->setText(QCoreApplication::translate("New_anal_window", "default (4)", nullptr));
         countLinesCustom->setText(QCoreApplication::translate("New_anal_window", "custom", nullptr));
+        countLines->setInputMask(QString());
         label_11->setText(QCoreApplication::translate("New_anal_window", "Hash size (MB)", nullptr));
         hashSizeDef->setText(QCoreApplication::translate("New_anal_window", "default (32 MB)", nullptr));
         hashSizeCustom->setText(QCoreApplication::translate("New_anal_window", "custom", nullptr));
+        hashSize->setInputMask(QString());
         label_12->setText(QCoreApplication::translate("New_anal_window", "Move time (sec)", nullptr));
         moveTimeDef->setText(QCoreApplication::translate("New_anal_window", "default (1 sec)", nullptr));
         moveTimeCustom->setText(QCoreApplication::translate("New_anal_window", "custom", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("New_anal_window", "Start analysis", nullptr));
-        pushButton->setText(QCoreApplication::translate("New_anal_window", "Cancel", nullptr));
+        moveTime->setInputMask(QString());
+        StartAnalButt->setText(QCoreApplication::translate("New_anal_window", "Start analysis", nullptr));
+        CanselButt->setText(QCoreApplication::translate("New_anal_window", "Cancel", nullptr));
     } // retranslateUi
 
 };

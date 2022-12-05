@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "../../src/DEC_module.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -14,11 +15,18 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    engine engn;
+    parser prsr;
+    suspect_portrait player;
+    suspect_portrait same_rating;
 
 private slots:
     void on_actionQuit_triggered();
 
     void on_actionNew_analysisi_triggered();
+
+public slots:
+    void start_analyze();
 
 private:
     Ui::MainWindow *ui;
