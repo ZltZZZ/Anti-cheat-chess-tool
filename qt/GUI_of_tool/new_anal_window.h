@@ -58,6 +58,12 @@ private slots:
 
     void on_StartAnalButt_clicked();
 
+public slots:
+
+    void closeW();
+
+signals:
+
     void new_analysis_initialization_finished();
 
 private:

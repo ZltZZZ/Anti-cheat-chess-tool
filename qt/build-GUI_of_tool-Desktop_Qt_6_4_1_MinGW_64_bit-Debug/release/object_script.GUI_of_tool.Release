@@ -4,8 +4,10 @@ release/DEC_module.o
 release/Database_parser.o
 release/Engine_handler.o
 release/Process_handler.o
+release/analysislogwindow.o
 release/main.o
 release/mainwindow.o
 release/new_anal_window.o
+release/moc_analysislogwindow.o
 release/moc_mainwindow.o
 release/moc_new_anal_window.o

@@ -28,6 +28,10 @@ private slots:
 public slots:
     void start_analyze();
 
+signals:
+
+    void close_newAnalWindow();
+
 private:
     Ui::MainWindow *ui;
 };

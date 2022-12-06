@@ -73,7 +73,8 @@ int get_next_game(parser* prsr, game* gm) {
 			memset(prsr->db.buff, '\0', sizeof(char) * MAX_BUFF_SIZE);
 			fscanf_s(prsr->db.pgn_db, "%c", &c, 1); // Read empty string
 			// Go to next position
-			continue;
+            if (!feof(prsr->db.pgn_db))
+                continue;
 		}
 		else {
 			// Parse moves section. Delete comments, number of moves and so on.

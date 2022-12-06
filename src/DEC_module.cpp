@@ -226,16 +226,18 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 
 	while (get_next_game(prsr, &gm) != DB_EOF)
 	{
-		count_of_games++;
-		time(&time_start);
-		time(&time_curr);
-		printf("Analyse game %d, ", count_of_games);
-		count_moves = get_count_of_moves_total(&gm);
-		printf("total moves = %d, ", count_moves);
-		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves);
-		time(&time_curr);
-		printf("time: %fs\n", difftime(time_curr, time_start));
-		print_susp_std_count(susp);
+        if (strcmp(gm.name_black, name_cpy) != 0 && strcmp(gm.name_white, name_cpy) != 0){
+            count_of_games++;
+            time(&time_start);
+            time(&time_curr);
+            printf("Analyse game %d, ", count_of_games);
+            count_moves = get_count_of_moves_total(&gm);
+            printf("total moves = %d, ", count_moves);
+            analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves);
+            time(&time_curr);
+            printf("time: %fs\n", difftime(time_curr, time_start));
+            print_susp_std_count(susp);
+        }
 	}
 
 	calc_acc_suspect(susp);

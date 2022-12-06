@@ -11,7 +11,6 @@ New_anal_window::New_anal_window(QWidget *parent) :
     ui(new Ui::New_anal_window)
 {
     ui->setupUi(this);
-    connect(this, &New_anal_window::new_analysis_initialization_finished, this->main_w_ptr, &MainWindow::start_analyze);
 }
 
 New_anal_window::~New_anal_window()
@@ -182,10 +181,19 @@ bool New_anal_window::check_param_fields(){
         return false;
     }
     else{
+        FILE* testfile = NULL;
+
         if (engine_load(&this->main_w_ptr->engn) == ENGINE_LOAD_OK){
             engine_close(&this->main_w_ptr->engn);
         }else{
             QMessageBox::critical(this, "Error", "Incorrect engine.");
+            return false;
+        }
+
+        if (!fopen_s(&testfile, this->main_w_ptr->prsr.db.path_to_db, "r")){
+            close_database(&this->main_w_ptr->prsr);
+        }else{
+            QMessageBox::critical(this, "Error", "Incorrect database (.pgn) file.");
             return false;
         }
 
@@ -196,6 +204,7 @@ bool New_anal_window::check_param_fields(){
 void New_anal_window::on_StartAnalButt_clicked()
 {
     wchar_t* engn_path_w = NULL;
+    connect(this, &New_anal_window::new_analysis_initialization_finished, this->main_w_ptr, &MainWindow::start_analyze);
 
     /* Init engine struct. */
 
@@ -270,8 +279,9 @@ void New_anal_window::on_StartAnalButt_clicked()
     }
 }
 
-void New_anal_window::new_analysis_initialization_finished()
+void New_anal_window::closeW()
 {
-
+    close();
 }
+
 

@@ -15,6 +15,7 @@ SOURCES += \
     ../../src/Database_parser.cpp \
     ../../src/Engine_handler.cpp \
     ../../src/Process_handler.cpp \
+    analysislogwindow.cpp \
     main.cpp \
     mainwindow.cpp \
     new_anal_window.cpp
@@ -26,10 +27,12 @@ HEADERS += \
     ../../src/DataBase_parser.h \
     ../../src/Engine_handler.h \
     ../../src/Process_handler.h \
+    analysislogwindow.h \
     mainwindow.h \
     new_anal_window.h
 
 FORMS += \
+    analysislogwindow.ui \
     mainwindow.ui \
     new_anal_window.ui
 
