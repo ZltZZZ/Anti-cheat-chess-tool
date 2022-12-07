@@ -5,6 +5,8 @@
 #include "DataBase_parser.h"
 #include "Engine_handler.h"
 #include "Chessboard_handler.h"
+#include <QThread>
+#include "analysislogwindow.h"
 
 /* ------------This is a module that unite all handlers in one synchronized working machine----------------------
    -----------------------called "DEC" - Database-Engine-Chessboard module.-------------------------------------- */
@@ -20,6 +22,22 @@ typedef struct _suspect_portrait {
 	/* The count of attributes of each kind (used to calculate the average accuracy after analysis). */
 	attr_container attr_count;
 } suspect_portrait;
+
+class AnalysisHandler : public QThread
+{
+public:
+    explicit AnalysisHandler(QString threadName, parser* prsr, engine* engn, suspect_portrait* player, suspect_portrait* db, AnalysisLogWindow* logW);
+    ~AnalysisHandler();
+    void run();
+
+private:
+    QString name;
+    parser prsr;
+    engine engn;
+    suspect_portrait player;
+    suspect_portrait db;
+    AnalysisLogWindow* logW;
+};
 
 /* Init suspect portrait. */
 void init_suspect_portrait(suspect_portrait*, parser*);
@@ -37,16 +55,16 @@ void analize_game_player_no_name(game*, engine*, suspect_portrait*);
 char* get_next_move_from_notation(char* notation, char* move_buff);
 
 /* Ananlizes all games of choosed player. */
-void do_analize_glob_player(parser*, engine*, suspect_portrait*);
+void do_analize_glob_player(parser*, engine*, suspect_portrait*, AnalysisLogWindow* logW);
 
 /* Ananlizes all games that without name filter (analyze ONLY positions, that player played. */
-void do_analize_glob_no_name(parser*, engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_moves);
+int do_analize_glob_no_name(parser*, engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_moves, AnalysisLogWindow* logW);
 
 /* Ananlizes all games that without name filter (with full analize of game). */
-void do_analize_glob(parser*, engine*, suspect_portrait*);
+void do_analize_glob(parser*, engine*, suspect_portrait*, AnalysisLogWindow* logW);
 
 /* Main function, that calls from entry point. */
-void do_analize(parser*, engine*, suspect_portrait* susp_player, suspect_portrait* susp_no_name);
+void do_analize(parser*, engine*, suspect_portrait* susp_player, suspect_portrait* susp_no_name, AnalysisLogWindow* logW);
 
 /* Compare next move of ENGINE with next move of Player. Returns a number, that correspondes to number of line. */
 int get_accuracy_of_move(thc::Move*, engine_line*, int count_of_lines);

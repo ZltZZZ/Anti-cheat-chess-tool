@@ -42,6 +42,9 @@ void MainWindow::start_analyze(){
     logW->setWindowTitle("Analysis in progress");
     logW->setAttribute(Qt::WA_DeleteOnClose, true);
     logW->show();
+
+    this->alalysis = new AnalysisHandler("1", &this->prsr, &this->engn, &this->player, &this->same_rating, logW);
+    QThread::currentThread()->setPriority(QThread::LowestPriority);
+    this->alalysis->start(QThread::InheritPriority);
     //qDebug() << "Started!";
-    //do_analize(&this->prsr, &this->engn, &this->player, &this->same_rating);
 }

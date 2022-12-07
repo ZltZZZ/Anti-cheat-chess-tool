@@ -19,6 +19,7 @@ public:
     parser prsr;
     suspect_portrait player;
     suspect_portrait same_rating;
+    AnalysisHandler* alalysis;
 
 private slots:
     void on_actionQuit_triggered();

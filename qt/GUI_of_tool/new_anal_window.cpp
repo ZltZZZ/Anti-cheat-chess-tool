@@ -191,7 +191,7 @@ bool New_anal_window::check_param_fields(){
         }
 
         if (!fopen_s(&testfile, this->main_w_ptr->prsr.db.path_to_db, "r")){
-            close_database(&this->main_w_ptr->prsr);
+            fclose(testfile);
         }else{
             QMessageBox::critical(this, "Error", "Incorrect database (.pgn) file.");
             return false;

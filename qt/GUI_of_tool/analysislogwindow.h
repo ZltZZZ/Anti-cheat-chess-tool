@@ -14,8 +14,6 @@ class AnalysisLogWindow : public QDialog
 public:
     explicit AnalysisLogWindow(QWidget *parent = nullptr);
     ~AnalysisLogWindow();
-
-private:
     Ui::AnalysisLogWindow *ui;
 };
 

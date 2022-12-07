@@ -14,8 +14,11 @@
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QScrollArea>
+#include <QtWidgets/QScrollBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -28,6 +31,9 @@ public:
     QVBoxLayout *verticalLayout;
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
+    QHBoxLayout *horizontalLayout;
+    QPlainTextEdit *plainTextEdit;
+    QScrollBar *verticalScrollBar;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout;
     QVBoxLayout *verticalLayout_7;
@@ -47,10 +53,10 @@ public:
     {
         if (AnalysisLogWindow->objectName().isEmpty())
             AnalysisLogWindow->setObjectName("AnalysisLogWindow");
-        AnalysisLogWindow->resize(727, 555);
+        AnalysisLogWindow->resize(803, 555);
         groupBox = new QGroupBox(AnalysisLogWindow);
         groupBox->setObjectName("groupBox");
-        groupBox->setGeometry(QRect(440, 10, 271, 531));
+        groupBox->setGeometry(QRect(440, 10, 351, 531));
         verticalLayout = new QVBoxLayout(groupBox);
         verticalLayout->setObjectName("verticalLayout");
         scrollArea = new QScrollArea(groupBox);
@@ -58,7 +64,25 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 245, 485));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 325, 485));
+        horizontalLayout = new QHBoxLayout(scrollAreaWidgetContents);
+        horizontalLayout->setObjectName("horizontalLayout");
+        plainTextEdit = new QPlainTextEdit(scrollAreaWidgetContents);
+        plainTextEdit->setObjectName("plainTextEdit");
+        QFont font;
+        font.setFamilies({QString::fromUtf8("SimSun")});
+        font.setPointSize(7);
+        font.setBold(false);
+        plainTextEdit->setFont(font);
+
+        horizontalLayout->addWidget(plainTextEdit);
+
+        verticalScrollBar = new QScrollBar(scrollAreaWidgetContents);
+        verticalScrollBar->setObjectName("verticalScrollBar");
+        verticalScrollBar->setOrientation(Qt::Vertical);
+
+        horizontalLayout->addWidget(verticalScrollBar);
+
         scrollArea->setWidget(scrollAreaWidgetContents);
 
         verticalLayout->addWidget(scrollArea);
@@ -138,6 +162,8 @@ public:
     {
         AnalysisLogWindow->setWindowTitle(QCoreApplication::translate("AnalysisLogWindow", "Dialog", nullptr));
         groupBox->setTitle(QCoreApplication::translate("AnalysisLogWindow", "Log", nullptr));
+        plainTextEdit->setPlainText(QCoreApplication::translate("AnalysisLogWindow", "analysing player started!\n"
+"", nullptr));
         groupBox_2->setTitle(QCoreApplication::translate("AnalysisLogWindow", "GroupBox", nullptr));
         count_games_DB->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));
         count_games_susp->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));

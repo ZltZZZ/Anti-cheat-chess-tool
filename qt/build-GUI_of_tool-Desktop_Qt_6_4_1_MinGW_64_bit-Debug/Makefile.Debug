@@ -429,6 +429,13 @@ debug/moc_mainwindow.cpp: ../GUI_of_tool/mainwindow.h \
 		../../src/Process_handler.h \
 		../../src/Chessboard_handler.h \
 		../../lib/thc.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QThread \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../GUI_of_tool/analysislogwindow.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QDialog \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qdialog.h \
 		debug/moc_predefs.h \
 		../../../../QT/6.4.1/mingw_64/bin/moc.exe
 	D:\QT\6.4.1\mingw_64\bin\moc.exe $(DEFINES) --include D:/ChessToolQT/Anti-cheat-chess-tool/qt/build-GUI_of_tool-Desktop_Qt_6_4_1_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/QT/6.4.1/mingw_64/mkspecs/win32-g++ -ID:/ChessToolQT/Anti-cheat-chess-tool/qt/GUI_of_tool -ID:/QT/6.4.1/mingw_64/include -ID:/QT/6.4.1/mingw_64/include/QtWidgets -ID:/QT/6.4.1/mingw_64/include/QtGui -ID:/QT/6.4.1/mingw_64/include/QtCore -I. -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/QT/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\GUI_of_tool\mainwindow.h -o debug\moc_mainwindow.cpp
@@ -580,6 +587,11 @@ debug/moc_new_anal_window.cpp: ../GUI_of_tool/new_anal_window.h \
 		../../src/Process_handler.h \
 		../../src/Chessboard_handler.h \
 		../../lib/thc.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QThread \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../GUI_of_tool/analysislogwindow.h \
 		debug/moc_predefs.h \
 		../../../../QT/6.4.1/mingw_64/bin/moc.exe
 	D:\QT\6.4.1\mingw_64\bin\moc.exe $(DEFINES) --include D:/ChessToolQT/Anti-cheat-chess-tool/qt/build-GUI_of_tool-Desktop_Qt_6_4_1_MinGW_64_bit-Debug/debug/moc_predefs.h -ID:/QT/6.4.1/mingw_64/mkspecs/win32-g++ -ID:/ChessToolQT/Anti-cheat-chess-tool/qt/GUI_of_tool -ID:/QT/6.4.1/mingw_64/include -ID:/QT/6.4.1/mingw_64/include/QtWidgets -ID:/QT/6.4.1/mingw_64/include/QtGui -ID:/QT/6.4.1/mingw_64/include/QtCore -I. -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++ -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32 -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include -ID:/QT/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed -ID:/QT/Tools/mingw1120_64/x86_64-w64-mingw32/include ..\GUI_of_tool\new_anal_window.h -o debug\moc_new_anal_window.cpp
@@ -627,7 +639,148 @@ debug/DEC_module.o: ../../src/DEC_module.cpp ../../src/DEC_module.h \
 		../../src/Engine_handler.h \
 		../../src/Process_handler.h \
 		../../src/Chessboard_handler.h \
-		../../lib/thc.h
+		../../lib/thc.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QThread \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qobject.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qobjectdefs.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qnamespace.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qglobal.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qconfig-bootstrapped.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qconfig.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qtcore-config.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qtconfigmacros.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qtcoreexports.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qsystemdetection.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qprocessordetection.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcompilerdetection.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qtypeinfo.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcontainerfwd.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qsysinfo.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qlogging.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qflags.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcompare_impl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qatomic.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qbasicatomic.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qatomic_bootstrap.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qgenericatomic.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qatomic_cxx11.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qglobalstatic.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qnumeric.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qversiontagging.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qforeach.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qtmetamacros.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qobjectdefs_impl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstring.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qchar.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringview.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qbytearray.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qrefcount.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qarraydata.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qpair.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qarraydatapointer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qarraydataops.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcontainertools_impl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qbytearrayalgorithms.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qbytearrayview.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringfwd.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringliteral.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringalgorithms.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qanystringview.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qutf8stringview.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringtokenizer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringbuilder.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qlist.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qhashfunctions.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qiterator.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qbytearraylist.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringlist.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qalgorithms.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringmatcher.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcoreevent.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qscopedpointer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qmetatype.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcompare.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qscopeguard.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdatastream.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qiodevicebase.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qiterable.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qmetacontainer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcontainerinfo.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qtaggedpointer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qmath.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qobject_impl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qbindingstorage.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../GUI_of_tool/analysislogwindow.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QDialog \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qdialog.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qtwidgetsglobal.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qtguiglobal.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qtgui-config.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qtguiexports.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qtwidgets-config.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qtwidgetsexports.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qwidget.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qwindowdefs.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qwindowdefs_win.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qmargins.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qaction.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qkeysequence.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qicon.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qsize.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qpixmap.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qpaintdevice.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qrect.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qpoint.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qcolor.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qrgb.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qrgba64.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qsharedpointer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qshareddata.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qsharedpointer_impl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qimage.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qpixelformat.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qtransform.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qpolygon.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qregion.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qline.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qvariant.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdebug.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qtextstream.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qstringconverter_base.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcontiguouscache.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qmap.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qshareddata_impl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qset.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qhash.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qvarlengtharray.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qpalette.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qbrush.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qfont.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qfontmetrics.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qfontinfo.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qsizepolicy.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qcursor.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qbitmap.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qevent.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qiodevice.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qpointer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qurl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qeventpoint.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qvector2d.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qvectornd.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qpointingdevice.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qinputdevice.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qscreen.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QList \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QObject \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QRect \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QSize \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QSizeF \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/QTransform \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qnativeinterface.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\DEC_module.o ..\..\src\DEC_module.cpp
 
 debug/Database_parser.o: ../../src/Database_parser.cpp ../../src/DataBase_parser.h
@@ -777,7 +930,48 @@ debug/analysislogwindow.o: ../GUI_of_tool/analysislogwindow.cpp ../GUI_of_tool/a
 		../../../../QT/6.4.1/mingw_64/include/QtCore/QSizeF \
 		../../../../QT/6.4.1/mingw_64/include/QtGui/QTransform \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qnativeinterface.h \
-		ui_analysislogwindow.h
+		ui_analysislogwindow.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QVariant \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QApplication \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qapplication.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcoreapplication.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qeventloop.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qcoreapplication_platform.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qjnitypes.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qfuture.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qfutureinterface.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qmutex.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qtsan_impl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qresultstore.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qfuture_impl.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qthreadpool.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qrunnable.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qexception.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qpromise.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qguiapplication.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qinputmethod.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qlocale.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qguiapplication_platform.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QGridLayout \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qgridlayout.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qlayout.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qlayoutitem.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qboxlayout.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QGroupBox \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qgroupbox.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qframe.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QLabel \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qlabel.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qpicture.h \
+		../../../../QT/6.4.1/mingw_64/include/QtGui/qtextdocument.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QScrollArea \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qscrollarea.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qabstractscrollarea.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QVBoxLayout \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\analysislogwindow.o ..\GUI_of_tool\analysislogwindow.cpp
 
 debug/main.o: ../GUI_of_tool/main.cpp ../GUI_of_tool/mainwindow.h \
@@ -924,6 +1118,13 @@ debug/main.o: ../GUI_of_tool/main.cpp ../GUI_of_tool/mainwindow.h \
 		../../src/Process_handler.h \
 		../../src/Chessboard_handler.h \
 		../../lib/thc.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QThread \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../GUI_of_tool/analysislogwindow.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QDialog \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qdialog.h \
 		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QApplication \
 		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qapplication.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qcoreapplication.h \
@@ -937,9 +1138,6 @@ debug/main.o: ../GUI_of_tool/main.cpp ../GUI_of_tool/mainwindow.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qresultstore.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qfuture_impl.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qthreadpool.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qrunnable.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qexception.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qpromise.h \
@@ -1093,6 +1291,13 @@ debug/mainwindow.o: ../GUI_of_tool/mainwindow.cpp ../GUI_of_tool/mainwindow.h \
 		../../src/Process_handler.h \
 		../../src/Chessboard_handler.h \
 		../../lib/thc.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QThread \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../GUI_of_tool/analysislogwindow.h \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QDialog \
+		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qdialog.h \
 		ui_mainwindow.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/QVariant \
 		../../../../QT/6.4.1/mingw_64/include/QtGui/QAction \
@@ -1109,9 +1314,6 @@ debug/mainwindow.o: ../GUI_of_tool/mainwindow.cpp ../GUI_of_tool/mainwindow.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qresultstore.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qfuture_impl.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qthreadpool.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qrunnable.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qexception.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qpromise.h \
@@ -1126,10 +1328,7 @@ debug/mainwindow.o: ../GUI_of_tool/mainwindow.cpp ../GUI_of_tool/mainwindow.h \
 		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QStatusBar \
 		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qstatusbar.h \
 		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QWidget \
-		../GUI_of_tool/new_anal_window.h \
-		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QDialog \
-		../../../../QT/6.4.1/mingw_64/include/QtWidgets/qdialog.h \
-		../GUI_of_tool/analysislogwindow.h
+		../GUI_of_tool/new_anal_window.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o ..\GUI_of_tool\mainwindow.cpp
 
 debug/new_anal_window.o: ../GUI_of_tool/new_anal_window.cpp ../GUI_of_tool/new_anal_window.h \
@@ -1279,6 +1478,11 @@ debug/new_anal_window.o: ../GUI_of_tool/new_anal_window.cpp ../GUI_of_tool/new_a
 		../../src/Process_handler.h \
 		../../src/Chessboard_handler.h \
 		../../lib/thc.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/QThread \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
+		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
+		../GUI_of_tool/analysislogwindow.h \
 		ui_new_anal_window.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/QVariant \
 		../../../../QT/6.4.1/mingw_64/include/QtWidgets/QAbstractButton \
@@ -1296,9 +1500,6 @@ debug/new_anal_window.o: ../GUI_of_tool/new_anal_window.cpp ../GUI_of_tool/new_a
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qresultstore.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qfuture_impl.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qthreadpool.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qthread.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qdeadlinetimer.h \
-		../../../../QT/6.4.1/mingw_64/include/QtCore/qelapsedtimer.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qrunnable.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qexception.h \
 		../../../../QT/6.4.1/mingw_64/include/QtCore/qpromise.h \

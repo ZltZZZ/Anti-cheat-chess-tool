@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>727</width>
+    <width>803</width>
     <height>555</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <rect>
      <x>440</x>
      <y>10</y>
-     <width>271</width>
+     <width>351</width>
      <height>531</height>
     </rect>
    </property>
@@ -36,10 +36,34 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>245</width>
+         <width>325</width>
          <height>485</height>
         </rect>
        </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPlainTextEdit" name="plainTextEdit">
+          <property name="font">
+           <font>
+            <family>SimSun</family>
+            <pointsize>9</pointsize>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="plainText">
+           <string>analysing player started!
+</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QScrollBar" name="verticalScrollBar">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
