@@ -33,9 +33,22 @@ void MainWindow::on_actionNew_analysisi_triggered()
     wind->exec();
 }
 
-void MainWindow::start_analyze(){
+void MainWindow::start_analyze(parser* prsr, engine* engn, suspect_portrait* player, suspect_portrait* db){
     AnalysisLogWindow* logW = new AnalysisLogWindow;
-    //qDebug() << "Started!";
+    AnalysisHandler* anal;
+    parser* prsrCpy = (parser*)malloc(sizeof(parser));
+    engine* engnCpy = (engine*)malloc(sizeof(engine));
+    suspect_portrait* playerCpy = (suspect_portrait*)malloc(sizeof(suspect_portrait));
+    suspect_portrait* dbCpy = (suspect_portrait*)malloc(sizeof(suspect_portrait));
+
+    memcpy(prsrCpy, prsr, sizeof(parser));
+    memcpy(engnCpy, engn, sizeof(engine));
+    memcpy(playerCpy, player, sizeof(suspect_portrait));
+    memcpy(dbCpy, db, sizeof(suspect_portrait));
+    anal = new AnalysisHandler("1", prsrCpy, engnCpy, playerCpy, dbCpy, logW);
+    QThread::currentThread()->setPriority(QThread::LowestPriority);
+    anal->start(QThread::InheritPriority);
+
     emit close_newAnalWindow();
 
     logW->setModal(true);
@@ -43,8 +56,9 @@ void MainWindow::start_analyze(){
     logW->setAttribute(Qt::WA_DeleteOnClose, true);
     logW->show();
 
-    this->alalysis = new AnalysisHandler("1", &this->prsr, &this->engn, &this->player, &this->same_rating, logW);
-    QThread::currentThread()->setPriority(QThread::LowestPriority);
-    this->alalysis->start(QThread::InheritPriority);
-    //qDebug() << "Started!";
+    free(prsrCpy);
+    free(engnCpy);
+    free(playerCpy);
+    free(dbCpy);
+
 }

@@ -17,6 +17,7 @@
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPlainTextEdit>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QScrollBar>
 #include <QtWidgets/QVBoxLayout>
@@ -34,20 +35,28 @@ public:
     QHBoxLayout *horizontalLayout;
     QPlainTextEdit *plainTextEdit;
     QScrollBar *verticalScrollBar;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *verticalLayout_2;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout;
-    QVBoxLayout *verticalLayout_7;
-    QLabel *count_games_DB;
-    QLabel *count_games_susp;
-    QLabel *label_3;
-    QVBoxLayout *verticalLayout_3;
-    QLabel *label_2;
-    QLabel *label;
-    QLabel *time_left;
-    QLabel *label_5;
     QLabel *progress;
     QLabel *label_4;
     QLabel *time_all;
+    QVBoxLayout *verticalLayout_3;
+    QLabel *label_2;
+    QLabel *label;
+    QLabel *label_3;
+    QLabel *time_left;
+    QVBoxLayout *verticalLayout_7;
+    QLabel *count_games_DB;
+    QLabel *count_games_susp;
+    QLabel *label_5;
+    QGroupBox *groupBox_3;
+    QHBoxLayout *horizontalLayout_2;
+    QPushButton *continueButt;
+    QPushButton *pauseButt;
+    QPushButton *stopButt;
+    QPushButton *closeButt;
 
     void setupUi(QDialog *AnalysisLogWindow)
     {
@@ -71,7 +80,7 @@ public:
         plainTextEdit->setObjectName("plainTextEdit");
         QFont font;
         font.setFamilies({QString::fromUtf8("SimSun")});
-        font.setPointSize(7);
+        font.setPointSize(9);
         font.setBold(false);
         plainTextEdit->setFont(font);
 
@@ -87,30 +96,30 @@ public:
 
         verticalLayout->addWidget(scrollArea);
 
-        groupBox_2 = new QGroupBox(AnalysisLogWindow);
+        verticalLayoutWidget = new QWidget(AnalysisLogWindow);
+        verticalLayoutWidget->setObjectName("verticalLayoutWidget");
+        verticalLayoutWidget->setGeometry(QRect(10, 20, 421, 256));
+        verticalLayout_2 = new QVBoxLayout(verticalLayoutWidget);
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        groupBox_2 = new QGroupBox(verticalLayoutWidget);
         groupBox_2->setObjectName("groupBox_2");
-        groupBox_2->setGeometry(QRect(11, 11, 421, 211));
         gridLayout = new QGridLayout(groupBox_2);
         gridLayout->setObjectName("gridLayout");
-        verticalLayout_7 = new QVBoxLayout();
-        verticalLayout_7->setObjectName("verticalLayout_7");
-        count_games_DB = new QLabel(groupBox_2);
-        count_games_DB->setObjectName("count_games_DB");
+        progress = new QLabel(groupBox_2);
+        progress->setObjectName("progress");
 
-        verticalLayout_7->addWidget(count_games_DB);
+        gridLayout->addWidget(progress, 3, 1, 1, 1);
 
-        count_games_susp = new QLabel(groupBox_2);
-        count_games_susp->setObjectName("count_games_susp");
+        label_4 = new QLabel(groupBox_2);
+        label_4->setObjectName("label_4");
 
-        verticalLayout_7->addWidget(count_games_susp);
+        gridLayout->addWidget(label_4, 2, 0, 1, 1);
 
+        time_all = new QLabel(groupBox_2);
+        time_all->setObjectName("time_all");
 
-        gridLayout->addLayout(verticalLayout_7, 0, 1, 1, 1);
-
-        label_3 = new QLabel(groupBox_2);
-        label_3->setObjectName("label_3");
-
-        gridLayout->addWidget(label_3, 1, 0, 1, 1);
+        gridLayout->addWidget(time_all, 1, 1, 1, 1);
 
         verticalLayout_3 = new QVBoxLayout();
         verticalLayout_3->setObjectName("verticalLayout_3");
@@ -127,33 +136,69 @@ public:
 
         gridLayout->addLayout(verticalLayout_3, 0, 0, 1, 1);
 
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName("label_3");
+
+        gridLayout->addWidget(label_3, 1, 0, 1, 1);
+
         time_left = new QLabel(groupBox_2);
         time_left->setObjectName("time_left");
 
         gridLayout->addWidget(time_left, 2, 1, 1, 1);
+
+        verticalLayout_7 = new QVBoxLayout();
+        verticalLayout_7->setObjectName("verticalLayout_7");
+        count_games_DB = new QLabel(groupBox_2);
+        count_games_DB->setObjectName("count_games_DB");
+
+        verticalLayout_7->addWidget(count_games_DB);
+
+        count_games_susp = new QLabel(groupBox_2);
+        count_games_susp->setObjectName("count_games_susp");
+
+        verticalLayout_7->addWidget(count_games_susp);
+
+
+        gridLayout->addLayout(verticalLayout_7, 0, 1, 1, 1);
 
         label_5 = new QLabel(groupBox_2);
         label_5->setObjectName("label_5");
 
         gridLayout->addWidget(label_5, 3, 0, 1, 1);
 
-        progress = new QLabel(groupBox_2);
-        progress->setObjectName("progress");
 
-        gridLayout->addWidget(progress, 3, 1, 1, 1);
+        verticalLayout_2->addWidget(groupBox_2);
 
-        label_4 = new QLabel(groupBox_2);
-        label_4->setObjectName("label_4");
+        groupBox_3 = new QGroupBox(verticalLayoutWidget);
+        groupBox_3->setObjectName("groupBox_3");
+        horizontalLayout_2 = new QHBoxLayout(groupBox_3);
+        horizontalLayout_2->setObjectName("horizontalLayout_2");
+        continueButt = new QPushButton(groupBox_3);
+        continueButt->setObjectName("continueButt");
+        continueButt->setEnabled(false);
 
-        gridLayout->addWidget(label_4, 2, 0, 1, 1);
+        horizontalLayout_2->addWidget(continueButt);
 
-        time_all = new QLabel(groupBox_2);
-        time_all->setObjectName("time_all");
+        pauseButt = new QPushButton(groupBox_3);
+        pauseButt->setObjectName("pauseButt");
 
-        gridLayout->addWidget(time_all, 1, 1, 1, 1);
+        horizontalLayout_2->addWidget(pauseButt);
 
+        stopButt = new QPushButton(groupBox_3);
+        stopButt->setObjectName("stopButt");
+
+        horizontalLayout_2->addWidget(stopButt);
+
+
+        verticalLayout_2->addWidget(groupBox_3);
+
+        closeButt = new QPushButton(AnalysisLogWindow);
+        closeButt->setObjectName("closeButt");
+        closeButt->setEnabled(false);
+        closeButt->setGeometry(QRect(20, 510, 93, 29));
 
         retranslateUi(AnalysisLogWindow);
+        QObject::connect(closeButt, &QPushButton::clicked, AnalysisLogWindow, qOverload<>(&QDialog::close));
 
         QMetaObject::connectSlotsByName(AnalysisLogWindow);
     } // setupUi
@@ -162,19 +207,23 @@ public:
     {
         AnalysisLogWindow->setWindowTitle(QCoreApplication::translate("AnalysisLogWindow", "Dialog", nullptr));
         groupBox->setTitle(QCoreApplication::translate("AnalysisLogWindow", "Log", nullptr));
-        plainTextEdit->setPlainText(QCoreApplication::translate("AnalysisLogWindow", "analysing player started!\n"
-"", nullptr));
-        groupBox_2->setTitle(QCoreApplication::translate("AnalysisLogWindow", "GroupBox", nullptr));
-        count_games_DB->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));
-        count_games_susp->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));
-        label_3->setText(QCoreApplication::translate("AnalysisLogWindow", "Time :", nullptr));
+        plainTextEdit->setPlainText(QString());
+        groupBox_2->setTitle(QCoreApplication::translate("AnalysisLogWindow", "Analysis", nullptr));
+        progress->setText(QCoreApplication::translate("AnalysisLogWindow", "0%", nullptr));
+        label_4->setText(QCoreApplication::translate("AnalysisLogWindow", "Time left :", nullptr));
+        time_all->setText(QCoreApplication::translate("AnalysisLogWindow", "0:0:0:0", nullptr));
         label_2->setText(QCoreApplication::translate("AnalysisLogWindow", "DB games analysed (excluding suspect) :", nullptr));
         label->setText(QCoreApplication::translate("AnalysisLogWindow", "Suspect games analyzed :", nullptr));
-        time_left->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));
+        label_3->setText(QCoreApplication::translate("AnalysisLogWindow", "Time :", nullptr));
+        time_left->setText(QCoreApplication::translate("AnalysisLogWindow", "0:0:0:0", nullptr));
+        count_games_DB->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));
+        count_games_susp->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));
         label_5->setText(QCoreApplication::translate("AnalysisLogWindow", "Progress :", nullptr));
-        progress->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));
-        label_4->setText(QCoreApplication::translate("AnalysisLogWindow", "Time left :", nullptr));
-        time_all->setText(QCoreApplication::translate("AnalysisLogWindow", "0", nullptr));
+        groupBox_3->setTitle(QString());
+        continueButt->setText(QCoreApplication::translate("AnalysisLogWindow", "continue", nullptr));
+        pauseButt->setText(QCoreApplication::translate("AnalysisLogWindow", "pause", nullptr));
+        stopButt->setText(QCoreApplication::translate("AnalysisLogWindow", "stop", nullptr));
+        closeButt->setText(QCoreApplication::translate("AnalysisLogWindow", "close", nullptr));
     } // retranslateUi
 
 };

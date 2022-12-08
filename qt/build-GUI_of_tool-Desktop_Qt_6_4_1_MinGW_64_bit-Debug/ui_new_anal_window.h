@@ -94,17 +94,19 @@ public:
     QLineEdit *moveTime;
     QHBoxLayout *horizontalLayout_13;
     QPushButton *StartAnalButt;
+    QPushButton *loadConfButt;
+    QPushButton *saveConfButt;
     QPushButton *CanselButt;
     QDialogButtonBox *OrdinaryButtBox;
-    QButtonGroup *TypeOfGamesButtBox;
     QButtonGroup *MinRButtBox;
-    QButtonGroup *MaxRButtBox;
     QButtonGroup *CountMovesButtBox;
-    QButtonGroup *CountGamesButtBox;
-    QButtonGroup *CountCpuButtBox;
-    QButtonGroup *CountLinesButtBox;
-    QButtonGroup *HashSizeButtBox;
     QButtonGroup *MoveTimeButtBox;
+    QButtonGroup *CountCpuButtBox;
+    QButtonGroup *HashSizeButtBox;
+    QButtonGroup *MaxRButtBox;
+    QButtonGroup *CountLinesButtBox;
+    QButtonGroup *CountGamesButtBox;
+    QButtonGroup *TypeOfGamesButtBox;
 
     void setupUi(QDialog *New_anal_window)
     {
@@ -496,6 +498,16 @@ public:
 
         horizontalLayout_13->addWidget(StartAnalButt);
 
+        loadConfButt = new QPushButton(New_anal_window);
+        loadConfButt->setObjectName("loadConfButt");
+
+        horizontalLayout_13->addWidget(loadConfButt);
+
+        saveConfButt = new QPushButton(New_anal_window);
+        saveConfButt->setObjectName("saveConfButt");
+
+        horizontalLayout_13->addWidget(saveConfButt);
+
         CanselButt = new QPushButton(New_anal_window);
         CanselButt->setObjectName("CanselButt");
 
@@ -575,6 +587,8 @@ public:
         moveTimeCustom->setText(QCoreApplication::translate("New_anal_window", "custom", nullptr));
         moveTime->setInputMask(QString());
         StartAnalButt->setText(QCoreApplication::translate("New_anal_window", "Start analysis", nullptr));
+        loadConfButt->setText(QCoreApplication::translate("New_anal_window", "Load configuration", nullptr));
+        saveConfButt->setText(QCoreApplication::translate("New_anal_window", "Save configuration", nullptr));
         CanselButt->setText(QCoreApplication::translate("New_anal_window", "Cancel", nullptr));
     } // retranslateUi
 

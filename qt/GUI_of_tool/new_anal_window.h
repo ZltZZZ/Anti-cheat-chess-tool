@@ -15,9 +15,13 @@ class New_anal_window : public QDialog
 public:
     explicit New_anal_window(QWidget *parent = nullptr);
     ~New_anal_window();  
+    bool check_param_fields();
 
     MainWindow* main_w_ptr;
-    bool check_param_fields();
+    engine engn;
+    parser prsr;
+    suspect_portrait player;
+    suspect_portrait db;
 
 private slots:
     void on_toolButton_clicked();
@@ -58,13 +62,13 @@ private slots:
 
     void on_StartAnalButt_clicked();
 
+    void on_saveConfButt_clicked();
+
+    void on_loadConfButt_clicked();
+
 public slots:
 
     void closeW();
-
-signals:
-
-    void new_analysis_initialization_finished();
 
 private:
     Ui::New_anal_window *ui;

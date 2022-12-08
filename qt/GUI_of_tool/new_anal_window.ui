@@ -566,6 +566,20 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="loadConfButt">
+       <property name="text">
+        <string>Load configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveConfButt">
+       <property name="text">
+        <string>Save configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="CanselButt">
        <property name="text">
         <string>Cancel</string>
@@ -763,18 +777,18 @@
   </connection>
  </connections>
  <buttongroups>
+  <buttongroup name="MinRButtBox"/>
+  <buttongroup name="CountMovesButtBox"/>
+  <buttongroup name="MoveTimeButtBox"/>
+  <buttongroup name="CountCpuButtBox"/>
+  <buttongroup name="HashSizeButtBox"/>
+  <buttongroup name="MaxRButtBox"/>
+  <buttongroup name="CountLinesButtBox"/>
+  <buttongroup name="CountGamesButtBox"/>
   <buttongroup name="TypeOfGamesButtBox">
    <property name="exclusive">
     <bool>true</bool>
    </property>
   </buttongroup>
-  <buttongroup name="MinRButtBox"/>
-  <buttongroup name="MaxRButtBox"/>
-  <buttongroup name="CountMovesButtBox"/>
-  <buttongroup name="CountGamesButtBox"/>
-  <buttongroup name="CountCpuButtBox"/>
-  <buttongroup name="CountLinesButtBox"/>
-  <buttongroup name="HashSizeButtBox"/>
-  <buttongroup name="MoveTimeButtBox"/>
  </buttongroups>
 </ui>

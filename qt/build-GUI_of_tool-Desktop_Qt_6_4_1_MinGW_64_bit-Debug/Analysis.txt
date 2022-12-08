@@ -1,0 +1,15 @@
+Path to db: D:/PGNdb/lichess_db_standard_rated_2014-10.pgn
+Name/nick-name of player (suspect): fgdgs
+Path to engine: D:/stockfish_15.1_win_x64_popcnt/stockfish_15.1_win_x64_popcnt/stockfish-windows-2022-x86-64-modern.exe
+Engine: Count of CPU threads: 1
+Engine: Count of lines: 4
+Engine: Hash size: 32 MB
+Engine: Move time: 1 sec
+Search (filter): Type of games: Bullet
+Search (filter): Min rating: -2147483648
+Search(filter): Max rating: -2147483648
+Search(filter): Max count of moves: 2147483647
+Search(filter): Max count of games: 2147483647
+
+
+

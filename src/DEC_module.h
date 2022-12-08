@@ -6,6 +6,7 @@
 #include "Engine_handler.h"
 #include "Chessboard_handler.h"
 #include <QThread>
+#include <QFile>
 #include "analysislogwindow.h"
 
 /* ------------This is a module that unite all handlers in one synchronized working machine----------------------
@@ -37,6 +38,8 @@ private:
     suspect_portrait player;
     suspect_portrait db;
     AnalysisLogWindow* logW;
+    FILE* saveFile;
+    FILE* logFile;
 };
 
 /* Init suspect portrait. */
@@ -49,22 +52,22 @@ int analize_move(engine*, thc::ChessRules*, thc::Move* next_mv);
 void analize_game_player(game*, engine*, suspect_portrait*, char* name);
 
 /* Analizes ONLY positions, that contains the same attr_set as was in analysis of player. THIS IS A MAIN ALGORINM OF ANALIZING.*/
-void analize_game_player_no_name(game*, engine*, suspect_portrait*);
+void analize_game_player_no_name(game*, engine*, suspect_portrait*, FILE* logFile);
 
 /* Get a move string from notation. Returns NULL, if this is was last move in notation. */
 char* get_next_move_from_notation(char* notation, char* move_buff);
 
 /* Ananlizes all games of choosed player. */
-void do_analize_glob_player(parser*, engine*, suspect_portrait*, AnalysisLogWindow* logW);
+void do_analize_glob_player(parser*, engine*, suspect_portrait*, AnalysisLogWindow* logW, FILE* logFile);
 
 /* Ananlizes all games that without name filter (analyze ONLY positions, that player played. */
-int do_analize_glob_no_name(parser*, engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_moves, AnalysisLogWindow* logW);
+int do_analize_glob_no_name(parser*, engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_moves, AnalysisLogWindow* logW, FILE* logFile);
 
 /* Ananlizes all games that without name filter (with full analize of game). */
-void do_analize_glob(parser*, engine*, suspect_portrait*, AnalysisLogWindow* logW);
+void do_analize_glob(parser*, engine*, suspect_portrait*, AnalysisLogWindow* logW, FILE* logFile);
 
 /* Main function, that calls from entry point. */
-void do_analize(parser*, engine*, suspect_portrait* susp_player, suspect_portrait* susp_no_name, AnalysisLogWindow* logW);
+void do_analize(parser*, engine*, suspect_portrait* susp_player, suspect_portrait* susp_no_name, AnalysisLogWindow* logW, FILE* logFile);
 
 /* Compare next move of ENGINE with next move of Player. Returns a number, that correspondes to number of line. */
 int get_accuracy_of_move(thc::Move*, engine_line*, int count_of_lines);

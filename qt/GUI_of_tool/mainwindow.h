@@ -15,19 +15,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    engine engn;
-    parser prsr;
-    suspect_portrait player;
-    suspect_portrait same_rating;
     AnalysisHandler* alalysis;
+    void start_analyze(parser* prsr, engine* engn, suspect_portrait* player, suspect_portrait* db);
 
 private slots:
     void on_actionQuit_triggered();
 
     void on_actionNew_analysisi_triggered();
-
-public slots:
-    void start_analyze();
 
 signals:
 
