@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include "../../src/DEC_module.h"
+#include "analinfowindow.h"
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlTableModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,11 +27,19 @@ private slots:
 
     void on_actionNew_analysisi_triggered();
 
+    void on_actionOpen_analysis_triggered();
+
+    void on_infoAnalButt_clicked();
+
 signals:
 
     void close_newAnalWindow();
 
 private:
     Ui::MainWindow *ui;
+    QSqlDatabase analDB;
+    QSqlQuery* query;
+    QSqlTableModel* model;
+    AnalInfoWindow* analIfnfoW;
 };
 #endif // MAINWINDOW_H

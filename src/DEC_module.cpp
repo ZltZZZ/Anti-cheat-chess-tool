@@ -513,36 +513,36 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 					for (int q = 0; q < MAX_Q; q++) {
 						if (susp->attr_acc.cont.int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
 							if (p == EMPTY_P) {
-								fprintf(file, "{X_p, ");
+                                fprintf(file, "{P_X, ");
 							}
 							else {
-								fprintf(file, "{%d_p, ", p);
+                                fprintf(file, "{P_%d, ", p);
 							}
 							if (n == EMPTY_N) {
-								fprintf(file, "X_n, ");
+                                fprintf(file, "N_X, ");
 							}
 							else {
-								fprintf(file, "%d_n, ", n);
+                                fprintf(file, "N_%d, ", n);
 							}
 							if (b == EMPTY_B) {
-								fprintf(file, "X_b, ");
+                                fprintf(file, "B_X, ");
 							}
 							else {
-								fprintf(file, "%d_b, ", b);
+                                fprintf(file, "B_%d, ", b);
 							}
 							if (r == EMPTY_R) {
-								fprintf(file, "X_r, ");
+                                fprintf(file, "R_X, ");
 							}
 							else {
-								fprintf(file, "%d_r, ", r);
+                                fprintf(file, "R_%d, ", r);
 							}
 							if (q == EMPTY_Q) {
-								fprintf(file, "X_q}: ");
+                                fprintf(file, "Q_X}: ");
 							}
 							else {
-								fprintf(file, "%d_q}: ", q);
+                                fprintf(file, "Q_%d}: ", q);
 							}
-							fprintf(file, "accuracy = %f, count = %d\n",
+                            fprintf(file, "AC %f, COUNT %d\n",
 								susp->attr_acc.cont.fl_cont[p][n][b][r][q],
 								susp->attr_count.cont.int_cont[p][n][b][r][q]);
 						}
@@ -556,13 +556,13 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 }
 
 void print_info_file(FILE* file, parser* prsr, engine* engn) {
-	fprintf(file, "Path to db: %s\n"
-		"Name/nick-name of player (suspect): %s\n"
-		"Path to engine: %ls\n"
-		"Engine: Count of CPU threads: %d\n"
-		"Engine: Count of lines: %d\n"
-		"Engine: Hash size: %d MB\n"
-		"Engine: Move time: %d sec\n",
+    fprintf(file, "DB %s\n"
+        "NAME %s\n"
+        "ENGINE %ls\n"
+        "CPU %d\n"
+        "LINES %d\n"
+        "HASH %d\n"
+        "MOVETIME %d\n",
 		prsr->db.path_to_db,
 		prsr->fiter.name,
 		engn->path_to_engine,
@@ -570,13 +570,13 @@ void print_info_file(FILE* file, parser* prsr, engine* engn) {
 		engn->multi_pv,
 		engn->hash,
 		engn->move_time);
-	if (prsr->fiter.evnt == EVENT_BLITZ) fprintf(file, "Search (filter): Type of games: Blitz\n");
-	else if (prsr->fiter.evnt == EVENT_BULLET) fprintf(file, "Search (filter): Type of games: Bullet\n");
-	else if (prsr->fiter.evnt == EVENT_CLASSIC) fprintf(file, "Search (filter): Type of games: Classical\n");
-	fprintf(file, "Search (filter): Min rating: %d\n"
-		"Search(filter): Max rating: % d\n"
-		"Search(filter): Max count of moves: %d\n"
-		"Search(filter): Max count of games: %d\n\n",
+    if (prsr->fiter.evnt == EVENT_BLITZ) fprintf(file, "TYPE Blitz\n");
+    else if (prsr->fiter.evnt == EVENT_BULLET) fprintf(file, "TYPE Bullet\n");
+    else if (prsr->fiter.evnt == EVENT_CLASSIC) fprintf(file, "TYPE Classical\n");
+    fprintf(file, "MINR %d\n"
+        "MAXR %d\n"
+        "COUNTMOVES %d\n"
+        "COUNTGAMES %d\n\n",
 		prsr->fiter.elo_min,
         prsr->fiter.elo_max,
 		prsr->fiter.max_count_of_moves,

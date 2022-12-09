@@ -1,4 +1,5 @@
 QT       += core gui
+QT       += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,6 +16,7 @@ SOURCES += \
     ../../src/Database_parser.cpp \
     ../../src/Engine_handler.cpp \
     ../../src/Process_handler.cpp \
+    analinfowindow.cpp \
     analysislogwindow.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -27,11 +29,13 @@ HEADERS += \
     ../../src/DataBase_parser.h \
     ../../src/Engine_handler.h \
     ../../src/Process_handler.h \
+    analinfowindow.h \
     analysislogwindow.h \
     mainwindow.h \
     new_anal_window.h
 
 FORMS += \
+    analinfowindow.ui \
     analysislogwindow.ui \
     mainwindow.ui \
     new_anal_window.ui

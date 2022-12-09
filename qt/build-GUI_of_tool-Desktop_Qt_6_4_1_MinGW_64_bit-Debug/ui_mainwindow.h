@@ -12,10 +12,16 @@
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTableView>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -28,6 +34,14 @@ public:
     QAction *actionSave;
     QAction *actionQuit;
     QWidget *centralwidget;
+    QVBoxLayout *verticalLayout;
+    QGroupBox *groupBox;
+    QVBoxLayout *verticalLayout_2;
+    QTableView *analTable;
+    QHBoxLayout *horizontalLayout;
+    QPushButton *infoAnalButt;
+    QPushButton *buildGraphButt;
+    QPushButton *closeDBButt;
     QMenuBar *menubar;
     QMenu *menuFile;
     QMenu *menuOptions;
@@ -38,7 +52,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(800, 600);
+        MainWindow->resize(987, 680);
         actionNew_analysisi = new QAction(MainWindow);
         actionNew_analysisi->setObjectName("actionNew_analysisi");
         actionOpen_analysis = new QAction(MainWindow);
@@ -49,10 +63,47 @@ public:
         actionQuit->setObjectName("actionQuit");
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
+        verticalLayout = new QVBoxLayout(centralwidget);
+        verticalLayout->setObjectName("verticalLayout");
+        groupBox = new QGroupBox(centralwidget);
+        groupBox->setObjectName("groupBox");
+        verticalLayout_2 = new QVBoxLayout(groupBox);
+        verticalLayout_2->setObjectName("verticalLayout_2");
+        analTable = new QTableView(groupBox);
+        analTable->setObjectName("analTable");
+
+        verticalLayout_2->addWidget(analTable);
+
+
+        verticalLayout->addWidget(groupBox);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName("horizontalLayout");
+        infoAnalButt = new QPushButton(centralwidget);
+        infoAnalButt->setObjectName("infoAnalButt");
+        infoAnalButt->setEnabled(false);
+
+        horizontalLayout->addWidget(infoAnalButt);
+
+        buildGraphButt = new QPushButton(centralwidget);
+        buildGraphButt->setObjectName("buildGraphButt");
+        buildGraphButt->setEnabled(false);
+
+        horizontalLayout->addWidget(buildGraphButt);
+
+        closeDBButt = new QPushButton(centralwidget);
+        closeDBButt->setObjectName("closeDBButt");
+        closeDBButt->setEnabled(false);
+
+        horizontalLayout->addWidget(closeDBButt);
+
+
+        verticalLayout->addLayout(horizontalLayout);
+
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 800, 32));
+        menubar->setGeometry(QRect(0, 0, 987, 32));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName("menuFile");
         menuOptions = new QMenu(menubar);
@@ -85,6 +136,10 @@ public:
         actionOpen_analysis->setText(QCoreApplication::translate("MainWindow", "Open analysis", nullptr));
         actionSave->setText(QCoreApplication::translate("MainWindow", "Save", nullptr));
         actionQuit->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
+        groupBox->setTitle(QCoreApplication::translate("MainWindow", "Analysis results", nullptr));
+        infoAnalButt->setText(QCoreApplication::translate("MainWindow", "Information about analysis", nullptr));
+        buildGraphButt->setText(QCoreApplication::translate("MainWindow", "Build Graph", nullptr));
+        closeDBButt->setText(QCoreApplication::translate("MainWindow", "Close analysis", nullptr));
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
         menuOptions->setTitle(QCoreApplication::translate("MainWindow", "Options", nullptr));
         menuFilter->setTitle(QCoreApplication::translate("MainWindow", "Filter", nullptr));

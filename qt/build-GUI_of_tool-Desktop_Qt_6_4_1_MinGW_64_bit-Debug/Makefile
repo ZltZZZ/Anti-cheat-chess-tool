@@ -224,6 +224,7 @@ Makefile: ../GUI_of_tool/GUI_of_tool.pro ../../../../QT/6.4.1/mingw_64/mkspecs/w
 		../GUI_of_tool/GUI_of_tool.pro \
 		../../../../QT/6.4.1/mingw_64/lib/Qt6Widgets.prl \
 		../../../../QT/6.4.1/mingw_64/lib/Qt6Gui.prl \
+		../../../../QT/6.4.1/mingw_64/lib/Qt6Sql.prl \
 		../../../../QT/6.4.1/mingw_64/lib/Qt6Core.prl \
 		../../../../QT/6.4.1/mingw_64/lib/Qt6EntryPoint.prl \
 		../../../../QT/6.4.1/mingw_64/mkspecs/features/build_pass.prf
@@ -382,6 +383,7 @@ Makefile: ../GUI_of_tool/GUI_of_tool.pro ../../../../QT/6.4.1/mingw_64/mkspecs/w
 ../GUI_of_tool/GUI_of_tool.pro:
 ../../../../QT/6.4.1/mingw_64/lib/Qt6Widgets.prl:
 ../../../../QT/6.4.1/mingw_64/lib/Qt6Gui.prl:
+../../../../QT/6.4.1/mingw_64/lib/Qt6Sql.prl:
 ../../../../QT/6.4.1/mingw_64/lib/Qt6Core.prl:
 ../../../../QT/6.4.1/mingw_64/lib/Qt6EntryPoint.prl:
 ../../../../QT/6.4.1/mingw_64/mkspecs/features/build_pass.prf:
