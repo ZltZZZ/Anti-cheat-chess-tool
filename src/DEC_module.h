@@ -30,6 +30,8 @@ public:
     explicit AnalysisHandler(QString threadName, parser* prsr, engine* engn, suspect_portrait* player, suspect_portrait* db, AnalysisLogWindow* logW);
     ~AnalysisHandler();
     void run();
+    void stop();
+    void on_exit();
 
 private:
     QString name;

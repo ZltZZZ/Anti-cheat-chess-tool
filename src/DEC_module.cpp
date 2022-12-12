@@ -1,6 +1,8 @@
 #include "DEC_module.h"
 #include "ui_analysislogwindow.h"
 
+bool FlStop;
+
 AnalysisHandler::AnalysisHandler(QString threadName, parser* prsr, engine* engn, suspect_portrait* player, suspect_portrait* db, AnalysisLogWindow* logW) :
     name(threadName)
 {
@@ -11,6 +13,7 @@ AnalysisHandler::AnalysisHandler(QString threadName, parser* prsr, engine* engn,
     this->logW = logW;
     fopen_s(&saveFile, "Analysis.sa", "w");
     fopen_s(&logFile, "Analysis_log.txt", "w");
+    FlStop = false;
 }
 
 AnalysisHandler::~AnalysisHandler()
@@ -44,6 +47,16 @@ void AnalysisHandler::run()
     logW->timer->stop();
 }
 
+void AnalysisHandler::stop()
+{
+    FlStop = true;
+}
+
+void AnalysisHandler::on_exit()
+{
+
+}
+
 void init_suspect_portrait(suspect_portrait* susp, parser* prsr) {
 	memcpy(&susp->prsr, prsr, sizeof(parser));
 
@@ -55,7 +68,7 @@ int analize_move(engine* engn, thc::ChessRules* cr, thc::Move* next_mv) {
 	engine_line line[OPTION_MULTI_PV_DEF];
 	std::string fen_string = cr->ForsythPublish();
 
-	// 1. Feed FEN to engine. Get answer of engine.
+    // 1. Feed FEN to engine. Get answer of engine.
 	engine_set_position(engn, (char*)fen_string.c_str());
 	engine_send_command_start_analyze(engn, MOVE_TIME_DEFUALT);
 	engine_parse_analisys_output(engn, line); // Get lines with moves in LAN notation. 
@@ -89,7 +102,7 @@ void analize_game_player(game* gm, engine* engn, suspect_portrait* susp, char* n
 	}
 
 	// 2. Analyse each move of player, while don't reach the end of notation.
-	while (ptr_game_notation != NULL)
+    while (ptr_game_notation != NULL && !FlStop)
 	{
 		// 1. Get next move.
 		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
@@ -164,7 +177,7 @@ int analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp, 
 	count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation);
 
 	// 1. Analyse each move, while don't reach the end of notation.
-	while (ptr_game_notation != NULL)
+    while (ptr_game_notation != NULL && !FlStop)
 	{
 		// 1. Get next move.
 		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
@@ -229,7 +242,7 @@ void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp, 
 	init_attr_cont(&susp->attr_acc);
 	zero_attr_cont(&susp->attr_count);
 
-	while (count_of_games < prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF)
+    while (count_of_games < prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF && !FlStop)
 	{
 		time(&time_start);
 		time(&time_curr);
@@ -262,7 +275,7 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 	init_attr_cont_with_other_cont(&susp->attr_acc, &player->attr_acc);
 	zero_attr_cont(&susp->attr_count);
 
-	while (get_next_game(prsr, &gm) != DB_EOF)
+    while (get_next_game(prsr, &gm) != DB_EOF && !FlStop)
 	{
         if (strcmp(gm.name_black, name_cpy) != 0 && strcmp(gm.name_white, name_cpy) != 0){
             count_of_games++;
@@ -513,36 +526,36 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 					for (int q = 0; q < MAX_Q; q++) {
 						if (susp->attr_acc.cont.int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
 							if (p == EMPTY_P) {
-                                fprintf(file, "{P_X, ");
+                                fprintf(file, "X, ");
 							}
 							else {
-                                fprintf(file, "{P_%d, ", p);
+                                fprintf(file, "%d, ", p);
 							}
 							if (n == EMPTY_N) {
-                                fprintf(file, "N_X, ");
+                                fprintf(file, "X, ");
 							}
 							else {
-                                fprintf(file, "N_%d, ", n);
+                                fprintf(file, "%d, ", n);
 							}
 							if (b == EMPTY_B) {
-                                fprintf(file, "B_X, ");
+                                fprintf(file, "X, ");
 							}
 							else {
-                                fprintf(file, "B_%d, ", b);
+                                fprintf(file, "%d, ", b);
 							}
 							if (r == EMPTY_R) {
-                                fprintf(file, "R_X, ");
+                                fprintf(file, "X, ");
 							}
 							else {
-                                fprintf(file, "R_%d, ", r);
+                                fprintf(file, "%d, ", r);
 							}
 							if (q == EMPTY_Q) {
-                                fprintf(file, "Q_X}: ");
+                                fprintf(file, "X ");
 							}
 							else {
-                                fprintf(file, "Q_%d}: ", q);
+                                fprintf(file, "%d ", q);
 							}
-                            fprintf(file, "AC %f, COUNT %d\n",
+                            fprintf(file, "%f %d\n",
 								susp->attr_acc.cont.fl_cont[p][n][b][r][q],
 								susp->attr_count.cont.int_cont[p][n][b][r][q]);
 						}

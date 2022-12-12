@@ -31,6 +31,11 @@ private slots:
 
     void on_infoAnalButt_clicked();
 
+    void on_closeDBButt_clicked();
+
+public slots:
+    void stop_analysis();
+
 signals:
 
     void close_newAnalWindow();
@@ -39,7 +44,9 @@ private:
     Ui::MainWindow *ui;
     QSqlDatabase analDB;
     QSqlQuery* query;
-    QSqlTableModel* model;
+    QSqlTableModel* modelPlayer;
+    QSqlTableModel* modelDB;
     AnalInfoWindow* analIfnfoW;
+    AnalysisHandler* anal;
 };
 #endif // MAINWINDOW_H

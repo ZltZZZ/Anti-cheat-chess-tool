@@ -1,0 +1,14 @@
+DB D:/PGNdb/lichess_db_standard_rated_2014-10.pgn
+NAME some player
+ENGINE D:/PGNdb/stockfish-windows-2022-x86-64-modern.exe
+CPU 1
+LINES 4
+HASH 3072
+MOVETIME 4
+TYPE Bullet
+MINR 1400
+MAXR 1900
+COUNTMOVES 400
+COUNTGAMES 24
+
+

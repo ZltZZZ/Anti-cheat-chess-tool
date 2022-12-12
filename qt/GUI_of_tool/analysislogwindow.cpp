@@ -39,3 +39,13 @@ void AnalysisLogWindow::onTimeOut()
 
     ui->time_all->setText(QString::number(days) + ":" + QString::number(hours) + ":" + QString::number(minutes) + ":" + QString::number(sec));
 }
+
+void AnalysisLogWindow::on_stopButt_clicked()
+{
+    timer->stop();
+    emit some_sign();
+    ui->stopButt->setEnabled(false);
+    ui->closeButt->setEnabled(true);
+    ui->pauseButt->setEnabled(false);
+}
+

@@ -1,15 +1,15 @@
 DB D:/PGNdb/lichess_db_standard_rated_2014-10.pgn
-NAME fff
-ENGINE D:/stockfish_15.1_win_x64_popcnt/stockfish_15.1_win_x64_popcnt/stockfish-windows-2022-x86-64-modern.exe
+NAME some player
+ENGINE D:/PGNdb/stockfish-windows-2022-x86-64-modern.exe
 CPU 1
 LINES 4
-HASH 32
-MOVETIME 1
+HASH 3072
+MOVETIME 4
 TYPE Bullet
-MINR -2147483648
-MAXR 2147483647
-COUNTMOVES 2147483647
-COUNTGAMES 2147483647
+MINR 1400
+MAXR 1900
+COUNTMOVES 400
+COUNTGAMES 24
 
-fh
+
 

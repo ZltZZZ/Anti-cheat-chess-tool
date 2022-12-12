@@ -20,6 +20,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -37,7 +38,13 @@ public:
     QVBoxLayout *verticalLayout;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_2;
-    QTableView *analTable;
+    QTabWidget *tabWidget;
+    QWidget *tab;
+    QHBoxLayout *horizontalLayout_2;
+    QTableView *analTablePlayer;
+    QWidget *tab_2;
+    QHBoxLayout *horizontalLayout_3;
+    QTableView *analTableDB;
     QHBoxLayout *horizontalLayout;
     QPushButton *infoAnalButt;
     QPushButton *buildGraphButt;
@@ -69,10 +76,30 @@ public:
         groupBox->setObjectName("groupBox");
         verticalLayout_2 = new QVBoxLayout(groupBox);
         verticalLayout_2->setObjectName("verticalLayout_2");
-        analTable = new QTableView(groupBox);
-        analTable->setObjectName("analTable");
+        tabWidget = new QTabWidget(groupBox);
+        tabWidget->setObjectName("tabWidget");
+        tab = new QWidget();
+        tab->setObjectName("tab");
+        horizontalLayout_2 = new QHBoxLayout(tab);
+        horizontalLayout_2->setObjectName("horizontalLayout_2");
+        analTablePlayer = new QTableView(tab);
+        analTablePlayer->setObjectName("analTablePlayer");
 
-        verticalLayout_2->addWidget(analTable);
+        horizontalLayout_2->addWidget(analTablePlayer);
+
+        tabWidget->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName("tab_2");
+        horizontalLayout_3 = new QHBoxLayout(tab_2);
+        horizontalLayout_3->setObjectName("horizontalLayout_3");
+        analTableDB = new QTableView(tab_2);
+        analTableDB->setObjectName("analTableDB");
+
+        horizontalLayout_3->addWidget(analTableDB);
+
+        tabWidget->addTab(tab_2, QString());
+
+        verticalLayout_2->addWidget(tabWidget);
 
 
         verticalLayout->addWidget(groupBox);
@@ -126,6 +153,9 @@ public:
 
         retranslateUi(MainWindow);
 
+        tabWidget->setCurrentIndex(0);
+
+
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
 
@@ -137,6 +167,8 @@ public:
         actionSave->setText(QCoreApplication::translate("MainWindow", "Save", nullptr));
         actionQuit->setText(QCoreApplication::translate("MainWindow", "Quit", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "Analysis results", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QCoreApplication::translate("MainWindow", "Suspect", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab_2), QCoreApplication::translate("MainWindow", "DataBase", nullptr));
         infoAnalButt->setText(QCoreApplication::translate("MainWindow", "Information about analysis", nullptr));
         buildGraphButt->setText(QCoreApplication::translate("MainWindow", "Build Graph", nullptr));
         closeDBButt->setText(QCoreApplication::translate("MainWindow", "Close analysis", nullptr));

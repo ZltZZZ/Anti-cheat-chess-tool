@@ -21,6 +21,11 @@ public:
 
 public slots:
     void onTimeOut();
+private slots:
+    void on_stopButt_clicked();
+
+signals:
+    void some_sign();
 };
 
 #endif // ANALYSISLOGWINDOW_H
