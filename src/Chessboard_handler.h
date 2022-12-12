@@ -17,7 +17,7 @@
 #define WHITE_SIDE 1
 #define BLACK_SIDE 0
 
-#include "lib/thc.h"
+#include "../lib/thc.h"
 
 /* Set of attributes for position. */
 typedef struct _attr_set {

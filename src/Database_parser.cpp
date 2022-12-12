@@ -16,6 +16,16 @@ void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char
 	memcpy(prsr->db.path_to_db, path_to_db, sizeof(char) * MAX_PATH_LENTH);
 }
 
+void init_parser(parser* prsr){
+    prsr->fiter.elo_min = NO_RATING_MIN;
+    prsr->fiter.elo_max = NO_RATING_MAX;
+    prsr->fiter.evnt = EVENT_UNDEFINED;
+    prsr->fiter.max_count_of_games = MAX_GAME_COUNT_DEF;
+    prsr->fiter.max_count_of_moves = MAX_MOVE_COUNT_DEF;
+    memset(prsr->fiter.name, '\0', sizeof(char) * MAX_NAME_SIZE);
+    memset(prsr->db.path_to_db, '\0', sizeof(char) * MAX_NAME_SIZE);
+}
+
 void game_clear(game* gm) {
 	gm->elo_black = 0;
 	gm->elo_white = 0;
@@ -63,7 +73,8 @@ int get_next_game(parser* prsr, game* gm) {
 			memset(prsr->db.buff, '\0', sizeof(char) * MAX_BUFF_SIZE);
 			fscanf_s(prsr->db.pgn_db, "%c", &c, 1); // Read empty string
 			// Go to next position
-			continue;
+            if (!feof(prsr->db.pgn_db))
+                continue;
 		}
 		else {
 			// Parse moves section. Delete comments, number of moves and so on.
@@ -146,11 +157,9 @@ void fill_tag_in_game(game* gm, tag tg, char* value_ptr) {
 		break;
 	case TAG_WHITE_ELO:
 		gm->elo_white = atoi(value_ptr);
-		if (gm->elo_white == 0) gm->elo_white = NO_RATING;
 		break;
 	case TAG_BLACK_ELO:
 		gm->elo_black = atoi(value_ptr);
-		if (gm->elo_black == 0) gm->elo_black = NO_RATING;
 		break;
 	case TAG_UNDEFINED:
 		break;
@@ -158,12 +167,10 @@ void fill_tag_in_game(game* gm, tag tg, char* value_ptr) {
 }
 
 bool check_filter(parser* prsr, game* gm) {
-	float avrg_elo = NO_RATING;   // Avarage elo of a game
-	if (gm->elo_black != NO_RATING && gm->elo_white != NO_RATING) {
-		avrg_elo = (float)(gm->elo_black + gm->elo_white) / 2;
-	}
+    float avrg_elo = 0;   // Avarage elo of a game
+    avrg_elo = (float)(gm->elo_black + gm->elo_white) / 2;
 
-	if (prsr->fiter.name[0] == '\0' && prsr->fiter.elo_max != NO_RATING && (avrg_elo == NO_RATING || avrg_elo < prsr->fiter.elo_min || avrg_elo > prsr->fiter.elo_max)) {
+    if (prsr->fiter.name[0] == '\0' && (gm->elo_black == 0 || gm->elo_white == 0 || avrg_elo < prsr->fiter.elo_min || avrg_elo > prsr->fiter.elo_max)) {
 		return false;
 	}
 	if (prsr->fiter.evnt != EVENT_UNDEFINED && prsr->fiter.evnt != gm->evnt) {

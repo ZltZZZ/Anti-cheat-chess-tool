@@ -1,17 +1,22 @@
 #pragma once
 
+#include <limits.h>
+
 /* That is parser. It gets information from PGN base.*/
 
 #define MAX_NAME_SIZE 61
 #define MAX_PATH_LENTH 256
 #define MAX_BUFF_SIZE 3072
-#define NO_RATING -1
+#define NO_RATING_MIN INT_MIN
+#define NO_RATING_MAX INT_MAX
+#define MAX_GAME_COUNT_DEF INT_MAX
+#define MAX_MOVE_COUNT_DEF INT_MAX
 #define DB_SUCCESS 1
 #define DB_EOF 0
 
 #include <iostream> 
 #include <fstream> 
-#include <string>
+#include <string.h>
 #include <time.h>
 
 /* Event. It is blitz, classic, bullet and other. */
@@ -39,7 +44,7 @@ typedef struct _parser {
 		int elo_max;				// Elo rating right range. Set NO_RATING if no filter for ratings.
 		_event evnt;				// Type of a game. Blitz, classic and other. Set UNDEFINED_EVENT if no filter for event.
 		char name[MAX_NAME_SIZE];	// Name of a player, or empty string if not a player. Now, it is an obligatory argument, but later it can be set as an empty string
-		int max_count_of_moves;      // After analysing player, analyse attr_sets that was in player analisys, NO MORE than max_count_of_moves. 
+        int max_count_of_moves;     // After analysing player, analyse attr_sets that was in player analisys, NO MORE than max_count_of_moves.
 		int max_count_of_games;     // Analyse no more than max_count_of_games
 	}fiter;
 
@@ -69,6 +74,9 @@ void set_parser_params(parser*,
 	                   char* path_to_db,
 	                   int max_count_of_moves,
                        int max_count_of_games);
+
+/* Init parser struct with def values. */
+void init_parser(parser* prsr);
 
 /* Null all fields in structure _game. */
 void game_clear(game*);

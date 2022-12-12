@@ -2,8 +2,8 @@
 
 #define OPTION_MULTI_PV_DEF 4 // Default count of lines to analysis
 #define MOVE_TIME_DEFUALT 1 // Default time of analysing
-#define OPTION_HASH_DEF 1012
-#define OPTION_THREAD_DEF 2
+#define OPTION_HASH_DEF 32
+#define OPTION_THREAD_DEF 1
 #define MAX_MOVE_SIZE 10
 #define MAX_WORD_SIZE 100
 

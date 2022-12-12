@@ -1,4 +1,61 @@
 #include "DEC_module.h"
+#include "ui_analysislogwindow.h"
+
+bool FlStop;
+
+AnalysisHandler::AnalysisHandler(QString threadName, parser* prsr, engine* engn, suspect_portrait* player, suspect_portrait* db, AnalysisLogWindow* logW) :
+    name(threadName)
+{
+    memcpy(&this->prsr, prsr, sizeof(parser));
+    memcpy(&this->engn, engn, sizeof(engine));
+    memcpy(&this->player, player, sizeof(suspect_portrait));
+    memcpy(&this->db, db, sizeof(suspect_portrait));
+    this->logW = logW;
+    fopen_s(&saveFile, "Analysis.sa", "w");
+    fopen_s(&logFile, "Analysis_log.txt", "w");
+    FlStop = false;
+}
+
+AnalysisHandler::~AnalysisHandler()
+{
+    if (saveFile != NULL){
+        fclose(saveFile);
+    }
+    if (logFile != NULL){
+        fclose(logFile);
+    }
+}
+
+void AnalysisHandler::run()
+{
+    print_info_file(logFile, &prsr, &engn);
+    do_analize(&this->prsr, &this->engn, &this->player, &this->db, this->logW, logFile);
+    print_info_file(saveFile, &prsr, &engn);
+    print_susp_file(&player, saveFile);
+    print_susp_file(&db, saveFile);
+    if (saveFile != NULL){
+        fclose(saveFile);
+    }
+    if (logFile != NULL){
+        fclose(logFile);
+    }
+
+    logW->ui->closeButt->setEnabled(true);
+    logW->ui->pauseButt->setEnabled(false);
+    logW->ui->continueButt->setEnabled(false);
+    logW->ui->stopButt->setEnabled(false);
+    logW->timer->stop();
+}
+
+void AnalysisHandler::stop()
+{
+    FlStop = true;
+}
+
+void AnalysisHandler::on_exit()
+{
+
+}
 
 void init_suspect_portrait(suspect_portrait* susp, parser* prsr) {
 	memcpy(&susp->prsr, prsr, sizeof(parser));
@@ -11,7 +68,7 @@ int analize_move(engine* engn, thc::ChessRules* cr, thc::Move* next_mv) {
 	engine_line line[OPTION_MULTI_PV_DEF];
 	std::string fen_string = cr->ForsythPublish();
 
-	// 1. Feed FEN to engine. Get answer of engine.
+    // 1. Feed FEN to engine. Get answer of engine.
 	engine_set_position(engn, (char*)fen_string.c_str());
 	engine_send_command_start_analyze(engn, MOVE_TIME_DEFUALT);
 	engine_parse_analisys_output(engn, line); // Get lines with moves in LAN notation. 
@@ -45,7 +102,7 @@ void analize_game_player(game* gm, engine* engn, suspect_portrait* susp, char* n
 	}
 
 	// 2. Analyse each move of player, while don't reach the end of notation.
-	while (ptr_game_notation != NULL)
+    while (ptr_game_notation != NULL && !FlStop)
 	{
 		// 1. Get next move.
 		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
@@ -98,7 +155,7 @@ void analize_game_player(game* gm, engine* engn, suspect_portrait* susp, char* n
 	}
 }
 
-void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp, int max_count_of_moves) {
+int analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp, int max_count_of_moves, FILE* logFile) {
 	thc::ChessRules cr;
 	thc::Move mv;
 	char move_from_game[MAX_MOVE_SIZE] = { '\0' };
@@ -120,7 +177,7 @@ void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp,
 	count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation);
 
 	// 1. Analyse each move, while don't reach the end of notation.
-	while (ptr_game_notation != NULL)
+    while (ptr_game_notation != NULL && !FlStop)
 	{
 		// 1. Get next move.
 		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
@@ -172,49 +229,43 @@ void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp,
 		}
 	}
 
-	printf("moves analised = %d, ", count_mv_anal);
+    //fprintf(logFile, "moves analised = %d, ", count_mv_anal);
+    return count_mv_anal;
 }
 
-void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp) {
+void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp, AnalysisLogWindow* logW, FILE* logFile) {
 	game gm;
 	int count_of_games = 0;
 	time_t time_start, time_curr;
-	FILE* file = NULL;
-	fopen_s(&file, "Suspect_analyse.txt", "w");
-	print_info_file(file, prsr, engn);
 
 	open_database(prsr);
 	init_attr_cont(&susp->attr_acc);
 	zero_attr_cont(&susp->attr_count);
 
-	while (count_of_games < prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF)
+    while (count_of_games < prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF && !FlStop)
 	{
 		time(&time_start);
 		time(&time_curr);
-		printf("Analyse game %d ", count_of_games + 1);
+        //fprintf(logFile, "Analyse game %d ", count_of_games + 1);
 		analize_game_player(&gm, engn, susp, prsr->fiter.name);
 		count_of_games++;
+        logW->ui->count_games_susp->setNum(count_of_games);
 		time(&time_curr);
-		printf("time: %fs\n", difftime(time_curr, time_start));
+        //fprintf(logFile, "time: %fs\n", difftime(time_curr, time_start));
 	}
 
 	calc_acc_suspect(susp);
-	print_susp_file(susp, file);
-	print_susp_std(susp);
-	printf("\n");
+    print_susp_file(susp, logFile);
 
 	close_database(prsr);
 }
 
-void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp, suspect_portrait* player) {
+void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp, suspect_portrait* player, AnalysisLogWindow* logW, FILE* logFile) {
 	game gm;
 	char name_cpy[MAX_NAME_SIZE] = { '\0' };
 	int count_of_games = 0;
 	time_t time_start, time_curr;
-	int count_moves = 0;
-	FILE* file = NULL;
-	fopen_s(&file, "DB_analyse.txt", "w");
-	print_info_file(file, prsr, engn);
+    int count_moves = 0, count_moves_anal = 0;
 
 	// Empty name filter of parser.
 	memcpy(name_cpy, prsr->fiter.name, sizeof(char) * MAX_NAME_SIZE);
@@ -224,43 +275,49 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 	init_attr_cont_with_other_cont(&susp->attr_acc, &player->attr_acc);
 	zero_attr_cont(&susp->attr_count);
 
-	while (get_next_game(prsr, &gm) != DB_EOF)
+    while (get_next_game(prsr, &gm) != DB_EOF && !FlStop)
 	{
-		count_of_games++;
-		time(&time_start);
-		time(&time_curr);
-		printf("Analyse game %d, ", count_of_games);
-		count_moves = get_count_of_moves_total(&gm);
-		printf("total moves = %d, ", count_moves);
-		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves);
-		time(&time_curr);
-		printf("time: %fs\n", difftime(time_curr, time_start));
-		print_susp_std_count(susp);
+        if (strcmp(gm.name_black, name_cpy) != 0 && strcmp(gm.name_white, name_cpy) != 0){
+            count_of_games++;
+            time(&time_start);
+            time(&time_curr);
+            //fprintf(logFile, "Analyse game %d, ", count_of_games);
+            count_moves = get_count_of_moves_total(&gm);
+            //fprintf(logFile, "total moves = %d, ", count_moves);
+            count_moves_anal = analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves, logFile);
+            if (count_moves_anal > 0){
+                logW->ui->count_games_DB->setNum(count_of_games);
+            }
+            time(&time_curr);
+            //fprintf(logFile, "time: %fs\n", difftime(time_curr, time_start));
+            //print_susp_std_count(susp);
+        }
 	}
 
 	calc_acc_suspect(susp);
-	print_susp_file(susp, file);
-	print_susp_std(susp);
+    print_susp_file(susp, logFile);
 
 	memcpy(prsr->fiter.name, name_cpy, sizeof(char) * MAX_NAME_SIZE);
 
 	close_database(prsr);
 }
 
-void do_analize(parser* prsr, engine* engn, suspect_portrait* susp_player, suspect_portrait* susp_no_name) {
+void do_analize(parser* prsr, engine* engn, suspect_portrait* susp_player, suspect_portrait* susp_no_name, AnalysisLogWindow* logW, FILE* logFile) {
 	// 1. Load an engine.
+    //fprintf(logFile, "Loading engine.\n");
 	if (engine_load(engn) == ENGINE_LOAD_OK) {
 		//2. Analyse base.
+        //fprintf(logFile, "Engine \"%ls\" successfully loaded.\n", engn->path_to_engine);
 		if (susp_player == NULL) { // If name filter wasn't matched.
 
 		}
 		else { // If need to analyse a player.
-			printf("Analyse player started.\n");
-			do_analize_glob_player(prsr, engn, susp_player); // Firstly, analyze a player.
-			printf("Analyse player finished.\n");
-			printf("Analyse other dbase started.\n");
-			do_analize_glob_no_name(prsr, engn, susp_no_name, susp_player); // Secondly, analyse all attr_sets, that was analyzed in analise before.
-			printf("Analyse other dbase finished.\n");
+            //fprintf(logFile, "Analyse player started.\n");
+            do_analize_glob_player(prsr, engn, susp_player, logW, logFile); // Firstly, analyze a player.
+            //fprintf(logFile, "Analyse player finished.\n");
+           // fprintf(logFile, "Analyse other dbase started.\n");
+            do_analize_glob_no_name(prsr, engn, susp_no_name, susp_player, logW, logFile); // Secondly, analyse all attr_sets, that was analyzed in analise before.
+           // fprintf(logFile, "Analyse other dbase finished.\n");
 		}
 
 		engine_close(engn);
@@ -469,36 +526,36 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 					for (int q = 0; q < MAX_Q; q++) {
 						if (susp->attr_acc.cont.int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
 							if (p == EMPTY_P) {
-								fprintf(file, "{X_p, ");
+                                fprintf(file, "X, ");
 							}
 							else {
-								fprintf(file, "{%d_p, ", p);
+                                fprintf(file, "%d, ", p);
 							}
 							if (n == EMPTY_N) {
-								fprintf(file, "X_n, ");
+                                fprintf(file, "X, ");
 							}
 							else {
-								fprintf(file, "%d_n, ", n);
+                                fprintf(file, "%d, ", n);
 							}
 							if (b == EMPTY_B) {
-								fprintf(file, "X_b, ");
+                                fprintf(file, "X, ");
 							}
 							else {
-								fprintf(file, "%d_b, ", b);
+                                fprintf(file, "%d, ", b);
 							}
 							if (r == EMPTY_R) {
-								fprintf(file, "X_r, ");
+                                fprintf(file, "X, ");
 							}
 							else {
-								fprintf(file, "%d_r, ", r);
+                                fprintf(file, "%d, ", r);
 							}
 							if (q == EMPTY_Q) {
-								fprintf(file, "X_q}: ");
+                                fprintf(file, "X ");
 							}
 							else {
-								fprintf(file, "%d_q}: ", q);
+                                fprintf(file, "%d ", q);
 							}
-							fprintf(file, "accuracy = %f, count = %d\n",
+                            fprintf(file, "%f %d\n",
 								susp->attr_acc.cont.fl_cont[p][n][b][r][q],
 								susp->attr_count.cont.int_cont[p][n][b][r][q]);
 						}
@@ -507,16 +564,18 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 			}
 		}
 	}
+
+    fprintf(file, "\n");
 }
 
 void print_info_file(FILE* file, parser* prsr, engine* engn) {
-	fprintf(file, "Path to db: %s\n"
-		"Name/nick-name of player (suspect): %s\n"
-		"Path to engine: %ls\n"
-		"Engine: Count of CPU threads: %d\n"
-		"Engine: Count of lines: %d\n"
-		"Engine: Hash size: %d MB\n"
-		"Engine: Move time: %d sec\n",
+    fprintf(file, "DB %s\n"
+        "NAME %s\n"
+        "ENGINE %ls\n"
+        "CPU %d\n"
+        "LINES %d\n"
+        "HASH %d\n"
+        "MOVETIME %d\n",
 		prsr->db.path_to_db,
 		prsr->fiter.name,
 		engn->path_to_engine,
@@ -524,15 +583,15 @@ void print_info_file(FILE* file, parser* prsr, engine* engn) {
 		engn->multi_pv,
 		engn->hash,
 		engn->move_time);
-	if (prsr->fiter.evnt == EVENT_BLITZ) fprintf(file, "Search (filter): Type of games: Blitz\n");
-	else if (prsr->fiter.evnt == EVENT_BULLET) fprintf(file, "Search (filter): Type of games: Bullet\n");
-	else if (prsr->fiter.evnt == EVENT_CLASSIC) fprintf(file, "Search (filter): Type of games: Classical\n");
-	fprintf(file, "Search (filter): Min rating: %d\n"
-		"Search(filter): Max rating: % d\n"
-		"Search(filter): Max count of moves: %d\n"
-		"Search(filter): Max count of games: %d\n\n",
+    if (prsr->fiter.evnt == EVENT_BLITZ) fprintf(file, "TYPE Blitz\n");
+    else if (prsr->fiter.evnt == EVENT_BULLET) fprintf(file, "TYPE Bullet\n");
+    else if (prsr->fiter.evnt == EVENT_CLASSIC) fprintf(file, "TYPE Classical\n");
+    fprintf(file, "MINR %d\n"
+        "MAXR %d\n"
+        "COUNTMOVES %d\n"
+        "COUNTGAMES %d\n\n",
 		prsr->fiter.elo_min,
-		prsr->fiter.elo_min,
+        prsr->fiter.elo_max,
 		prsr->fiter.max_count_of_moves,
 		prsr->fiter.max_count_of_games);
 }
