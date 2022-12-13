@@ -305,7 +305,9 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 void do_analize(parser* prsr, engine* engn, suspect_portrait* susp_player, suspect_portrait* susp_no_name, AnalysisLogWindow* logW, FILE* logFile) {
 	// 1. Load an engine.
     //fprintf(logFile, "Loading engine.\n");
+    logW->ui->logText->appendPlainText("Loading engine... ");
 	if (engine_load(engn) == ENGINE_LOAD_OK) {
+        logW->ui->logText->appendPlainText("OK\n");
 		//2. Analyse base.
         //fprintf(logFile, "Engine \"%ls\" successfully loaded.\n", engn->path_to_engine);
 		if (susp_player == NULL) { // If name filter wasn't matched.
@@ -313,15 +315,27 @@ void do_analize(parser* prsr, engine* engn, suspect_portrait* susp_player, suspe
 		}
 		else { // If need to analyse a player.
             //fprintf(logFile, "Analyse player started.\n");
+            logW->ui->logText->appendPlainText("Suspect analysis started...");
             do_analize_glob_player(prsr, engn, susp_player, logW, logFile); // Firstly, analyze a player.
+            logW->ui->logText->appendPlainText("Suspect analisis finished!\n");
             //fprintf(logFile, "Analyse player finished.\n");
            // fprintf(logFile, "Analyse other dbase started.\n");
+            logW->ui->logText->appendPlainText("Database analysis started...");
             do_analize_glob_no_name(prsr, engn, susp_no_name, susp_player, logW, logFile); // Secondly, analyse all attr_sets, that was analyzed in analise before.
-           // fprintf(logFile, "Analyse other dbase finished.\n");
+            logW->ui->logText->appendPlainText("Database analisys finished!\n ");
+            // fprintf(logFile, "Analyse other dbase finished.\n");
 		}
 
 		engine_close(engn);
-	}
+    }else{
+        logW->ui->logText->appendPlainText("FAIL\n");
+    }
+
+    if (FlStop){
+        logW->ui->logText->appendPlainText("Stoped!\n");
+    }else{
+        logW->ui->logText->appendPlainText("Finished!");
+    }
 }
 
 char* get_next_move_from_notation(char* notation, char* move_buff) {

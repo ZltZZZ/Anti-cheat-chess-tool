@@ -33,7 +33,7 @@ public:
     QScrollArea *scrollArea;
     QWidget *scrollAreaWidgetContents;
     QHBoxLayout *horizontalLayout;
-    QPlainTextEdit *plainTextEdit;
+    QPlainTextEdit *logText;
     QScrollBar *verticalScrollBar;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout_2;
@@ -76,15 +76,15 @@ public:
         scrollAreaWidgetContents->setGeometry(QRect(0, 0, 325, 485));
         horizontalLayout = new QHBoxLayout(scrollAreaWidgetContents);
         horizontalLayout->setObjectName("horizontalLayout");
-        plainTextEdit = new QPlainTextEdit(scrollAreaWidgetContents);
-        plainTextEdit->setObjectName("plainTextEdit");
+        logText = new QPlainTextEdit(scrollAreaWidgetContents);
+        logText->setObjectName("logText");
         QFont font;
         font.setFamilies({QString::fromUtf8("SimSun")});
-        font.setPointSize(9);
+        font.setPointSize(12);
         font.setBold(false);
-        plainTextEdit->setFont(font);
+        logText->setFont(font);
 
-        horizontalLayout->addWidget(plainTextEdit);
+        horizontalLayout->addWidget(logText);
 
         verticalScrollBar = new QScrollBar(scrollAreaWidgetContents);
         verticalScrollBar->setObjectName("verticalScrollBar");
@@ -207,7 +207,7 @@ public:
     {
         AnalysisLogWindow->setWindowTitle(QCoreApplication::translate("AnalysisLogWindow", "Dialog", nullptr));
         groupBox->setTitle(QCoreApplication::translate("AnalysisLogWindow", "Log", nullptr));
-        plainTextEdit->setPlainText(QString());
+        logText->setPlainText(QString());
         groupBox_2->setTitle(QCoreApplication::translate("AnalysisLogWindow", "Analysis", nullptr));
         progress->setText(QCoreApplication::translate("AnalysisLogWindow", "0%", nullptr));
         label_4->setText(QCoreApplication::translate("AnalysisLogWindow", "Time left :", nullptr));

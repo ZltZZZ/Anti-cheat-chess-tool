@@ -7,6 +7,6 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     w.setWindowTitle("Anti Cheat Chess Tool");
-    w.show();
+    w.showMaximized();
     return a.exec();
 }

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_analinfowindow.h"
+#include "ui_analysislogwindow.h"
 #include "ui_mainwindow.h"
 #include "new_anal_window.h"
 #include "analysislogwindow.h"
@@ -49,7 +50,6 @@ void MainWindow::start_analyze(parser* prsr, engine* engn, suspect_portrait* pla
     memcpy(dbCpy, db, sizeof(suspect_portrait));
     anal = new AnalysisHandler("1", prsrCpy, engnCpy, playerCpy, dbCpy, logW);
     QThread::currentThread()->setPriority(QThread::LowestPriority);
-    anal->start(QThread::InheritPriority);
 
     emit close_newAnalWindow();
 
@@ -58,6 +58,8 @@ void MainWindow::start_analyze(parser* prsr, engine* engn, suspect_portrait* pla
     logW->setAttribute(Qt::WA_DeleteOnClose, true);
     logW->show();
     connect(logW, SIGNAL(some_sign()), this, SLOT(stop_analysis()));
+    logW->ui->logText->appendPlainText("Analysis started!");
+    anal->start(QThread::InheritPriority);
 
     free(prsrCpy);
     free(engnCpy);
