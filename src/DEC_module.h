@@ -3,7 +3,7 @@
 #define ACC_MULTI 10000
 
 #include "DataBase_parser.h"
-#include "Engine_handler.h"
+#include "UCI_API.h"
 #include "Chessboard_handler.h"
 
 /* ------------This is a module that unite all handlers in one synchronized working machine----------------------
@@ -25,28 +25,28 @@ typedef struct _suspect_portrait {
 void init_suspect_portrait(suspect_portrait*, parser*);
 
 /* Return accuracy of move. */
-int analize_move(engine*, thc::ChessRules*, thc::Move* next_mv);
+int analize_move(UCI_Engine*, thc::ChessRules*, thc::Move* next_mv);
 
 /* Analize a game of a player, named NAME. THIS IS A MAIN ALGORINM OF ANALIZING.*/
-void analize_game_player(game*, engine*, suspect_portrait*, char* name);
+void analize_game_player(game*, UCI_Engine*, suspect_portrait*, char* name);
 
 /* Analizes ONLY positions, that contains the same attr_set as was in analysis of player. THIS IS A MAIN ALGORINM OF ANALIZING.*/
-void analize_game_player_no_name(game*, engine*, suspect_portrait*);
+void analize_game_player_no_name(game*, UCI_Engine*, suspect_portrait*);
 
 /* Get a move string from notation. Returns NULL, if this is was last move in notation. */
 char* get_next_move_from_notation(char* notation, char* move_buff);
 
 /* Ananlizes all games of choosed player. */
-void do_analize_glob_player(parser*, engine*, suspect_portrait*);
+void do_analize_glob_player(parser*, UCI_Engine*, suspect_portrait*);
 
 /* Ananlizes all games that without name filter (analyze ONLY positions, that player played. */
-void do_analize_glob_no_name(parser*, engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_moves);
+void do_analize_glob_no_name(parser*, UCI_Engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_moves);
 
 /* Ananlizes all games that without name filter (with full analize of game). */
-void do_analize_glob(parser*, engine*, suspect_portrait*);
+void do_analize_glob(parser*, UCI_Engine*, suspect_portrait*);
 
 /* Main function, that calls from entry point. */
-void do_analize(parser*, engine*, suspect_portrait* susp_player, suspect_portrait* susp_no_name);
+void do_analize(parser*, UCI_Engine*, suspect_portrait* susp_player, suspect_portrait* susp_no_name);
 
 /* Compare next move of ENGINE with next move of Player. Returns a number, that correspondes to number of line. */
 int get_accuracy_of_move(thc::Move*, engine_line*, int count_of_lines);
@@ -70,7 +70,7 @@ void print_susp_file(suspect_portrait* susp, FILE* file);
 
 void print_susp_std_count(suspect_portrait* susp);
 
-void print_info_file(FILE* file, parser* prsr, engine* engn);
+void print_info_file(FILE* file, parser* prsr, UCI_Engine* engn);
 
 int get_count_of_moves_total(game* gm);
 

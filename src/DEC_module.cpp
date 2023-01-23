@@ -7,20 +7,22 @@ void init_suspect_portrait(suspect_portrait* susp, parser* prsr) {
 	zero_attr_cont(&susp->attr_count);
 }
 
-int analize_move(engine* engn, thc::ChessRules* cr, thc::Move* next_mv) {
-	engine_line line[OPTION_MULTI_PV_DEF];
-	std::string fen_string = cr->ForsythPublish();
+int analize_move(UCI_Engine* engn, thc::ChessRules* cr, thc::Move* next_mv) {
+	engine_line* line = (engine_line*) malloc(sizeof(engine_line) * engn->multipv);
+	int acc = 0;
 
 	// 1. Feed FEN to engine. Get answer of engine.
-	engine_set_position(engn, (char*)fen_string.c_str());
-	engine_send_command_start_analyze(engn, MOVE_TIME_DEFUALT);
-	engine_parse_analisys_output(engn, line); // Get lines with moves in LAN notation. 
+	engn->set_position(cr->ForsythPublish());
+	engn->start_analyse();
+	engn->parse_analisys_output(line); // Get lines with moves in LAN notation. 
 
 	// 2. Get accuracy evaluation
-	return get_accuracy_of_move(next_mv, line, OPTION_MULTI_PV_DEF);
+	acc = get_accuracy_of_move(next_mv, line, engn->multipv);
+	free(line);
+	return acc;
 }
 
-void analize_game_player(game* gm, engine* engn, suspect_portrait* susp, char* name) {
+void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, char* name) {
 	thc::ChessRules cr;
 	thc::Move mv;
 	char move_from_game[MAX_MOVE_SIZE] = { '\0' };
@@ -98,7 +100,7 @@ void analize_game_player(game* gm, engine* engn, suspect_portrait* susp, char* n
 	}
 }
 
-void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp, int max_count_of_moves) {
+void analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* susp, int max_count_of_moves) {
 	thc::ChessRules cr;
 	thc::Move mv;
 	char move_from_game[MAX_MOVE_SIZE] = { '\0' };
@@ -175,7 +177,7 @@ void analize_game_player_no_name(game* gm, engine* engn, suspect_portrait* susp,
 	printf("moves analised = %d, ", count_mv_anal);
 }
 
-void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp) {
+void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* susp) {
 	game gm;
 	int count_of_games = 0;
 	time_t time_start, time_curr;
@@ -206,7 +208,7 @@ void do_analize_glob_player(parser* prsr, engine* engn, suspect_portrait* susp) 
 	close_database(prsr);
 }
 
-void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp, suspect_portrait* player) {
+void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* susp, suspect_portrait* player) {
 	game gm;
 	char name_cpy[MAX_NAME_SIZE] = { '\0' };
 	int count_of_games = 0;
@@ -247,9 +249,9 @@ void do_analize_glob_no_name(parser* prsr, engine* engn, suspect_portrait* susp,
 	close_database(prsr);
 }
 
-void do_analize(parser* prsr, engine* engn, suspect_portrait* susp_player, suspect_portrait* susp_no_name) {
+void do_analize(parser* prsr, UCI_Engine* engn, suspect_portrait* susp_player, suspect_portrait* susp_no_name) {
 	// 1. Load an engine.
-	if (engine_load(engn) == ENGINE_LOAD_OK) {
+	if (engn->load() == ENGINE_OK) {
 		//2. Analyse base.
 		if (susp_player == NULL) { // If name filter wasn't matched.
 
@@ -263,7 +265,7 @@ void do_analize(parser* prsr, engine* engn, suspect_portrait* susp_player, suspe
 			printf("Analyse other dbase finished.\n");
 		}
 
-		engine_close(engn);
+		engn->close();
 	}
 }
 
@@ -509,7 +511,7 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 	}
 }
 
-void print_info_file(FILE* file, parser* prsr, engine* engn) {
+void print_info_file(FILE* file, parser* prsr, UCI_Engine* engn) {
 	fprintf(file, "Path to db: %s\n"
 		"Name/nick-name of player (suspect): %s\n"
 		"Path to engine: %ls\n"
@@ -519,11 +521,11 @@ void print_info_file(FILE* file, parser* prsr, engine* engn) {
 		"Engine: Move time: %d sec\n",
 		prsr->db.path_to_db,
 		prsr->fiter.name,
-		engn->path_to_engine,
+		engn->path_to_engine.c_str(),
 		engn->cpu,
-		engn->multi_pv,
+		engn->multipv,
 		engn->hash,
-		engn->move_time);
+		engn->movetime);
 	if (prsr->fiter.evnt == EVENT_BLITZ) fprintf(file, "Search (filter): Type of games: Blitz\n");
 	else if (prsr->fiter.evnt == EVENT_BULLET) fprintf(file, "Search (filter): Type of games: Bullet\n");
 	else if (prsr->fiter.evnt == EVENT_CLASSIC) fprintf(file, "Search (filter): Type of games: Classical\n");

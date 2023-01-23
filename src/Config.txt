@@ -1,0 +1,14 @@
+Path to database (.pgn)                 :C:\Work\lichess_db_standard_rated_2015-01.pgn
+Name/nick-name of player (suspect)      :strange_person
+Type of games                           :0
+Min rating                              :1800
+Max rating                              :1900
+Max count of positions                  :150
+Max count of games (of suspect)         :-1
+Path to engine                          :C:\Work\stockfish_15.1_win_x64_popcnt\stockfish-windows-2022-x86-64-modern.exe
+Threads                                 :2
+MultiPV                                 :4
+Hash (Mb)                               :3072
+Movetime (ms)                           :3000
+
+
