@@ -40,7 +40,7 @@ char* get_next_move_from_notation(char* notation, char* move_buff);
 void do_analize_glob_player(parser*, UCI_Engine*, suspect_portrait*);
 
 /* Ananlizes all games that without name filter (analyze ONLY positions, that player played. */
-void do_analize_glob_no_name(parser*, UCI_Engine*, suspect_portrait* susp, suspect_portrait* player, int max_count_of_moves);
+void do_analize_glob_no_name(parser*, UCI_Engine*, suspect_portrait* susp, suspect_portrait* player);
 
 /* Ananlizes all games that without name filter (with full analize of game). */
 void do_analize_glob(parser*, UCI_Engine*, suspect_portrait*);

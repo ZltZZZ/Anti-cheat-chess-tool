@@ -1,5 +1,7 @@
 #include "DEC_module.h"
 
+bool FlStop;
+
 void init_suspect_portrait(suspect_portrait* susp, parser* prsr) {
 	memcpy(&susp->prsr, prsr, sizeof(parser));
 
@@ -47,7 +49,7 @@ void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, cha
 	}
 
 	// 2. Analyse each move of player, while don't reach the end of notation.
-	while (ptr_game_notation != NULL)
+	while (ptr_game_notation != NULL && !FlStop)
 	{
 		// 1. Get next move.
 		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
@@ -100,7 +102,7 @@ void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, cha
 	}
 }
 
-void analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* susp, int max_count_of_moves) {
+int analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* susp, int max_count_of_moves) {
 	thc::ChessRules cr;
 	thc::Move mv;
 	char move_from_game[MAX_MOVE_SIZE] = { '\0' };
@@ -122,7 +124,7 @@ void analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* s
 	count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation);
 
 	// 1. Analyse each move, while don't reach the end of notation.
-	while (ptr_game_notation != NULL)
+	while (ptr_game_notation != NULL && !FlStop)
 	{
 		// 1. Get next move.
 		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
@@ -169,12 +171,13 @@ void analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* s
 			fen_string = cr.ForsythPublish();  // Get FEN string of new position
 			get_attr_set(fen_string.c_str(), &attr_st); // Get attributes of new position
 			attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
-			
+
 			count_of_mv = 0;
 		}
 	}
 
-	printf("moves analised = %d, ", count_mv_anal);
+	//fprintf(logFile, "moves analised = %d, ", count_mv_anal);
+	return count_mv_anal;
 }
 
 void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* susp) {
@@ -189,15 +192,14 @@ void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* su
 	init_attr_cont(&susp->attr_acc);
 	zero_attr_cont(&susp->attr_count);
 
-	while (count_of_games < prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF)
+	while (count_of_games < prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF && !FlStop)
 	{
-		time(&time_start);
-		time(&time_curr);
+		time_start = clock();
 		printf("Analyse game %d ", count_of_games + 1);
 		analize_game_player(&gm, engn, susp, prsr->fiter.name);
 		count_of_games++;
-		time(&time_curr);
-		printf("time: %fs\n", difftime(time_curr, time_start));
+		time_curr = clock();
+		printf("time: %fs\n", (time_start - time_curr) / 1000.0);
 	}
 
 	calc_acc_suspect(susp);
@@ -226,17 +228,16 @@ void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* s
 	init_attr_cont_with_other_cont(&susp->attr_acc, &player->attr_acc);
 	zero_attr_cont(&susp->attr_count);
 
-	while (get_next_game(prsr, &gm) != DB_EOF)
+	while (get_next_game(prsr, &gm) != DB_EOF && !FlStop)
 	{
 		count_of_games++;
-		time(&time_start);
-		time(&time_curr);
+		time_start = clock();
 		printf("Analyse game %d, ", count_of_games);
 		count_moves = get_count_of_moves_total(&gm);
 		printf("total moves = %d, ", count_moves);
 		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves);
-		time(&time_curr);
-		printf("time: %fs\n", difftime(time_curr, time_start));
+		time_curr = clock();
+		printf("time: %fs\n", (time_start - time_curr) / 1000.0);
 		print_susp_std_count(susp);
 	}
 

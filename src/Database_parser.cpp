@@ -30,11 +30,16 @@ int get_next_game(parser* prsr, game* gm) {
 	tag tag_name;
 	char* ptr_value = NULL;
 	char c;
+	int count = 0;
 
 	// Seacrh until needed game is not found or end of databse isn't reached
 	while (!feof(prsr->db.pgn_db))
 	{
 		game_clear(gm);
+		count++;
+		if (count % 10000 == 0) {
+			printf("still finding: %d\n", count);
+		}
 
 		// Get tags and it's values
 		while (true)
