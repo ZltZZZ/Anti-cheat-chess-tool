@@ -235,7 +235,7 @@ void UCI_Engine::set_position(std::string fen)
 
 void UCI_Engine::parse_analisys_output(engine_line* line)
 {
-    char word[MAX_WORD_SIZE] = { '\0' };
+    char word[MAX_WORD2_SIZE] = { '\0' };
     int word_indx = 0, // Index of word string
         line_indx = 0; // Index of line
     char c_buff;
@@ -265,7 +265,7 @@ void UCI_Engine::parse_analisys_output(engine_line* line)
 
                 is_word = false;
                 word_indx = 0;
-                memset(word, '\0', sizeof(char) * MAX_WORD_SIZE);
+                memset(word, '\0', sizeof(char) * MAX_WORD2_SIZE);
             }
         }
         else
@@ -279,13 +279,13 @@ void UCI_Engine::parse_analisys_output(engine_line* line)
                 is_line = true;
                 is_word = false; // This is a little crutch to avoid logical error.
                 word_indx = 0;
-                memset(word, '\0', sizeof(char) * MAX_WORD_SIZE);
+                memset(word, '\0', sizeof(char) * MAX_WORD2_SIZE);
             }
             else if (memcmp(word, "pv", 3) == 0) {
                 is_move = true;
                 is_word = false; // The same as upper.
                 word_indx = 0;
-                memset(word, '\0', sizeof(char) * MAX_WORD_SIZE);
+                memset(word, '\0', sizeof(char) * MAX_WORD2_SIZE);
             }
         }
     }

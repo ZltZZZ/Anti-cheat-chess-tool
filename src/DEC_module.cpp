@@ -3,7 +3,7 @@
 bool FlStop;
 
 void init_suspect_portrait(suspect_portrait* susp, parser* prsr) {
-	memcpy(&susp->prsr, prsr, sizeof(parser));
+	//memcpy(&susp->prsr, prsr, sizeof(parser));
 
 	init_attr_cont(&susp->attr_acc);
 	zero_attr_cont(&susp->attr_count);

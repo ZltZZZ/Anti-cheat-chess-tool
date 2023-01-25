@@ -12,7 +12,7 @@
 /* That is a struct that contains information about accuracy of suspected person,
    and other following information about range of research. */
 typedef struct _suspect_portrait {
-	parser prsr;
+	//parser prsr;
 
     /* Sum of accuracies for all possible sets of attribute (used to calculate the average accuracy after analysis)  */
 	attr_container attr_acc;

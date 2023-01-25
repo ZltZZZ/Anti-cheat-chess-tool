@@ -9,7 +9,7 @@
 #define MAX_MSG_SIZE 1500
 #define WAITING_TIME 10
 #define MAX_MOVE_SIZE 10
-#define MAX_WORD_SIZE 100
+#define MAX_WORD2_SIZE 100
 
 /*-----------------------Process_handler----------------------*/
 typedef enum _error_process {

@@ -1,4 +1,5 @@
 #include "DataBase_parser.h"
+#include <ctime>
 
 void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char* name, char* path_to_db, int max_count_of_moves, int max_count_of_games) {
 	prsr->fiter.elo_min = min_elo;
@@ -14,13 +15,20 @@ void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char
 	}
 
 	memcpy(prsr->db.path_to_db, path_to_db, sizeof(char) * MAX_PATH_LENTH);
+
+	prsr->db.buff = (char*)malloc(sizeof(char) * MAX_BUFF_SIZE);
+	prsr->db.buff_ptr = MAX_BUFF_SIZE;
+}
+
+void free_parser_buff(parser* prsr) {
+	free(prsr->db.buff);
 }
 
 void game_clear(game* gm) {
 	gm->elo_black = 0;
 	gm->elo_white = 0;
 	gm->evnt = EVENT_UNDEFINED;
-	memset(gm->moves, '\0', sizeof(char) * MAX_BUFF_SIZE);
+	memset(gm->moves, '\0', sizeof(char) * MAX_WORD_SIZE);
 	memset(gm->name_black, '\0', sizeof(char) * MAX_NAME_SIZE);
 	memset(gm->name_white, '\0', sizeof(char) * MAX_NAME_SIZE);
 }
@@ -31,53 +39,74 @@ int get_next_game(parser* prsr, game* gm) {
 	char* ptr_value = NULL;
 	char c;
 	int count = 0;
+	bool isTag = false, isMove = false, isWord = false;
+	char word[MAX_WORD_SIZE] = { '\0' };
+	int word_indx = 0;
+	time_t before, after;
 
+	//if (prsr->db.buff_ptr == MAX_BUFF_SIZE) {
+	//	get_next_page(prsr);
+	//	prsr->db.buff_ptr = 0;
+	//}
 	// Seacrh until needed game is not found or end of databse isn't reached
-	while (!feof(prsr->db.pgn_db))
+	before = clock();
+	game_clear(gm);
+	while (!feof(prsr->db.pgn_db) || prsr->db.buff_ptr != MAX_BUFF_SIZE)
 	{
-		game_clear(gm);
-		count++;
-		if (count % 10000 == 0) {
-			printf("still finding: %d\n", count);
+		if (prsr->db.buff_ptr == MAX_BUFF_SIZE) {
+			get_next_page(prsr);
+			prsr->db.buff_ptr = 0;
 		}
 
-		// Get tags and it's values
-		while (true)
-		{
-			memset(prsr->db.buff, '\0', sizeof(char) * MAX_BUFF_SIZE);
-			fscanf_s(prsr->db.pgn_db, "%[^\n]%c", prsr->db.buff, MAX_BUFF_SIZE, &c, 1);
+		while (prsr->db.buff_ptr < MAX_BUFF_SIZE) {
+			c = prsr->db.buff[prsr->db.buff_ptr++];
 
-			// If reaches empty string in pgn base, that it is the section of moves, so exit loop
-			if (prsr->db.buff[0] == '\0') {
-				break;
+			if (c == '\n') {
+				if (isMove == true && check_filter(prsr, gm) == true) { // Move section reached
+					move_parser(gm, word);
+					isMove = false;
+					return DB_SUCCESS;
+				}
+				else if (isMove == true) // Didn't pass the filter
+				{
+					game_clear(gm);
+					count++;
+					if (count % 10000000 == 0) {
+						after = clock();
+						printf("still finding: %d, time: %f\n", count, (after - before) / 1000.0);
+						before = after;
+					}
+				}
+
+				if (isTag == true) {
+					//parse tag
+					tag_name = get_tag_name(word);
+					ptr_value = get_tag_value(word);
+					fill_tag_in_game(gm, tag_name, ptr_value);
+					isTag = false;
+				}
+
+				if (isWord == true) {
+					isWord = false;
+					word_indx = 0;
+					memset(word, '\0', sizeof(char) * MAX_WORD_SIZE);
+				}
 			}
 			else {
-				// Parse tag
-				tag_name = get_tag_name(prsr->db.buff);
-				ptr_value = get_tag_value(prsr->db.buff);
-				fill_tag_in_game(gm, tag_name, ptr_value);
+				if (isWord == false) {
+					if (c == '[') {
+						isTag = true;
+					}
+					else {
+						isMove = true;
+					}
+
+					isWord = true;
+				}
+
+				if (word_indx < MAX_WORD_SIZE)
+					word[word_indx++] = c;
 			}
-		}
-
-		fscanf_s(prsr->db.pgn_db, "%c", &c, 1); // Read empty string
-
-		// Check tags of search, and go get next game if doesn't passed filter
-		if (check_filter(prsr, gm) == false) {
-			memset(prsr->db.buff, '\0', sizeof(char) * MAX_BUFF_SIZE);
-			fscanf_s(prsr->db.pgn_db, "%[^\n]%c", prsr->db.buff, MAX_BUFF_SIZE, &c, 1); // Read moves section
-			memset(prsr->db.buff, '\0', sizeof(char) * MAX_BUFF_SIZE);
-			fscanf_s(prsr->db.pgn_db, "%c", &c, 1); // Read empty string
-			// Go to next position
-			continue;
-		}
-		else {
-			// Parse moves section. Delete comments, number of moves and so on.
-			memset(prsr->db.buff, '\0', sizeof(char) * MAX_BUFF_SIZE);
-			fscanf_s(prsr->db.pgn_db, "%[^\n]%c", prsr->db.buff, MAX_BUFF_SIZE, &c, 1);
-			move_parser(gm, prsr->db.buff);
-			// Read empty string to normalize FILE ptr
-			fscanf_s(prsr->db.pgn_db, "%c", &c, 1); // Read empty string
-			return DB_SUCCESS;
 		}
 	}
 
@@ -113,7 +142,8 @@ tag get_tag_name(char* buff) {
 }
 
 char* get_tag_value(char* buff) {
-	for (int i = 0; i < MAX_BUFF_SIZE; i++) {
+	int size = strlen(buff);
+	for (int i = 0; i < size; i++) {
 		if (buff[i] == '\"') {
 			return buff + i + 1;
 		}
@@ -187,8 +217,9 @@ void move_parser(game* gm, char* buff) {
 	char possibleChars_start[] = "abcdefghNBRQKO";
 	char possibleChars_move[] = "12345678abcdefghNBRQKx=O- ";
 	int gm_index = 0;
+	int size = strlen(buff);
 
-	for (int i = 0; i < MAX_BUFF_SIZE; i++) {
+	for (int i = 0; i < size; i++) {
 		// Start of a comment
 		if (buff[i] == '{') {
 			isComment = true;
@@ -216,4 +247,8 @@ void move_parser(game* gm, char* buff) {
 			isMove = false;
 		}
 	}
+}
+
+void get_next_page(parser* prsr) {
+	fread(prsr->db.buff, sizeof(char), MAX_BUFF_SIZE, prsr->db.pgn_db);
 }

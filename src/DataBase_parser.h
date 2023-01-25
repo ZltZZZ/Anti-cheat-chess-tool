@@ -4,10 +4,11 @@
 
 #define MAX_NAME_SIZE 61
 #define MAX_PATH_LENTH 256
-#define MAX_BUFF_SIZE 3072
+#define MAX_BUFF_SIZE /*67108864*/134217728// 128 Mb
 #define NO_RATING -1
 #define DB_SUCCESS 1
 #define DB_EOF 0
+#define MAX_WORD_SIZE 3072
 
 #include <iostream> 
 #include <fstream> 
@@ -46,7 +47,8 @@ typedef struct _parser {
 	struct _db {
 		char path_to_db[MAX_PATH_LENTH];
 		FILE* pgn_db;
-		char buff[MAX_BUFF_SIZE];
+		char* buff;
+		int buff_ptr;
 	}db;
 } parser;
 
@@ -57,7 +59,7 @@ typedef struct _game {
 	_event evnt;
 	char name_white[MAX_NAME_SIZE];
 	char name_black[MAX_NAME_SIZE];
-	char moves[MAX_BUFF_SIZE];
+	char moves[MAX_WORD_SIZE];
 } game;
 
 /* Set paramets that will filter games. */
@@ -69,6 +71,9 @@ void set_parser_params(parser*,
 	                   char* path_to_db,
 	                   int max_count_of_moves,
                        int max_count_of_games);
+
+/* free buff, that was allocated in initialization. */
+void free_parser_buff(parser* prsr);
 
 /* Null all fields in structure _game. */
 void game_clear(game*);
@@ -96,3 +101,6 @@ bool check_filter(parser*, game*);
 
 /* Parse a string of moves. Delete all comments, odd numbers, dots and other useless stuff. White correct moves in _game structure*/
 void move_parser(game*, char* buff);
+
+/* Get next big buff (page) from DB file. */
+void get_next_page(parser* prsr);
