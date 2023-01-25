@@ -6,6 +6,20 @@ error_process create_process(std::wstring path, HANDLE* pipe_in_w, HANDLE* pipe_
     SECURITY_ATTRIBUTES saAttr;
     HANDLE pipe_in_r = NULL;               // Used by engine to recieve msg from app
     HANDLE pipe_out_w = NULL;              // Used by engine to send msg to app
+    HANDLE ghJob = CreateJobObject(NULL, NULL); // GLOBAL
+
+    if (ghJob != NULL)
+    {
+        JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = { 0 };
+
+        // Configure all child processes associated with the job to terminate when the
+        jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+        if (0 == SetInformationJobObject(ghJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli)))
+        {
+            return PROCESS_CREATE_FAIL;
+        }
+    }
+    else return PROCESS_CREATE_FAIL;
 
     ZeroMemory(&pi, sizeof(PROCESS_INFORMATION));
 
@@ -47,8 +61,16 @@ error_process create_process(std::wstring path, HANDLE* pipe_in_w, HANDLE* pipe_
         return PROCESS_CREATE_FAIL;
     }
 
+    if (ghJob)
+    {
+        if (0 == AssignProcessToJobObject(ghJob, pi.hProcess))
+        {
+            return PROCESS_CREATE_FAIL;
+        }
+    }
+
     // Close useless handle of process
-    CloseHandle(pi.hProcess);
+    //CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 
     // Close useless handles of pipes sides of child process

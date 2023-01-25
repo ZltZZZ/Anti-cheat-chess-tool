@@ -38,7 +38,7 @@ int get_next_game(parser* prsr, game* gm) {
 	tag tag_name;
 	char* ptr_value = NULL;
 	char c;
-	int count = 0;
+	int count = 0, c_gms = 0;
 	bool isTag = false, isMove = false, isWord = false;
 	char word[MAX_WORD_SIZE] = { '\0' };
 	int word_indx = 0;
@@ -54,28 +54,38 @@ int get_next_game(parser* prsr, game* gm) {
 	while (!feof(prsr->db.pgn_db) || prsr->db.buff_ptr != MAX_BUFF_SIZE)
 	{
 		if (prsr->db.buff_ptr == MAX_BUFF_SIZE) {
+			double tm = 0;
+			after = clock();
+			tm = (after - before) / 1000.0;
+			printf("getting page number: %d, time: %f, speed of parsing: %f gms/sec\n", count, tm, c_gms / tm);
+			before = after;
+			c_gms = 0;
+
 			get_next_page(prsr);
 			prsr->db.buff_ptr = 0;
+
+			count++;
 		}
 
 		while (prsr->db.buff_ptr < MAX_BUFF_SIZE) {
+			//c_gms++;
+			////prsr->db.buff_ptr++;
+
 			c = prsr->db.buff[prsr->db.buff_ptr++];
 
 			if (c == '\n') {
-				if (isMove == true && check_filter(prsr, gm) == true) { // Move section reached
-					move_parser(gm, word);
-					isMove = false;
-					return DB_SUCCESS;
-				}
-				else if (isMove == true) // Didn't pass the filter
+				if (isMove == true)
 				{
-					game_clear(gm);
-					count++;
-					if (count % 10000000 == 0) {
-						after = clock();
-						printf("still finding: %d, time: %f\n", count, (after - before) / 1000.0);
-						before = after;
+					if (check_filter(prsr, gm) == true) {
+						move_parser(gm, word);
+						return DB_SUCCESS;
 					}
+					else {			// Didn't pass the filter
+						game_clear(gm);
+						c_gms++;
+					}
+
+					isMove = false;
 				}
 
 				if (isTag == true) {
@@ -121,27 +131,27 @@ void close_database(parser* prsr) {
 	fclose(prsr->db.pgn_db);
 }
 
-tag get_tag_name(char* buff) {
+inline tag get_tag_name(char* buff) {
 	char* ptr_substr = NULL;
-	if ((ptr_substr = strstr(buff, "[Event ")) != NULL && ptr_substr == buff) {
+	if (buff[0] == '[' && buff[1] == 'E' && buff[2] == 'v' && buff[3] == 'e' && buff[4] == 'n' && buff[5] == 't' && buff[6] == ' ') {
 		return TAG_EVENT;
 	}
-	if ((ptr_substr = strstr(buff, "[White ")) != NULL && ptr_substr == buff) {
+	if (buff[0] == '[' && buff[1] == 'W' && buff[2] == 'h' && buff[3] == 'i' && buff[4] == 't' && buff[5] == 'e' && buff[6] == ' ') {
 		return TAG_WHITE;
 	}
-	if ((ptr_substr = strstr(buff, "[Black ")) != NULL && ptr_substr == buff) {
+	if (buff[0] == '[' && buff[1] == 'B' && buff[2] == 'l' && buff[3] == 'a' && buff[4] == 'c' && buff[5] == 'k' && buff[6] == ' ') {
 		return TAG_BLACK;
 	}
-	if ((ptr_substr = strstr(buff, "[WhiteElo ")) != NULL && ptr_substr == buff) {
+	if (buff[0] == '[' && buff[1] == 'W' && buff[2] == 'h' && buff[3] == 'i' && buff[4] == 't' && buff[5] == 'e' && buff[6] == 'E' && buff[7] == 'l' && buff[8] == 'o' && buff[9] == ' ') {
 		return TAG_WHITE_ELO;
 	}
-	if ((ptr_substr = strstr(buff, "[BlackElo ")) != NULL && ptr_substr == buff) {
+	if (buff[0] == '[' && buff[1] == 'B' && buff[2] == 'l' && buff[3] == 'a' && buff[4] == 'c' && buff[5] == 'k' && buff[6] == 'E' && buff[7] == 'l' && buff[8] == 'o' && buff[9] == ' ') {
 		return TAG_BLACK_ELO;
 	}
 	return TAG_UNDEFINED;
 }
 
-char* get_tag_value(char* buff) {
+inline char* get_tag_value(char* buff) {
 	int size = strlen(buff);
 	for (int i = 0; i < size; i++) {
 		if (buff[i] == '\"') {
@@ -152,17 +162,17 @@ char* get_tag_value(char* buff) {
 	return NULL;
 }
 
-void fill_tag_in_game(game* gm, tag tg, char* value_ptr) {
+inline void fill_tag_in_game(game* gm, tag tg, char* value_ptr) {
 	switch (tg)
 	{
 	case TAG_EVENT:
-		if (strstr(value_ptr, "Bullet") != NULL || strstr(value_ptr, "bullet") != NULL) {
+		if (strstr(value_ptr, "Bullet") != NULL) {
 			gm->evnt = EVENT_BULLET;
 		}
-		else if (strstr(value_ptr, "Classic") != NULL || strstr(value_ptr, "classic") != NULL) {
+		else if (strstr(value_ptr, "Classic") != NULL) {
 			gm->evnt = EVENT_CLASSIC;
 		}
-		else if ((strstr(value_ptr, "Blitz") != NULL || strstr(value_ptr, "blitz") != NULL)) {
+		else if (strstr(value_ptr, "Blitz") != NULL) {
 			gm->evnt = EVENT_BLITZ;
 		}
 		else {
@@ -250,5 +260,9 @@ void move_parser(game* gm, char* buff) {
 }
 
 void get_next_page(parser* prsr) {
+	time_t t1, t2;
+	t1 = clock();
 	fread(prsr->db.buff, sizeof(char), MAX_BUFF_SIZE, prsr->db.pgn_db);
+	t2 = clock();
+	printf("t: %f\n", (t2 - t1) / 1000.0);
 }
