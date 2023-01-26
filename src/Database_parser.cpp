@@ -18,19 +18,16 @@ void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char
 
 	prsr->db.buff = (char*)malloc(sizeof(char) * MAX_BUFF_SIZE);
 	prsr->db.buff_ptr = MAX_BUFF_SIZE;
+	prsr->db.bytesread = MAX_BUFF_SIZE;
 }
 
 void free_parser_buff(parser* prsr) {
 	free(prsr->db.buff);
 }
 
-void game_clear(game* gm) {
-	gm->elo_black = 0;
-	gm->elo_white = 0;
+inline void game_clear(game* gm) {
+	memset(gm, 0, sizeof(game));
 	gm->evnt = EVENT_UNDEFINED;
-	memset(gm->moves, '\0', sizeof(char) * MAX_WORD_SIZE);
-	memset(gm->name_black, '\0', sizeof(char) * MAX_NAME_SIZE);
-	memset(gm->name_white, '\0', sizeof(char) * MAX_NAME_SIZE);
 }
 
 int get_next_game(parser* prsr, game* gm) {
@@ -44,33 +41,15 @@ int get_next_game(parser* prsr, game* gm) {
 	int word_indx = 0;
 	time_t before, after;
 
-	//if (prsr->db.buff_ptr == MAX_BUFF_SIZE) {
-	//	get_next_page(prsr);
-	//	prsr->db.buff_ptr = 0;
-	//}
-	// Seacrh until needed game is not found or end of databse isn't reached
 	before = clock();
 	game_clear(gm);
-	while (!feof(prsr->db.pgn_db) || prsr->db.buff_ptr != MAX_BUFF_SIZE)
+	while (prsr->db.bytesread > 0)
 	{
 		if (prsr->db.buff_ptr == MAX_BUFF_SIZE) {
-			double tm = 0;
-			after = clock();
-			tm = (after - before) / 1000.0;
-			printf("getting page number: %d, time: %f, speed of parsing: %f gms/sec\n", count, tm, c_gms / tm);
-			before = after;
-			c_gms = 0;
-
 			get_next_page(prsr);
-			prsr->db.buff_ptr = 0;
-
-			count++;
 		}
 
-		while (prsr->db.buff_ptr < MAX_BUFF_SIZE) {
-			//c_gms++;
-			////prsr->db.buff_ptr++;
-
+		while (prsr->db.buff_ptr < prsr->db.bytesread) {
 			c = prsr->db.buff[prsr->db.buff_ptr++];
 
 			if (c == '\n') {
@@ -82,6 +61,14 @@ int get_next_game(parser* prsr, game* gm) {
 					}
 					else {			// Didn't pass the filter
 						game_clear(gm);
+						if (c_gms % 8388608 == 0) {
+							double tm;
+							after = clock();
+							tm = (after - before) / 1000.0;
+							printf("count gms: %d, time: %f, speed of parsing: %f gms/sec\n", c_gms, tm, c_gms / tm);
+							before = after;
+							c_gms = 0;
+						}
 						c_gms++;
 					}
 
@@ -124,11 +111,13 @@ int get_next_game(parser* prsr, game* gm) {
 }
 
 void open_database(parser* prsr) {
-	fopen_s(&prsr->db.pgn_db, prsr->db.path_to_db, "r");
+	//fopen_s(&prsr->db.pgn_db, prsr->db.path_to_db, "r");
+	prsr->db.fd	= _open(prsr->db.path_to_db, _O_RDONLY | _O_BINARY);
 }
 
 void close_database(parser* prsr) {
-	fclose(prsr->db.pgn_db);
+	//fclose(prsr->db.pgn_db);
+	_close(prsr->db.fd);
 }
 
 inline tag get_tag_name(char* buff) {
@@ -202,7 +191,7 @@ inline void fill_tag_in_game(game* gm, tag tg, char* value_ptr) {
 	}
 }
 
-bool check_filter(parser* prsr, game* gm) {
+inline bool check_filter(parser* prsr, game* gm) {
 	float avrg_elo = NO_RATING;   // Avarage elo of a game
 	if (gm->elo_black != NO_RATING && gm->elo_white != NO_RATING) {
 		avrg_elo = (float)(gm->elo_black + gm->elo_white) / 2;
@@ -260,9 +249,6 @@ void move_parser(game* gm, char* buff) {
 }
 
 void get_next_page(parser* prsr) {
-	time_t t1, t2;
-	t1 = clock();
-	fread(prsr->db.buff, sizeof(char), MAX_BUFF_SIZE, prsr->db.pgn_db);
-	t2 = clock();
-	printf("t: %f\n", (t2 - t1) / 1000.0);
+	prsr->db.bytesread = _read(prsr->db.fd, prsr->db.buff, MAX_BUFF_SIZE);
+	prsr->db.buff_ptr = 0;
 }

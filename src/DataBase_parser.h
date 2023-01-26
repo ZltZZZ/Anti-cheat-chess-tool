@@ -1,10 +1,14 @@
 #pragma once
 
+#ifndef _CRT_SECURE_NO_WARNINGS
+	#define _CRT_SECURE_NO_WARNINGS
+#endif // !_CRT_SECURE_NO_WARNINGS
+
 /* That is parser. It gets information from PGN base.*/
 
 #define MAX_NAME_SIZE 61
 #define MAX_PATH_LENTH 256
-#define MAX_BUFF_SIZE 16777216/*1073741824*//*67108864*//*134217728*/// 128 Mb
+#define MAX_BUFF_SIZE 512 * 1024/*16777216*//*1073741824*//*67108864*//*134217728*/// 128 Mb
 #define NO_RATING -1
 #define DB_SUCCESS 1
 #define DB_EOF 0
@@ -14,6 +18,8 @@
 #include <fstream> 
 #include <string>
 #include <time.h>
+#include <io.h>
+#include <fcntl.h>
 
 /* Event. It is blitz, classic, bullet and other. */
 typedef enum _eevent {
@@ -46,9 +52,10 @@ typedef struct _parser {
 
 	struct _db {
 		char path_to_db[MAX_PATH_LENTH];
-		FILE* pgn_db;
+		int fd;
 		char* buff;
 		int buff_ptr;
+		int bytesread;
 	}db;
 } parser;
 
