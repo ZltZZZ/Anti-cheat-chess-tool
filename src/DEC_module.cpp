@@ -199,7 +199,7 @@ void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* su
 		analize_game_player(&gm, engn, susp, prsr->fiter.name);
 		count_of_games++;
 		time_curr = clock();
-		printf("time: %fs\n", (time_start - time_curr) / 1000.0);
+		printf("time: %fs\n", (time_curr - time_start) / 1000.0);
 	}
 
 	calc_acc_suspect(susp);
@@ -237,7 +237,7 @@ void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* s
 		printf("total moves = %d, ", count_moves);
 		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves);
 		time_curr = clock();
-		printf("time: %fs\n", (time_start - time_curr) / 1000.0);
+		printf("time: %fs\n", (time_curr - time_start) / 1000.0);
 		print_susp_std_count(susp);
 	}
 

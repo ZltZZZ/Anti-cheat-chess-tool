@@ -35,7 +35,7 @@ int get_next_game(parser* prsr, game* gm) {
 	tag tag_name;
 	char* ptr_value = NULL;
 	char c;
-	int count = 0, c_gms = 0;
+	int count = 0, c_gms = 1, c_gms_before = 1;
 	bool isTag = false, isMove = false, isWord = false;
 	char word[MAX_WORD_SIZE] = { '\0' };
 	int word_indx = 0;
@@ -65,9 +65,9 @@ int get_next_game(parser* prsr, game* gm) {
 							double tm;
 							after = clock();
 							tm = (after - before) / 1000.0;
-							printf("count gms: %d, time: %f, speed of parsing: %f gms/sec\n", c_gms, tm, c_gms / tm);
+							printf("count gms: %d, time: %f, speed of parsing: %f gms/sec\n", c_gms, tm, (c_gms - c_gms_before) / tm);
 							before = after;
-							c_gms = 0;
+							c_gms_before = c_gms;
 						}
 						c_gms++;
 					}

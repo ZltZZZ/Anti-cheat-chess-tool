@@ -164,6 +164,7 @@ engine_error UCI_Engine::load()
 {
 	// Creates an engine process (run engine.exe).
 	if (create_process(this->path_to_engine, &this->pipe_in_w, &this->pipe_out_r) == PROCESS_CREATE_OK) {
+        this->setup();
 		this->state = WORKING;
 		return ENGINE_OK;
 	}
