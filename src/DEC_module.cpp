@@ -1,253 +1,10 @@
 #include "DEC_module.h"
 
-bool FlStop;
-
-void init_suspect_portrait(suspect_portrait* susp, parser* prsr) {
+void init_suspect_portrait(suspect_portrait* susp) {
 	//memcpy(&susp->prsr, prsr, sizeof(parser));
 
-	init_attr_cont(&susp->attr_acc);
-	zero_attr_cont(&susp->attr_count);
-}
-
-int analize_move(UCI_Engine* engn, thc::ChessRules* cr, thc::Move* next_mv) {
-	engine_line* line = (engine_line*) malloc(sizeof(engine_line) * engn->multipv);
-	int acc = 0;
-
-	// 1. Feed FEN to engine. Get answer of engine.
-	engn->set_position(cr->ForsythPublish());
-	engn->start_analyse();
-	engn->parse_analisys_output(line); // Get lines with moves in LAN notation. 
-
-	// 2. Get accuracy evaluation
-	acc = get_accuracy_of_move(next_mv, line, engn->multipv);
-	free(line);
-	return acc;
-}
-
-void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, char* name) {
-	thc::ChessRules cr;
-	thc::Move mv;
-	char move_from_game[MAX_MOVE_SIZE] = { '\0' };
-	char* ptr_game_notation = gm->moves;
-	std::string fen_string;
-
-	attr_set attr_st;
-	int acc = 0, count_acc = 0, 
-		count_of_mvs_to_next_merge = 0, count_of_mv = 0;
-
-	// 0. Calculate initial merge.
-	fen_string = cr.ForsythPublish();  // Get FEN string
-	get_attr_set(fen_string.c_str(), &attr_st); // Get attributes of position
-	count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation);
-
-	// 1. If player plays white side, then immedietly start analizing, else play 1st move, then analyze
-	if (strcmp(gm->name_black, name) == 0) {
-		ptr_game_notation = get_next_move_from_notation(ptr_game_notation, move_from_game);
-		mv.NaturalIn(&cr, move_from_game);
-		cr.PlayMove(mv);
-		count_of_mv++;
-	}
-
-	// 2. Analyse each move of player, while don't reach the end of notation.
-	while (ptr_game_notation != NULL && !FlStop)
-	{
-		// 1. Get next move.
-		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
-		ptr_game_notation = get_next_move_from_notation(ptr_game_notation, move_from_game);
-		mv.NaturalIn(&cr, move_from_game);
-
-		// 3. Analyse move.
-		acc += analize_move(engn, &cr, &mv);
-		count_acc++;
-
-		// 4. Move that move on board.
-		cr.PlayMove(mv);
-		count_of_mv++;
-
-		// 4.1 Merge positions, if it is time.
-		if (count_of_mv >= count_of_mvs_to_next_merge) {
-			if (count_acc != 0) {
-				fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, acc, count_acc);
-			}
-			count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation); // Get next count of...
-			fen_string = cr.ForsythPublish();  // Get FEN string of new position
-			get_attr_set(fen_string.c_str(), &attr_st); // Get attributes of new position
-
-			acc = 0;
-			count_acc = 0;
-			count_of_mv = 0;
-		}
-		
-		// 5. Skip opponent move 
-		if (ptr_game_notation != NULL) {
-			ptr_game_notation = get_next_move_from_notation(ptr_game_notation, move_from_game); // gets opponent move
-			mv.NaturalIn(&cr, move_from_game);
-			cr.PlayMove(mv);
-			count_of_mv++;
-
-			// 5.1 Merge positions, if it is time.
-			if (count_of_mv >= count_of_mvs_to_next_merge) {
-				if (count_acc != 0) {
-					fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, acc, count_acc);
-				}
-				count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation); // Get next count of...
-				fen_string = cr.ForsythPublish();  // Get FEN string of new position
-				get_attr_set(fen_string.c_str(), &attr_st); // Get attributes of new position
-
-				acc = 0;
-				count_acc = 0;
-				count_of_mv = 0;
-			}
-		}
-	}
-}
-
-int analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* susp, int max_count_of_moves) {
-	thc::ChessRules cr;
-	thc::Move mv;
-	char move_from_game[MAX_MOVE_SIZE] = { '\0' };
-	char* ptr_game_notation = gm->moves;
-	std::string fen_string;
-	bool side = WHITE_SIDE;
-	int count_mv_anal = 0;
-
-	attr_set attr_st;
-	bool attr_st_flag = true; // If this attr_set WAS in a player analisis, than analyse this attr_set
-	int acc = 0, acc_white = 0, count_acc_white = 0,
-		acc_black = 0, count_acc_black = 0,
-		count_of_mvs_to_next_merge = 0, count_of_mv = 0;
-
-	// 0. Calculate initial merge.
-	fen_string = cr.ForsythPublish();  // Get FEN string
-	get_attr_set(fen_string.c_str(), &attr_st); // Get attributes of position
-	attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
-	count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation);
-
-	// 1. Analyse each move, while don't reach the end of notation.
-	while (ptr_game_notation != NULL && !FlStop)
-	{
-		// 1. Get next move.
-		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
-		ptr_game_notation = get_next_move_from_notation(ptr_game_notation, move_from_game);
-		mv.NaturalIn(&cr, move_from_game);
-
-		// 2. Analyse move if attr_set was in player analysis.
-		if (attr_st_flag == true) {
-			acc = analize_move(engn, &cr, &mv);
-			if (side != BLACK_SIDE) {
-				acc_white += acc;
-				count_acc_white++;
-				side = BLACK_SIDE;
-			}
-			else {
-				acc_black += acc;
-				count_acc_black++;
-				side = WHITE_SIDE;
-			}
-			count_mv_anal++;
-		}
-
-		// 3. Move that move on board.
-		cr.PlayMove(mv);
-		count_of_mv++;
-
-		// 3.1 Merge positions, if it is time.
-		if (count_of_mv >= count_of_mvs_to_next_merge) {
-			if (attr_st_flag == true) {
-				if (count_acc_white != 0) {
-					fill_acc_in_attr_containers_in_yes_socks(&attr_st, susp, acc_white, count_acc_white);
-				}
-				if (count_acc_black != 0) {
-					fill_acc_in_attr_containers_in_yes_socks(&attr_st, susp, acc_black, count_acc_black);
-				}
-
-				acc = 0;
-				acc_black = 0;
-				acc_white = 0;
-				count_acc_black = 0;
-				count_acc_white = 0;
-			}
-			count_of_mvs_to_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation); // Get next count of...
-			fen_string = cr.ForsythPublish();  // Get FEN string of new position
-			get_attr_set(fen_string.c_str(), &attr_st); // Get attributes of new position
-			attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
-
-			count_of_mv = 0;
-		}
-	}
-
-	//fprintf(logFile, "moves analised = %d, ", count_mv_anal);
-	return count_mv_anal;
-}
-
-void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* susp) {
-	game gm;
-	int count_of_games = 0;
-	time_t time_start, time_curr;
-	FILE* file = NULL;
-	fopen_s(&file, "Suspect_analyse.txt", "w");
-	print_info_file(file, prsr, engn);
-
-	open_database(prsr);
-	init_attr_cont(&susp->attr_acc);
-	zero_attr_cont(&susp->attr_count);
-
-	while (count_of_games < prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF && !FlStop)
-	{
-		time_start = clock();
-		printf("Analyse game %d ", count_of_games + 1);
-		analize_game_player(&gm, engn, susp, prsr->fiter.name);
-		count_of_games++;
-		time_curr = clock();
-		printf("time: %fs\n", (time_curr - time_start) / 1000.0);
-	}
-
-	calc_acc_suspect(susp);
-	print_susp_file(susp, file);
-	print_susp_std(susp);
-	printf("\n");
-
-	close_database(prsr);
-}
-
-void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* susp, suspect_portrait* player) {
-	game gm;
-	char name_cpy[MAX_NAME_SIZE] = { '\0' };
-	int count_of_games = 0;
-	time_t time_start, time_curr;
-	int count_moves = 0;
-	FILE* file = NULL;
-	fopen_s(&file, "DB_analyse.txt", "w");
-	print_info_file(file, prsr, engn);
-
-	// Empty name filter of parser.
-	memcpy(name_cpy, prsr->fiter.name, sizeof(char) * MAX_NAME_SIZE);
-	memset(prsr->fiter.name, '\0', sizeof(char) * MAX_NAME_SIZE);
-
-	open_database(prsr);
-	init_attr_cont_with_other_cont(&susp->attr_acc, &player->attr_acc);
-	zero_attr_cont(&susp->attr_count);
-
-	while (get_next_game(prsr, &gm) != DB_EOF && !FlStop)
-	{
-		count_of_games++;
-		time_start = clock();
-		printf("Analyse game %d, ", count_of_games);
-		count_moves = get_count_of_moves_total(&gm);
-		printf("total moves = %d, ", count_moves);
-		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves);
-		time_curr = clock();
-		printf("time: %fs\n", (time_curr - time_start) / 1000.0);
-		print_susp_std_count(susp);
-	}
-
-	calc_acc_suspect(susp);
-	print_susp_file(susp, file);
-	print_susp_std(susp);
-
-	memcpy(prsr->fiter.name, name_cpy, sizeof(char) * MAX_NAME_SIZE);
-
-	close_database(prsr);
+	init_attr_cont(&susp->attr_acc);	// Prepare conteiner with attr set analysis.
+	zero_attr_cont(&susp->attr_count);	// Zero conteiner with count of sttr sets.
 }
 
 void do_analize(parser* prsr, UCI_Engine* engn, suspect_portrait* susp_player, suspect_portrait* susp_no_name) {
@@ -265,10 +22,248 @@ void do_analize(parser* prsr, UCI_Engine* engn, suspect_portrait* susp_player, s
 			do_analize_glob_no_name(prsr, engn, susp_no_name, susp_player); // Secondly, analyse all attr_sets, that was analyzed in analise before.
 			printf("Analyse other dbase finished.\n");
 		}
+	}
 
-		engn->close();
+	engn->close();
+}
+
+void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* susp) {
+	game gm;						// Struct, which contains a game.
+	FILE* file_for_result = NULL;	// File to store results.
+	int count_of_games = 1;			// Current count of analyzed games for filter and debugging purpose.
+	time_t time_start, time_curr;	// Time of analysing 1 game for debugging purpose.
+
+	open_database(prsr);			// Open database in parser.
+	prepare_parser_page(prsr);		// Prepare page for that database.
+	init_suspect_portrait(susp);	// Init all attr set containers, required for analysis
+
+	/* Run through all games of player, and analyse each, if required. */
+	while (count_of_games <= prsr->fiter.max_count_of_games && get_next_game(prsr, &gm) != DB_EOF)
+	{
+		printf("Analyse game %d ", count_of_games);
+
+		time_start = clock();
+		analize_game_player(&gm, engn, susp, prsr->fiter.name); // Analyse game.
+		time_curr = clock();
+
+		count_of_games++;
+		printf("time: %fs\n", (time_curr - time_start) / 1000.0);
+	}
+
+	calc_acc_suspect(susp);	// Get results of analysis
+
+	fopen_s(&file_for_result, "Suspect_analyse.txt", "w");	// Open file to store analysis.
+	if (file_for_result == NULL) exit(-1);
+	print_info_file(file_for_result, prsr, engn);			// Print header info in that file.
+	print_susp_file(susp, file_for_result);					// Printf results of analtsis in that file.
+	//print_susp_std(susp);									// Print results of analysis in stdout for debugging purposes.
+
+	printf("\n");
+	fclose(file_for_result);
+	close_database(prsr);
+}
+
+void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* susp, suspect_portrait* player) {
+	game gm;
+	FILE* file_for_result = NULL;
+	char name_cpy[MAX_NAME_SIZE] = { '\0' };
+	int count_of_games = 0;
+	int count_moves = 1;
+	time_t time_start, time_curr;
+
+	// Empty name filter of parser.
+	memcpy(name_cpy, prsr->fiter.name, sizeof(char) * MAX_NAME_SIZE);	// Firstly, remember name
+	memset(prsr->fiter.name, '\0', sizeof(char) * MAX_NAME_SIZE);		// Then, it can be deleted
+
+	open_database(prsr);												// Open database in parser.
+	prepare_parser_page(prsr);											// Prepare database page. 
+	init_attr_cont_with_other_cont(&susp->attr_acc, &player->attr_acc);	// Mark required attr sets with sets, that were analysed in player's games.
+	zero_attr_cont(&susp->attr_count);									// Zero conteiner with count of sttr sets.
+
+	/* Run through all game in database and analyse then, if required. */
+	while (get_next_game(prsr, &gm) != DB_EOF)
+	{
+		count_moves = get_count_of_moves_total(&gm);
+		printf("Analyse game %d, ", count_of_games);
+		printf("total moves = %d, ", count_moves);
+
+		time_start = clock();
+		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves); // Analyse game
+		time_curr = clock();
+		
+		count_of_games++;
+		printf("time: %fs\n", (time_curr - time_start) / 1000.0);
+		//print_susp_std_count(susp);
+	}
+
+	calc_acc_suspect(susp);		// Get results of analysis
+
+	fopen_s(&file_for_result, "DB_analyse.txt", "w");	// Open file to store analysis.
+	if (file_for_result == NULL) exit(-1);
+	print_info_file(file_for_result, prsr, engn);		// Print header info in that file.
+	print_susp_file(susp, file_for_result);				// Printf results of analtsis in that file.
+	//print_susp_std(susp);								// Print results of analysis in stdout for debugging purposes.
+
+	memcpy(prsr->fiter.name, name_cpy, sizeof(char) * MAX_NAME_SIZE); // Restore name, that were erased.
+
+	fclose(file_for_result);
+	close_database(prsr);
+}
+
+void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, char* name) {
+	thc::ChessRules cr;										// That is thc.cpp main class for chessboard.
+	thc::Move mv;											// Class for move.
+	char move_from_game[MAX_MOVE_SIZE] = { '\0' };			// Buff with move in char* form.
+	char* ptr_game_notation = gm->moves;					// Copy of ptr in game struct with chess notation
+	std::string fen_string;									// FEN string.
+
+	/* Merge is a part (block) of game moves.
+	Since the move with the capture of a piece can be matched to two sets at the same time (before and after the capture), 
+	it was decided to combine all the captures, as well as a series of consecutive captures, with the set before the capture. */
+	attr_set attr_st;										// attr set for curr merge								
+	int acc = 0, count_acc = 0,								// accuracy, count of accuracies for curr merge
+		count_of_mvs_to_next_merge = 0, count_of_mv = 0;	// count of moves to next merge, curr count of moves for curr merge.
+
+	// 0. Calculate initial merge.
+	get_next_merge(&cr, &attr_st, ptr_game_notation, &fen_string, &count_of_mvs_to_next_merge);
+
+	// 1. If player plays white side, then immedietly start analizing, else play 1st move, then analyze
+	if (strcmp(gm->name_black, name) == 0) {
+		play_move(&cr, &ptr_game_notation, move_from_game, &mv);
+		count_of_mv++;
+	}
+
+	// 2. Analyse each move of player, while don't reach the end of notation.
+	while (ptr_game_notation != NULL)
+	{
+		// 1. Get next move.
+		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
+		ptr_game_notation = get_next_move_from_notation(ptr_game_notation, move_from_game);
+		mv.NaturalIn(&cr, move_from_game);
+
+		// 3. Analyse move.
+		acc += analize_move(engn, &cr, &mv);
+		count_acc++;
+
+		// 4. Move that move on board.
+		cr.PlayMove(mv);
+		count_of_mv++;
+
+		// 4.1 Merge positions, if it is time.
+		if (count_of_mv >= count_of_mvs_to_next_merge) {
+			if (count_acc != 0) {
+				fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, acc, count_acc); // Fill sum of accurasies in att container
+			}
+			get_next_merge(&cr, &attr_st, ptr_game_notation, &fen_string, &count_of_mvs_to_next_merge);
+
+			acc = 0;
+			count_acc = 0;
+			count_of_mv = 0;
+		}
+		
+		// 5. Skip opponent move 
+		if (ptr_game_notation != NULL) {
+			play_move(&cr, &ptr_game_notation, move_from_game, &mv);
+			count_of_mv++;
+
+			// 5.1 Merge positions, if it is time.
+			if (count_of_mv >= count_of_mvs_to_next_merge) {
+				if (count_acc != 0) {
+					fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, acc, count_acc);
+				}
+				get_next_merge(&cr, &attr_st, ptr_game_notation, &fen_string, &count_of_mvs_to_next_merge);
+
+				acc = 0;
+				count_acc = 0;
+				count_of_mv = 0;
+			}
+		}
 	}
 }
+
+int analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* susp, int max_count_of_moves) {
+	thc::ChessRules cr;								// That is thc.cpp main class for chessboard.
+	thc::Move mv;									// Class for move.
+	char move_from_game[MAX_MOVE_SIZE] = { '\0' };	// Buff with move in char* form.
+	char* ptr_game_notation = gm->moves;			// Copy of ptr in game struct with chess notation
+	std::string fen_string;							// FEN string.
+	bool side = WHITE_SIDE;
+	int count_mv_anal = 0;
+
+	attr_set attr_st;								// attr set for curr merge	
+	bool attr_st_flag = true;						// If this attr_set WAS in a player analisis, than analyse this attr_set
+	int acc = 0, count_acc = 0,						// accuracy, count of accuracies for curr merge
+		count_of_mvs_to_next_merge = 0, count_of_mv = 0;	// count of moves to next merge, curr count of moves for curr merge.
+
+	// 0. Calculate initial merge.
+	get_next_merge(&cr, &attr_st, ptr_game_notation, &fen_string, &count_of_mvs_to_next_merge);
+	attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
+
+	// 1. Analyse each move, while don't reach the end of notation.
+	while (ptr_game_notation != NULL)
+	{
+		// 1. Get next move.
+		memset(move_from_game, '\0', sizeof(char) * MAX_MOVE_SIZE);
+		ptr_game_notation = get_next_move_from_notation(ptr_game_notation, move_from_game);
+		mv.NaturalIn(&cr, move_from_game);
+
+		// 2. Analyse move if attr_set was in player analysis.
+		if (attr_st_flag == true) {
+			acc += analize_move(engn, &cr, &mv);
+			count_acc++;
+			count_mv_anal++;
+		}
+
+		// 3. Move that move on board.
+		cr.PlayMove(mv);
+		count_of_mv++;
+
+		// 3.1 Merge positions, if it is time.
+		if (count_of_mv >= count_of_mvs_to_next_merge) {
+			if (attr_st_flag == true) {
+				fill_acc_in_attr_containers_in_yes_socks(&attr_st, susp, acc, count_acc);
+
+				acc = 0;
+				count_acc = 0;
+			}
+			get_next_merge(&cr, &attr_st, ptr_game_notation, &fen_string, &count_of_mvs_to_next_merge);
+			attr_st_flag = is_attr_set_in_attr_cont(&attr_st, &susp->attr_acc) && is_attr_set_count_pass_filter(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
+
+			count_of_mv = 0;
+		}
+	}
+
+	//fprintf(logFile, "moves analised = %d, ", count_mv_anal);
+	return count_mv_anal;
+}
+
+int analize_move(UCI_Engine* engn, thc::ChessRules* cr, thc::Move* next_mv) {
+	engine_line* line = (engine_line*)malloc(sizeof(engine_line) * engn->multipv);
+	int acc = 0;
+
+	// 1. Feed FEN to engine. Get answer of engine.
+	engn->set_position(cr->ForsythPublish());
+	engn->start_analyse();
+	engn->parse_analisys_output(line); // Get lines with moves in LAN notation. 
+
+	// 2. Get accuracy evaluation
+	acc = get_accuracy_of_move(next_mv, line, engn->multipv);
+	free(line);
+	return acc;
+}
+
+inline void play_move(thc::ChessRules* cr, char** ptr_game_notation, char* move, thc::Move* mv) {
+	*ptr_game_notation = get_next_move_from_notation(*ptr_game_notation, move);
+	mv->NaturalIn(cr, move);
+	cr->PlayMove(*mv);
+}
+
+inline void get_next_merge(thc::ChessRules* cr, attr_set* attr_st, char* ptr_game_notation, std::string* fen_str, int* count_mvs_next_merge) {
+	*count_mvs_next_merge = get_count_of_moves_to_next_merge(ptr_game_notation); // Get next count of...
+	*fen_str = cr->ForsythPublish();											 // Get FEN string of new position
+	get_attr_set(fen_str->c_str(), attr_st);									 // Get attributes of new position
+}
+
 
 char* get_next_move_from_notation(char* notation, char* move_buff) {
 	int len = strlen(notation);
@@ -426,8 +421,6 @@ void calc_acc_suspect(suspect_portrait* susp) {
 	}
 }
 
-
-// Some functions for debugging
 void print_susp_std(suspect_portrait* susp) {
 	for (int p = 0; p < MAX_P - 1; p++) {
 		for (int n = 0; n < MAX_N - 1; n++) {

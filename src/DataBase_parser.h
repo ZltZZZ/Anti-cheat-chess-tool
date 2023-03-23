@@ -6,13 +6,13 @@
 
 /* That is parser. It gets information from PGN base.*/
 
-#define MAX_NAME_SIZE 61
+#define MAX_NAME_SIZE 64
 #define MAX_PATH_LENTH 256
-#define MAX_BUFF_SIZE 512 * 1024/*16777216*//*1073741824*//*67108864*//*134217728*/// 128 Mb
+#define MAX_BUFF_SIZE 4096/*16777216*//*1073741824*//*67108864*//*134217728*/// 128 Mb
 #define NO_RATING -1
 #define DB_SUCCESS 1
 #define DB_EOF 0
-#define MAX_WORD_SIZE 3072
+#define MAX_WORD_SIZE 10240
 
 #include <iostream> 
 #include <fstream> 
@@ -29,6 +29,7 @@ typedef enum _eevent {
 	EVENT_UNDEFINED
 } _event;
 
+/* Default Tags. Separated with []. Example: [My_tag "My_value_of_tag"] */
 typedef enum _tag{
 	TAG_EVENT,
 	TAG_WHITE,
@@ -46,27 +47,27 @@ typedef struct _parser {
 		int elo_max;				// Elo rating right range. Set NO_RATING if no filter for ratings.
 		_event evnt;				// Type of a game. Blitz, classic and other. Set UNDEFINED_EVENT if no filter for event.
 		char name[MAX_NAME_SIZE];	// Name of a player, or empty string if not a player. Now, it is an obligatory argument, but later it can be set as an empty string
-		int max_count_of_moves;      // After analysing player, analyse attr_sets that was in player analisys, NO MORE than max_count_of_moves. 
+		int max_count_of_moves;     // After analysing player, analyse attr_sets that was in player analisys, NO MORE than max_count_of_moves. 
 		int max_count_of_games;     // Analyse no more than max_count_of_games
 	}fiter;
 
 	struct _db {
-		char path_to_db[MAX_PATH_LENTH];
-		int fd;
-		char* buff;
-		int buff_ptr;
-		int bytesread;
+		char path_to_db[MAX_PATH_LENTH];	// Path to database
+		int fd;								// File descriptor of database
+		char* buff;							// Page buff of database
+		int buff_ptr;						// Page ptf of database (in another words - curr index in page)
+		int bytesread;						// Page size
 	}db;
 } parser;
 
 /* Contains information about curr game that is analizing*/
 typedef struct _game {
-	int elo_black;
-	int elo_white;
-	_event evnt;
-	char name_white[MAX_NAME_SIZE];
-	char name_black[MAX_NAME_SIZE];
-	char moves[MAX_WORD_SIZE];
+	int elo_black;					// Elo black
+	int elo_white;					// Elo white
+	_event evnt;					// Blitz, Classic or Bullet
+	char name_white[MAX_NAME_SIZE];	// Name of white side
+	char name_black[MAX_NAME_SIZE];	// Name of black side
+	char moves[MAX_WORD_SIZE];		// Moves of game in form: e4 e5 Nf3 Nc6 
 } game;
 
 /* Set paramets that will filter games. */
@@ -81,6 +82,9 @@ void set_parser_params(parser*,
 
 /* free buff, that was allocated in initialization. */
 void free_parser_buff(parser* prsr);
+
+/* Prepare page for absolute new database reading. */
+void prepare_parser_page(parser* prsr);
 
 /* Null all fields in structure _game. */
 void game_clear(game*);

@@ -22,7 +22,7 @@ typedef struct _suspect_portrait {
 } suspect_portrait;
 
 /* Init suspect portrait. */
-void init_suspect_portrait(suspect_portrait*, parser*);
+void init_suspect_portrait(suspect_portrait*);
 
 /* Return accuracy of move. */
 int analize_move(UCI_Engine*, thc::ChessRules*, thc::Move* next_mv);
@@ -31,7 +31,7 @@ int analize_move(UCI_Engine*, thc::ChessRules*, thc::Move* next_mv);
 void analize_game_player(game*, UCI_Engine*, suspect_portrait*, char* name);
 
 /* Analizes ONLY positions, that contains the same attr_set as was in analysis of player. THIS IS A MAIN ALGORINM OF ANALIZING.*/
-void analize_game_player_no_name(game*, UCI_Engine*, suspect_portrait*);
+int analize_game_player_no_name(game*, UCI_Engine*, suspect_portrait*, int max_count_of_moves);
 
 /* Get a move string from notation. Returns NULL, if this is was last move in notation. */
 char* get_next_move_from_notation(char* notation, char* move_buff);
@@ -48,6 +48,12 @@ void do_analize_glob(parser*, UCI_Engine*, suspect_portrait*);
 /* Main function, that calls from entry point. */
 void do_analize(parser*, UCI_Engine*, suspect_portrait* susp_player, suspect_portrait* susp_no_name);
 
+/* Play move on board as it need.*/
+inline void play_move(thc::ChessRules* cr, char** ptr_game_notation, char* move, thc::Move* mv);
+
+/* Calculate moves to next merge. */
+inline void get_next_merge(thc::ChessRules* cr, attr_set* attr_st, char* ptr_game_notation, std::string* fen_str, int* count_mvs_next_merge);
+
 /* Compare next move of ENGINE with next move of Player. Returns a number, that correspondes to number of line. */
 int get_accuracy_of_move(thc::Move*, engine_line*, int count_of_lines);
 
@@ -63,14 +69,14 @@ void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrai
 /* Calculate all accuracies that was as int in susp. */
 void calc_acc_suspect(suspect_portrait*);
 
-// Some functions for debugging
+/* Some functions for debugging. */
 void print_susp_std(suspect_portrait* susp);
-
-void print_susp_file(suspect_portrait* susp, FILE* file);
-
 void print_susp_std_count(suspect_portrait* susp);
 
+/* Print analysis results in file. */
 void print_info_file(FILE* file, parser* prsr, UCI_Engine* engn);
+void print_susp_file(suspect_portrait* susp, FILE* file);
 
+/* Return total count of moves in game. */
 int get_count_of_moves_total(game* gm);
 

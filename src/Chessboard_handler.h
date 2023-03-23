@@ -21,11 +21,11 @@
 
 /* Set of attributes for position. */
 typedef struct _attr_set {
-    int count_P;
-    int count_B;
-    int count_N;
-    int count_R;
-    int count_Q;
+    int count_P;            // Count of Pawns on board.
+    int count_B;            // Count of Bishops on board.
+    int count_N;            // Count of Knights on board
+    int count_R;            // Count of Rooks on board.
+    int count_Q;            // Count of Queens on board.
 } attr_set;
 
 /* Contains all possible combinations of attributes of position. Used to assign some number to a specific set of attributes. */

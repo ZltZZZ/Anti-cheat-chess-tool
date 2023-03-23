@@ -21,6 +21,12 @@ void set_parser_params(parser* prsr, int min_elo, int max_elo, _event evnt, char
 	prsr->db.bytesread = MAX_BUFF_SIZE;
 }
 
+void prepare_parser_page(parser* prsr) {
+	memset(prsr->db.buff, '\0', sizeof(char) * MAX_BUFF_SIZE);
+	prsr->db.buff_ptr = MAX_BUFF_SIZE;
+	prsr->db.bytesread = MAX_BUFF_SIZE;
+}
+
 void free_parser_buff(parser* prsr) {
 	free(prsr->db.buff);
 }
@@ -45,7 +51,7 @@ int get_next_game(parser* prsr, game* gm) {
 	game_clear(gm);
 	while (prsr->db.bytesread > 0)
 	{
-		if (prsr->db.buff_ptr == MAX_BUFF_SIZE) {
+		if (prsr->db.buff_ptr == prsr->db.bytesread) {
 			get_next_page(prsr);
 		}
 
@@ -55,13 +61,15 @@ int get_next_game(parser* prsr, game* gm) {
 			if (c == '\n') {
 				if (isMove == true)
 				{
+					//printf("\033[Acount games: %d, bytesread: %d\n", c_gms, prsr->db.bytesread);
+
 					if (check_filter(prsr, gm) == true) {
 						move_parser(gm, word);
 						return DB_SUCCESS;
 					}
 					else {			// Didn't pass the filter
 						game_clear(gm);
-						if (c_gms % 8388608 == 0) {
+						if (c_gms % 20971520 == 0) {
 							double tm;
 							after = clock();
 							tm = (after - before) / 1000.0;
@@ -101,7 +109,7 @@ int get_next_game(parser* prsr, game* gm) {
 					isWord = true;
 				}
 
-				if (word_indx < MAX_WORD_SIZE)
+				if (word_indx < MAX_WORD_SIZE - 1)
 					word[word_indx++] = c;
 			}
 		}
@@ -169,12 +177,12 @@ inline void fill_tag_in_game(game* gm, tag tg, char* value_ptr) {
 		}
 		break;
 	case TAG_WHITE:
-		for (int i = 0; value_ptr[i] != '\"'; i++) {
+		for (int i = 0; value_ptr[i] != '\"' && i < MAX_WORD_SIZE; i++) {
 			gm->name_white[i] = value_ptr[i];
 		}
 		break;
 	case TAG_BLACK:
-		for (int i = 0; value_ptr[i] != '\"'; i++) {
+		for (int i = 0; value_ptr[i] != '\"' && i < MAX_WORD_SIZE; i++) {
 			gm->name_black[i] = value_ptr[i];
 		}
 		break;
@@ -185,8 +193,6 @@ inline void fill_tag_in_game(game* gm, tag tg, char* value_ptr) {
 	case TAG_BLACK_ELO:
 		gm->elo_black = atoi(value_ptr);
 		if (gm->elo_black == 0) gm->elo_black = NO_RATING;
-		break;
-	case TAG_UNDEFINED:
 		break;
 	}
 }

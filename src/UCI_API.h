@@ -49,9 +49,10 @@ void clean_pipe_out(HANDLE* pipe_out_r);
 
 
 /*-----------------------Engine_handler-------------------------*/
+/* Current state of engine for some purposes. */
 typedef enum _engine_state {
-	NOT_LOADED,
-	WORKING,
+	NOT_LOADED,					// Not loaded, engine not prepared
+	WORKING,					// Working, engine is ready to do or is doing some work. 
 } engine_state;
 
 typedef enum _engine_error {
@@ -62,6 +63,7 @@ typedef enum _engine_error {
 	ENGINE_TIMEOUT
 } engine_error;
 
+/* Default engine commands from specification. */
 typedef enum _engine_command_word {
 	_uci,
 	_debug, _on, _off,
@@ -95,20 +97,21 @@ typedef enum _engine_command_word {
 	_quit,
 } engine_command_word;
 
+// ??
 typedef struct _engine_line {
 	char move[MAX_MOVE_SIZE];
 } engine_line;
 
+/* Uci chess engine class. */
 class UCI_Engine {
 public:
 	std::wstring path_to_engine{ L"" };     // Full path to engine.exe
-	int cpu{ 1 },
-		multipv{ 1 },
-		hash{ 32 },
-		movetime{1000};
+	int cpu{ 1 },							// Default count of threads.
+		multipv{ 1 },						// Default count of lines.
+		hash{ 32 },							// Default size of hash (in mb).
+		movetime{1000};						// Default movetime (in ms).
 
 	UCI_Engine() {}
-
 	UCI_Engine(std::wstring path_to_engine_in
 	) {
 		path_to_engine = path_to_engine_in;

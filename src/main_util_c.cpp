@@ -33,30 +33,47 @@ wchar_t* GetWC(const char* c)
 
 int main()
 {
-    UCI_Engine engn;
-    parser prsr;
-    suspect_portrait player;
-    suspect_portrait same_rating;
-    FILE* config = NULL;
-    std::string path_db;
-    std::wstring path_engn;
-    std::string name;
-    int threads;
-    int multipv;
-    int hash;
-    int movetime;
-    time_t time_start, time_curr;
-    char db_path[MAX_PATH_LENTH] = { '\0' };
-    int elo_min = 0, elo_max = 0,
-        count_pos = 0, count_games = 0;
-    _event evnt = EVENT_BLITZ;
+    UCI_Engine engn;                            // UCI chess engine, wich will analyse suspect.
+    parser prsr;                                // Parser struct with required pointers and information for analysis.
+    suspect_portrait* player = NULL;            // Container for future analysys results for suspect. 
+    suspect_portrait* same_rating = NULL;       // Container for future analysys results for database.
+
+    /* Configuration. */
+    FILE* config = NULL;                        // File with configuration.
+    char config_path[MAX_PATH_LENTH] = { '\0' };// Path to config file.
+
+    /* Debugging. */
+    time_t time_start, time_curr;               // Timer for debugging.
+
+    /* Parser params. */
+    std::string path_db;                        // Path to database (.pgn).
+    std::wstring path_engn;                     // Path to engine (.exe).
+    std::string name;                           // Name/nickname of suspect.
+    int elo_min = 0, elo_max = 0,               // Min and Max Elo (range).
+        count_pos = 0, count_games = 0;         // Max count of positions (for db analysys) and games (for suspect).
+    _event evnt = EVENT_BLITZ;                  // Type of Event (Blitz, Classic or Bullet).
+
+    /* Engine params. */
+    int threads;                                // Count of threads for engine.
+    int multipv;                                // Count of lines, shoud be 4.
+    int hash;                                   // Size of hash (in mb).
+    int movetime;                               // Movetime (in ms).
+
+
+
+    player = (suspect_portrait*)malloc(sizeof(suspect_portrait));
+    same_rating = (suspect_portrait*)malloc(sizeof(suspect_portrait));
+    if (player == NULL || same_rating == NULL) {
+        printf("Malloc error: player = (suspect_portrait*)malloc(sizeof(suspect_portrait));\n");
+        exit(-1);
+    }
 
     /* Get options from config. */
     printf("Enter path to Config.txt file: ");
-    scanf_s("%s", db_path, MAX_PATH_LENTH);
-    fopen_s(&config, db_path, "r");
+    scanf_s("%s", config_path, MAX_PATH_LENTH);
+    fopen_s(&config, config_path, "r");
     if (config == NULL) {
-        printf("Can't open file %s\n", db_path);
+        printf("Can't open file %s\n", config_path);
         exit(-1);
     }
 
@@ -81,12 +98,10 @@ int main()
 
     /* Set parser params. */
     set_parser_params(&prsr, elo_min, elo_max, evnt, (char*)name.c_str(), (char*)path_db.c_str(), count_pos, count_games);
-    init_suspect_portrait(&player, &prsr);
-    init_suspect_portrait(&same_rating, &prsr);
 
     /* Start analysing. */
     time_start = clock();
-    do_analize(&prsr, &engn, &player, &same_rating);
+    do_analize(&prsr, &engn, player, same_rating);
     time_curr = clock();
     printf("\nTotal time analysing: %f\n", (time_curr - time_start) / 1000.0);
 
