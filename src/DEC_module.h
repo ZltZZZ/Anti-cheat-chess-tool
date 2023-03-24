@@ -15,10 +15,10 @@ typedef struct _suspect_portrait {
 	//parser prsr;
 
     /* Sum of accuracies for all possible sets of attribute (used to calculate the average accuracy after analysis)  */
-	attr_container attr_acc;
+	attr_container_acc attr_acc;
 
 	/* The count of attributes of each kind (used to calculate the average accuracy after analysis). */
-	attr_container attr_count;
+	attr_container_count attr_count;
 } suspect_portrait;
 
 /* Init suspect portrait. */
@@ -46,7 +46,7 @@ void do_analize_glob_no_name(parser*, UCI_Engine*, suspect_portrait* susp, suspe
 void do_analize_glob(parser*, UCI_Engine*, suspect_portrait*);
 
 /* Main function, that calls from entry point. */
-void do_analize(parser*, UCI_Engine*, suspect_portrait* susp_player, suspect_portrait* susp_no_name);
+void do_analize(parser*, UCI_Engine*, suspect_portrait* player, suspect_portrait* database);
 
 /* Play move on board as it need.*/
 inline void play_move(thc::ChessRules* cr, char** ptr_game_notation, char* move, thc::Move* mv);
@@ -61,10 +61,10 @@ int get_accuracy_of_move(thc::Move*, engine_line*, int count_of_lines);
 int get_count_of_moves_to_next_merge(char* notation);
 
 /* Fill accuracy of move in all sets of attr of suspect.*/
-void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait*, int accuracy, int count_of_moves);
+void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait*, int accuracy);
 
 /* Fill accuracy of move in all sets of attr of suspect, that marked as POSITION_ATTR_YES.*/
-void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait*, int accuracy, int count_of_moves);
+void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait*, int accuracy);
 
 /* Calculate all accuracies that was as int in susp. */
 void calc_acc_suspect(suspect_portrait*);

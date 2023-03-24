@@ -1,13 +1,17 @@
 #include "Chessboard_handler.h"
 #include <string.h>
 
-void init_attr_cont(attr_container* attr_cont) {
+void init_attr_cont_acc(attr_container_acc* attr_cont, int count_pos) {
+    malloc_attr_cont_acc(count_pos, attr_cont);
+    attr_cont->count_pos = count_pos;
+
     for (int p = 0; p < MAX_P; p++) {
         for (int n = 0; n < MAX_N; n++) {
             for (int b = 0; b < MAX_B; b++) {
                 for (int r = 0; r < MAX_R; r++) {
                     for (int q = 0; q < MAX_Q; q++) {
-                        attr_cont->cont.int_cont[p][n][b][r][q] = POSITION_ATTR_NO;
+                        for (int c = 0; c < count_pos; c++) 
+                            attr_cont->fl_cont[p][n][b][r][q][c] = POSITION_ATTR_EMPTY;
                     }
                 }
             }
@@ -15,17 +19,31 @@ void init_attr_cont(attr_container* attr_cont) {
     }
 }
 
-void init_attr_cont_with_other_cont(attr_container* dst, attr_container* src) {
+void init_attr_cont_count(attr_container_count* attr_cont) {
     for (int p = 0; p < MAX_P; p++) {
         for (int n = 0; n < MAX_N; n++) {
             for (int b = 0; b < MAX_B; b++) {
                 for (int r = 0; r < MAX_R; r++) {
                     for (int q = 0; q < MAX_Q; q++) {
-                        if (src->cont.int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
-                            dst->cont.int_cont[p][n][b][r][q] = POSITION_ATTR_YES;
+                        attr_cont->int_cont[p][n][b][r][q] = POSITION_ATTR_NO;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void init_attr_cont_with_other_cont_count(attr_container_count* dst, attr_container_count* src) {
+    for (int p = 0; p < MAX_P; p++) {
+        for (int n = 0; n < MAX_N; n++) {
+            for (int b = 0; b < MAX_B; b++) {
+                for (int r = 0; r < MAX_R; r++) {
+                    for (int q = 0; q < MAX_Q; q++) {
+                        if (src->int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
+                            dst->int_cont[p][n][b][r][q] = POSITION_ATTR_YES;
                         }
                         else {
-                            dst->cont.int_cont[p][n][b][r][q] = POSITION_ATTR_NO;;
+                            dst->int_cont[p][n][b][r][q] = POSITION_ATTR_NO;
                         }
                     }
                 }
@@ -34,8 +52,82 @@ void init_attr_cont_with_other_cont(attr_container* dst, attr_container* src) {
     }
 }
 
-void zero_attr_cont(attr_container* attr_cont) {
-    memset(attr_cont->cont.int_cont, 0, sizeof(int) * MAX_P * MAX_N * MAX_B * MAX_Q * MAX_R);
+/* Allocate memory for attr conteiner. */
+void malloc_attr_cont_acc(int count_pos, attr_container_acc* attr_cont) {
+    attr_cont->fl_cont = (float******)malloc(MAX_P * sizeof(float*****));
+    if (attr_cont->fl_cont == NULL) {
+        printf("Not enough memory\n");
+        exit(-1);
+    }
+
+    for (int p = 0; p < MAX_P; p++) {
+        attr_cont->fl_cont[p] = (float*****)malloc(MAX_N * sizeof(float****));
+        if (attr_cont->fl_cont[p] == NULL) {
+            printf("Not enough memory\n");
+            exit(-1);
+        }
+
+        for (int n = 0; n < MAX_N; n++) {
+            attr_cont->fl_cont[p][n] = (float****)malloc(MAX_B * sizeof(float***));
+            if (attr_cont->fl_cont[p][n] == NULL) {
+                printf("Not enough memory\n");
+                exit(-1);
+            }
+
+            for (int b = 0; b < MAX_B; b++) {
+                attr_cont->fl_cont[p][n][b] = (float***)malloc(MAX_R * sizeof(float**));
+                if (attr_cont->fl_cont[p][n][b] == NULL) {
+                    printf("Not enough memory\n");
+                    exit(-1);
+                }
+
+                for (int r = 0; r < MAX_R; r++) {
+                    attr_cont->fl_cont[p][n][b][r] = (float**)malloc(MAX_Q * sizeof(float*));
+                    if (attr_cont->fl_cont[p][n][b][r] == NULL) {
+                        printf("Not enough memory\n");
+                        exit(-1);
+                    }
+
+                    for (int q = 0; q < MAX_Q; q++) {
+                        attr_cont->fl_cont[p][n][b][r][q] = (float*)malloc(count_pos * sizeof(float));
+                        if (attr_cont->fl_cont[p][n][b][r][q] == NULL) {
+                            printf("Not enough memory\n");
+                            exit(-1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Free allocated attr conteiner*/
+void free_attr_cont_acc(attr_container_acc* attr_cont) {
+    for (int p = 0; p < MAX_P; p++) {
+        for (int n = 0; n < MAX_N; n++) {
+            for (int b = 0; b < MAX_B; b++) {
+                for (int r = 0; r < MAX_R; r++) {
+                    for (int q = 0; q < MAX_Q; q++) {
+                        free(attr_cont->fl_cont[p][n][b][r][q]);
+                    }
+
+                    free(attr_cont->fl_cont[p][n][b][r]);
+                }
+
+                free(attr_cont->fl_cont[p][n][b]);
+            }
+
+            free(attr_cont->fl_cont[p][n]);
+        }
+
+        free(attr_cont->fl_cont[p]);
+    }
+
+    free(attr_cont->fl_cont);
+}
+
+void zero_attr_cont_count(attr_container_count* attr_cont_count) {
+    memset(attr_cont_count->int_cont, 0, sizeof(int) * MAX_P * MAX_N * MAX_B * MAX_Q * MAX_R);
 }
 
 void get_attr_set(const char* fen_string, attr_set* attr_st) {
@@ -72,8 +164,8 @@ void copy_attr_set(attr_set* set_dst, attr_set* set_src) {
     memcpy(set_dst, set_src, sizeof(attr_set));
 }
 
-bool is_attr_set_in_attr_cont(attr_set* attr_st, attr_container* attr_cont) {
-    if (attr_cont->cont.int_cont[attr_st->count_P][attr_st->count_N][attr_st->count_B][attr_st->count_R][attr_st->count_Q] != POSITION_ATTR_NO) {
+bool is_attr_set_in_attr_cont_count(attr_set* attr_st, attr_container_count* attr_cont) {
+    if (attr_cont->int_cont[attr_st->count_P][attr_st->count_N][attr_st->count_B][attr_st->count_R][attr_st->count_Q] != POSITION_ATTR_NO) {
         return true;
     }
     else {
@@ -81,8 +173,8 @@ bool is_attr_set_in_attr_cont(attr_set* attr_st, attr_container* attr_cont) {
     }
 }
 
-bool is_attr_set_count_pass_filter(attr_set* attr_st, attr_container* attr_cont, int max_count_of_moves) {
-    if (attr_cont->cont.int_cont[attr_st->count_P][attr_st->count_N][attr_st->count_B][attr_st->count_R][attr_st->count_Q] < max_count_of_moves) {
+bool is_attr_set_count_pass_filter_count(attr_set* attr_st, attr_container_count* attr_cont, int max_count_of_moves) {
+    if (attr_cont->int_cont[attr_st->count_P][attr_st->count_N][attr_st->count_B][attr_st->count_R][attr_st->count_Q] < max_count_of_moves) {
         return true;
     }
     else {

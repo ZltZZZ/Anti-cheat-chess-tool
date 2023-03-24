@@ -35,8 +35,8 @@ int main()
 {
     UCI_Engine engn;                            // UCI chess engine, wich will analyse suspect.
     parser prsr;                                // Parser struct with required pointers and information for analysis.
-    suspect_portrait* player = NULL;            // Container for future analysys results for suspect. 
-    suspect_portrait* same_rating = NULL;       // Container for future analysys results for database.
+    suspect_portrait player;            // Container for future analysys results for suspect. 
+    suspect_portrait database;       // Container for future analysys results for database.
 
     /* Configuration. */
     FILE* config = NULL;                        // File with configuration.
@@ -58,15 +58,6 @@ int main()
     int multipv;                                // Count of lines, shoud be 4.
     int hash;                                   // Size of hash (in mb).
     int movetime;                               // Movetime (in ms).
-
-
-
-    player = (suspect_portrait*)malloc(sizeof(suspect_portrait));
-    same_rating = (suspect_portrait*)malloc(sizeof(suspect_portrait));
-    if (player == NULL || same_rating == NULL) {
-        printf("Malloc error: player = (suspect_portrait*)malloc(sizeof(suspect_portrait));\n");
-        exit(-1);
-    }
 
     /* Get options from config. */
     printf("Enter path to Config.txt file: ");
@@ -99,9 +90,15 @@ int main()
     /* Set parser params. */
     set_parser_params(&prsr, elo_min, elo_max, evnt, (char*)name.c_str(), (char*)path_db.c_str(), count_pos, count_games);
 
+    /* Init suspect_portrait. */
+    init_attr_cont_acc(&(player.attr_acc), count_pos);
+    init_attr_cont_count(&(player.attr_count));
+    init_attr_cont_acc(&(database.attr_acc), count_pos);
+    init_attr_cont_count(&(database.attr_count));
+
     /* Start analysing. */
     time_start = clock();
-    do_analize(&prsr, &engn, player, same_rating);
+    do_analize(&prsr, &engn, &player, &database);
     time_curr = clock();
     printf("\nTotal time analysing: %f\n", (time_curr - time_start) / 1000.0);
 
