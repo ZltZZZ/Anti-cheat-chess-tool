@@ -25,13 +25,13 @@ typedef struct _suspect_portrait {
 void init_suspect_portrait(suspect_portrait*);
 
 /* Return accuracy of move. */
-int analize_move(UCI_Engine*, thc::ChessRules*, thc::Move* next_mv);
+float analize_move(UCI_Engine*, thc::ChessRules*, thc::Move* next_mv);
 
 /* Analize a game of a player, named NAME. THIS IS A MAIN ALGORINM OF ANALIZING.*/
-void analize_game_player(game*, UCI_Engine*, suspect_portrait*, char* name);
+void analize_game_player(game*, UCI_Engine*, suspect_portrait*, char* name, int max_count_of_moves);
 
 /* Analizes ONLY positions, that contains the same attr_set as was in analysis of player. THIS IS A MAIN ALGORINM OF ANALIZING.*/
-int analize_game_player_no_name(game*, UCI_Engine*, suspect_portrait*, int max_count_of_moves);
+int analize_game_database(game*, UCI_Engine*, suspect_portrait*, int max_count_of_moves);
 
 /* Get a move string from notation. Returns NULL, if this is was last move in notation. */
 char* get_next_move_from_notation(char* notation, char* move_buff);
@@ -40,7 +40,7 @@ char* get_next_move_from_notation(char* notation, char* move_buff);
 void do_analize_glob_player(parser*, UCI_Engine*, suspect_portrait*);
 
 /* Ananlizes all games that without name filter (analyze ONLY positions, that player played. */
-void do_analize_glob_no_name(parser*, UCI_Engine*, suspect_portrait* susp, suspect_portrait* player);
+void do_analize_glob_database(parser*, UCI_Engine*, suspect_portrait* susp, suspect_portrait* player);
 
 /* Ananlizes all games that without name filter (with full analize of game). */
 void do_analize_glob(parser*, UCI_Engine*, suspect_portrait*);
@@ -55,16 +55,16 @@ inline void play_move(thc::ChessRules* cr, char** ptr_game_notation, char* move,
 inline void get_next_merge(thc::ChessRules* cr, attr_set* attr_st, char* ptr_game_notation, std::string* fen_str, int* count_mvs_next_merge);
 
 /* Compare next move of ENGINE with next move of Player. Returns a number, that correspondes to number of line. */
-int get_accuracy_of_move(thc::Move*, engine_line*, int count_of_lines);
+float get_accuracy_of_move(thc::Move*, engine_line*, int count_of_lines);
 
 /* Returns count of move to next merge (serial captures or promotion). */
 int get_count_of_moves_to_next_merge(char* notation);
 
 /* Fill accuracy of move in all sets of attr of suspect.*/
-void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait*, int accuracy);
+void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait*, float accuracy);
 
 /* Fill accuracy of move in all sets of attr of suspect, that marked as POSITION_ATTR_YES.*/
-void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait*, int accuracy);
+void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait*, float accuracy);
 
 /* Calculate all accuracies that was as int in susp. */
 void calc_acc_suspect(suspect_portrait*);

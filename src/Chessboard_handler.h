@@ -1,15 +1,10 @@
 #pragma once
 
-#define MAX_P 18  /* Max count of figures on board + extra empty stot for empty attr. */
-#define MAX_N 7
-#define MAX_B 7
-#define MAX_R 7
-#define MAX_Q 7
-#define EMPTY_P 17
-#define EMPTY_N 6
-#define EMPTY_B 6
-#define EMPTY_R 6
-#define EMPTY_Q 6
+#define MAX_P 17  /* Max count of figures on board + extra empty stot for empty attr. */
+#define MAX_N 6
+#define MAX_B 6
+#define MAX_R 6
+#define MAX_Q 6
 
 #define POSITION_ATTR_YES -1
 #define POSITION_ATTR_NO  0

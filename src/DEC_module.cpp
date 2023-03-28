@@ -18,8 +18,9 @@ void do_analize(parser* prsr, UCI_Engine* engn, suspect_portrait* player, suspec
 			printf("Analyse player started.\n");
 			do_analize_glob_player(prsr, engn, player); // Firstly, analyze a player.
 			printf("Analyse player finished.\n");
+
 			printf("Analyse other dbase started.\n");
-			do_analize_glob_no_name(prsr, engn, database, player); // Secondly, analyse all attr_sets, that was analyzed in analise before.
+			do_analize_glob_database(prsr, engn, database, player); // Secondly, analyse all attr_sets, that was analyzed in analise before.
 			printf("Analyse other dbase finished.\n");
 		}
 	}
@@ -27,7 +28,7 @@ void do_analize(parser* prsr, UCI_Engine* engn, suspect_portrait* player, suspec
 	engn->close();
 }
 
-void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* susp) {
+void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* player) {
 	game gm;						// Struct, which contains a game.
 	FILE* file_for_result = NULL;	// File to store results.
 	int count_of_games = 1;			// Current count of analyzed games for filter and debugging purpose.
@@ -42,7 +43,7 @@ void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* su
 		printf("Analyse game %d ", count_of_games);
 
 		time_start = clock();
-		analize_game_player(&gm, engn, susp, prsr->fiter.name); // Analyse game.
+		analize_game_player(&gm, engn, player, prsr->fiter.name, prsr->fiter.max_count_of_moves); // Analyse game.
 		time_curr = clock();
 
 		count_of_games++;
@@ -53,7 +54,7 @@ void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* su
 
 	fopen_s(&file_for_result, "Suspect_analyse.txt", "w"); if (file_for_result == NULL) exit(-1); // Open file to store analysis.
 	print_info_file(file_for_result, prsr, engn);			// Print header info in that file.
-	print_susp_file(susp, file_for_result);					// Printf results of analtsis in that file.
+	print_susp_file(player, file_for_result);					// Printf results of analtsis in that file.
 	//print_susp_std(susp);									// Print results of analysis in stdout for debugging purposes.
 
 	printf("\n");
@@ -61,7 +62,7 @@ void do_analize_glob_player(parser* prsr, UCI_Engine* engn, suspect_portrait* su
 	close_database(prsr);
 }
 
-void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* susp, suspect_portrait* player) {
+void do_analize_glob_database(parser* prsr, UCI_Engine* engn, suspect_portrait* database, suspect_portrait* player) {
 	game gm;
 	FILE* file_for_result = NULL;
 	char name_cpy[MAX_NAME_SIZE] = { '\0' };
@@ -75,7 +76,7 @@ void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* s
 
 	open_database(prsr);												// Open database in parser.
 	prepare_parser_page(prsr);											// Prepare database page. 
-	init_attr_cont_with_other_cont_count(&susp->attr_count, &player->attr_count);	// Mark required attr sets with sets, that were analysed in player's games.
+	init_attr_cont_with_other_cont_count(&database->attr_count, &player->attr_count);	// Mark required attr sets with sets, that were analysed in player's games.
 
 	/* Run through all game in database and analyse them, if required. */
 	while (get_next_game(prsr, &gm) != DB_EOF)
@@ -85,7 +86,7 @@ void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* s
 		printf("total moves = %d, ", count_moves);
 
 		time_start = clock();
-		analize_game_player_no_name(&gm, engn, susp, prsr->fiter.max_count_of_moves); // Analyse game
+		analize_game_database(&gm, engn, database, prsr->fiter.max_count_of_moves); // Analyse game
 		time_curr = clock();
 		
 		count_of_games++;
@@ -98,7 +99,7 @@ void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* s
 	fopen_s(&file_for_result, "DB_analyse.txt", "w");	// Open file to store analysis.
 	if (file_for_result == NULL) exit(-1);
 	print_info_file(file_for_result, prsr, engn);		// Print header info in that file.
-	print_susp_file(susp, file_for_result);				// Printf results of analtsis in that file.
+	print_susp_file(database, file_for_result);				// Printf results of analtsis in that file.
 	//print_susp_std(susp);								// Print results of analysis in stdout for debugging purposes.
 
 	memcpy(prsr->fiter.name, name_cpy, sizeof(char) * MAX_NAME_SIZE); // Restore name, that were erased.
@@ -107,7 +108,7 @@ void do_analize_glob_no_name(parser* prsr, UCI_Engine* engn, suspect_portrait* s
 	close_database(prsr);
 }
 
-void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, char* name) {
+void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* player, char* name, int max_count_of_moves) {
 	thc::ChessRules cr;										// That is thc.cpp main class for chessboard.
 	thc::Move mv;											// Class for move.
 	char move_from_game[MAX_MOVE_SIZE] = { '\0' };			// Buff with move in char* form.
@@ -117,8 +118,9 @@ void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, cha
 	/* Merge is a part (block) of game moves.
 	Since the move with the capture of a piece can be matched to two sets at the same time (before and after the capture), 
 	it was decided to combine all the captures, as well as a series of consecutive captures, with the set before the capture. */
-	attr_set attr_st;										// attr set for curr merge								
-	int acc = 0, count_acc = 0,								// accuracy, count of accuracies for curr merge
+	attr_set attr_st;										// attr set for curr merge		
+	float acc = 0;
+	int count_acc = 0,								// accuracy, count of accuracies for curr merge
 		count_of_mvs_to_next_merge = 0, count_of_mv = 0;	// count of moves to next merge, curr count of moves for curr merge.
 
 	// 0. Calculate initial merge.
@@ -139,8 +141,11 @@ void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, cha
 		mv.NaturalIn(&cr, move_from_game);
 
 		// 3. Analyse move and store result in sample.
-		acc = analize_move(engn, &cr, &mv);
-		fill_acc_in_attr_containers_in_no_socks(&attr_st, susp, acc);
+		if (is_attr_set_count_pass_filter_count(&attr_st, &player->attr_count, max_count_of_moves))
+		{
+			acc = analize_move(engn, &cr, &mv);
+			fill_acc_in_attr_containers_in_no_socks(&attr_st, player, acc);
+		}
 
 		// 4. Move that move on board.
 		cr.PlayMove(mv);
@@ -166,7 +171,7 @@ void analize_game_player(game* gm, UCI_Engine* engn, suspect_portrait* susp, cha
 	}
 }
 
-int analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* susp, int max_count_of_moves) {
+int analize_game_database(game* gm, UCI_Engine* engn, suspect_portrait* database, int max_count_of_moves) {
 	thc::ChessRules cr;								// That is thc.cpp main class for chessboard.
 	thc::Move mv;									// Class for move.
 	char move_from_game[MAX_MOVE_SIZE] = { '\0' };	// Buff with move in char* form.
@@ -177,12 +182,13 @@ int analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* su
 
 	attr_set attr_st;								// attr set for curr merge	
 	bool attr_st_flag = true;						// If this attr_set WAS in a player analisis, than analyse this attr_set
-	int acc = 0, count_acc = 0,						// accuracy, count of accuracies for curr merge
+	float acc = 0;
+	int count_acc = 0,						// accuracy, count of accuracies for curr merge
 		count_of_mvs_to_next_merge = 0, count_of_mv = 0;	// count of moves to next merge, curr count of moves for curr merge.
 
 	// 0. Calculate initial merge.
 	get_next_merge(&cr, &attr_st, ptr_game_notation, &fen_string, &count_of_mvs_to_next_merge);
-	attr_st_flag = is_attr_set_in_attr_cont_count(&attr_st, &susp->attr_count) && is_attr_set_count_pass_filter_count(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
+	attr_st_flag = is_attr_set_in_attr_cont_count(&attr_st, &database->attr_count) && is_attr_set_count_pass_filter_count(&attr_st, &database->attr_count, max_count_of_moves); // Get flag of attr_set
 
 	// 1. Analyse each move, while don't reach the end of notation.
 	while (ptr_game_notation != NULL)
@@ -193,9 +199,9 @@ int analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* su
 		mv.NaturalIn(&cr, move_from_game);
 
 		// 2. Analyse move if attr_set was in player analysis and store result in sample.
-		if (attr_st_flag == true) {
+		if (attr_st_flag == true && is_attr_set_count_pass_filter_count(&attr_st, &database->attr_count, max_count_of_moves)) {
 			acc = analize_move(engn, &cr, &mv);
-			fill_acc_in_attr_containers_in_yes_socks(&attr_st, susp, acc);
+			fill_acc_in_attr_containers_in_yes_socks(&attr_st, database, acc);
 			count_mv_anal++;
 		}
 
@@ -206,7 +212,7 @@ int analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* su
 		// 3.1 Merge positions, if it is time.
 		if (count_of_mv >= count_of_mvs_to_next_merge) {
 			get_next_merge(&cr, &attr_st, ptr_game_notation, &fen_string, &count_of_mvs_to_next_merge);
-			attr_st_flag = is_attr_set_in_attr_cont_count(&attr_st, &susp->attr_count) && is_attr_set_count_pass_filter_count(&attr_st, &susp->attr_count, max_count_of_moves); // Get flag of attr_set
+			attr_st_flag = is_attr_set_in_attr_cont_count(&attr_st, &database->attr_count) && is_attr_set_count_pass_filter_count(&attr_st, &database->attr_count, max_count_of_moves); // Get flag of attr_set
 			count_of_mv = 0;
 		}
 	}
@@ -215,9 +221,9 @@ int analize_game_player_no_name(game* gm, UCI_Engine* engn, suspect_portrait* su
 	return count_mv_anal;
 }
 
-int analize_move(UCI_Engine* engn, thc::ChessRules* cr, thc::Move* next_mv) {
+float analize_move(UCI_Engine* engn, thc::ChessRules* cr, thc::Move* next_mv) {
 	engine_line* line = (engine_line*)malloc(sizeof(engine_line) * engn->multipv);
-	int acc = 0;
+	float acc = 0;
 
 	// 1. Feed FEN to engine. Get answer of engine.
 	engn->set_position(cr->ForsythPublish());
@@ -313,76 +319,54 @@ int get_count_of_moves_to_next_merge(char* notation) {
    Line 3. Return 25
    Line 4. Return 12
    No Line. Return 0 */
-int get_accuracy_of_move(thc::Move* mv, engine_line* line, int count_of_lines) {
+float get_accuracy_of_move(thc::Move* mv, engine_line* line, int count_of_lines) {
 	std::string str = mv->TerseOut();
 	for (int i = 0; i < count_of_lines; i++) {
 		if (strcmp(line[i].move, str.c_str()) == 0) {
-			return ACC_MULTI / (1 << i);
+			return 1.0f / (1 << i);
 		}
 	}
 
 	return 0;
 }
 
-void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait* susp, int accuracy) {
-	int vectr[5][2];
+void fill_acc_in_attr_containers_in_no_socks(attr_set* attr_st, suspect_portrait* susp, float accuracy) {
+	int
+		p = attr_st->count_P,
+		n = attr_st->count_N,
+		b = attr_st->count_B,
+		r = attr_st->count_R,
+		q = attr_st->count_Q;
 
-	vectr[0][0] = attr_st->count_P; vectr[0][1] = EMPTY_P;
-	vectr[1][0] = attr_st->count_N; vectr[1][1] = EMPTY_N;
-	vectr[2][0] = attr_st->count_B; vectr[2][1] = EMPTY_B;
-	vectr[3][0] = attr_st->count_R; vectr[3][1] = EMPTY_R;
-	vectr[4][0] = attr_st->count_Q; vectr[4][1] = EMPTY_Q;
+	int* indx = &susp->attr_count.int_cont[p][n][b][r][q];
 
-	for (int p = 0; p < 2; p++) {
-		for (int n = 0; n < 2; n++) {
-			for (int b = 0; b < 2; b++) {
-				for (int r = 0; r < 2; r++) {
-					for (int q = 0; q < 2; q++) {
-						int* indx = &susp->attr_count.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]];
-						
-						// Store accuracy in conteiner
-						susp->attr_acc.fl_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]][*indx] = accuracy;
+	// Store accuracy in conteiner
+	susp->attr_acc.fl_cont[p][n][b][r][q][*indx] = accuracy;
 
-				        // Increment count of eqivalent accuracies
-						(*indx)++;
-					}
-				}
-			}
-		}
-	}
+	// Increment count of eqivalent accuracies
+	(*indx)++;
 }
 
-void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait* susp, int accuracy) {
-	int vectr[5][2];
+void fill_acc_in_attr_containers_in_yes_socks(attr_set* attr_st, suspect_portrait* susp, float accuracy) {
+	int
+		p = attr_st->count_P,
+		n = attr_st->count_N,
+		b = attr_st->count_B,
+		r = attr_st->count_R,
+		q = attr_st->count_Q;
 
-	vectr[0][0] = attr_st->count_P; vectr[0][1] = EMPTY_P;
-	vectr[1][0] = attr_st->count_N; vectr[1][1] = EMPTY_N;
-	vectr[2][0] = attr_st->count_B; vectr[2][1] = EMPTY_B;
-	vectr[3][0] = attr_st->count_R; vectr[3][1] = EMPTY_R;
-	vectr[4][0] = attr_st->count_Q; vectr[4][1] = EMPTY_Q;
+	if (susp->attr_count.int_cont[p][n][b][r][q] == POSITION_ATTR_YES) {
+		susp->attr_count.int_cont[p][n][b][r][q] = 1;
+		susp->attr_acc.fl_cont[p][n][b][r][q][0] = accuracy;
+	}
+	else {
+		int* indx = &susp->attr_count.int_cont[p][n][b][r][q];
 
-	for (int p = 0; p < 2; p++) {
-		for (int n = 0; n < 2; n++) {
-			for (int b = 0; b < 2; b++) {
-				for (int r = 0; r < 2; r++) {
-					for (int q = 0; q < 2; q++) {
-						if (susp->attr_count.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] == POSITION_ATTR_YES) {
-							susp->attr_count.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]] = 1;
-							susp->attr_acc.fl_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]][0] = accuracy;
-						}
-						else {
-							int* indx = &susp->attr_count.int_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]];
+		// Store accuracy in conteiner
+		susp->attr_acc.fl_cont[p][n][b][r][q][*indx] = accuracy;
 
-							// Store accuracy in conteiner
-							susp->attr_acc.fl_cont[vectr[0][p]][vectr[1][n]][vectr[2][b]][vectr[3][r]][vectr[4][q]][*indx] = accuracy;
-
-							// Increment count of eqivalent accuracies
-							(*indx)++;
-						}
-					}
-				}
-			}
-		}
+		// Increment count of eqivalent accuracies
+		(*indx)++;
 	}
 }
 
@@ -446,40 +430,16 @@ void print_susp_file(suspect_portrait* susp, FILE* file) {
 				for (int r = 0; r < MAX_R; r++) {
 					for (int q = 0; q < MAX_Q; q++) {
 						if (susp->attr_count.int_cont[p][n][b][r][q] != POSITION_ATTR_NO) {
-							if (p == EMPTY_P) {
-								fprintf(file, "{X_p, ");
-							}
-							else {
-								fprintf(file, "{%d_p, ", p);
-							}
-							if (n == EMPTY_N) {
-								fprintf(file, "X_n, ");
-							}
-							else {
-								fprintf(file, "%d_n, ", n);
-							}
-							if (b == EMPTY_B) {
-								fprintf(file, "X_b, ");
-							}
-							else {
-								fprintf(file, "%d_b, ", b);
-							}
-							if (r == EMPTY_R) {
-								fprintf(file, "X_r, ");
-							}
-							else {
-								fprintf(file, "%d_r, ", r);
-							}
-							if (q == EMPTY_Q) {
-								fprintf(file, "X_q}: ");
-							}
-							else {
-								fprintf(file, "%d_q}: ", q);
-							}
+							fprintf(file, "{%d_p, ", p);
+							fprintf(file, "%d_n, ", n);
+							fprintf(file, "%d_b, ", b);
+							fprintf(file, "%d_r, ", r);
+							fprintf(file, "%d_q}: ", q);
+
 							fprintf(file, "count = %d, acc_sample: ",
 								susp->attr_count.int_cont[p][n][b][r][q]);
 
-							for (int c = 0; c < susp->attr_acc.count_pos; c++) {
+							for (int c = 0; c < susp->attr_count.int_cont[p][n][b][r][q]; c++) {
 								fprintf(file, "%g ",
 									susp->attr_acc.fl_cont[p][n][b][r][q][c]);
 							}
@@ -516,7 +476,7 @@ void print_info_file(FILE* file, parser* prsr, UCI_Engine* engn) {
 		"Search(filter): Max count of moves: %d\n"
 		"Search(filter): Max count of games: %d\n\n",
 		prsr->fiter.elo_min,
-		prsr->fiter.elo_min,
+		prsr->fiter.elo_max,
 		prsr->fiter.max_count_of_moves,
 		prsr->fiter.max_count_of_games);
 }
